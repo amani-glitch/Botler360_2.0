@@ -9,7 +9,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link, useParams } from "wouter";
-import { Play, ArrowRight } from "lucide-react";
+import { Play, ArrowRight, Users, Clock, Star } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -100,6 +100,30 @@ const getDemos = (t: (key: string) => string) => [
       t("demo.accommodation.feature3"),
     ],
   },
+  {
+    id: "boutiques",
+    name: t("demo.boutiques.name"),
+    description: t("demo.boutiques.description"),
+    video: "/videos/botler-demo-video.mp4",
+    image: "/images/botler_demo.png",
+    features: [
+      t("demo.boutiques.feature1"),
+      t("demo.boutiques.feature2"),
+      t("demo.boutiques.feature3"),
+    ],
+  },
+  {
+    id: "websites",
+    name: t("demo.websites.name"),
+    description: t("demo.websites.description"),
+    video: "/videos/botler-demo-video.mp4",
+    image: "/images/botler-logo-full.png",
+    features: [
+      t("demo.websites.feature1"),
+      t("demo.websites.feature2"),
+      t("demo.websites.feature3"),
+    ],
+  },
 ];
 
 export default function Demo() {
@@ -170,6 +194,36 @@ export default function Demo() {
             >
               {t("demo.description")}
             </motion.p>
+          </motion.div>
+
+          {/* Statistics */}
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer}
+            className="grid grid-cols-3 gap-8 mt-16 max-w-3xl mx-auto"
+          >
+            <motion.div variants={fadeInUp} className="text-center">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Users className="w-6 h-6 text-amber-500" />
+                <span className="text-3xl font-bold text-gradient-gold">+500</span>
+              </div>
+              <p className="text-sm text-muted-foreground">{t("demo.stats.clients")}</p>
+            </motion.div>
+            <motion.div variants={fadeInUp} className="text-center">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Clock className="w-6 h-6 text-teal-500" />
+                <span className="text-3xl font-bold text-gradient-teal">+10,000h</span>
+              </div>
+              <p className="text-sm text-muted-foreground">{t("demo.stats.hours")}</p>
+            </motion.div>
+            <motion.div variants={fadeInUp} className="text-center">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Star className="w-6 h-6 text-amber-500" />
+                <span className="text-3xl font-bold text-gradient-gold">92%</span>
+              </div>
+              <p className="text-sm text-muted-foreground">{t("demo.stats.satisfaction")}</p>
+            </motion.div>
           </motion.div>
         </div>
       </section>

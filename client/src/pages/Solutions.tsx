@@ -27,6 +27,7 @@ import {
   Target,
   Mail,
   Calendar,
+  Wrench,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -163,18 +164,28 @@ export default function Solutions() {
       title: t("solutions.additional.mobile.title"),
       description: t("solutions.additional.mobile.desc"),
       price: "249€",
+      link: "/applications-mobiles",
     },
     {
       icon: Video,
       title: t("solutions.additional.video360.title"),
       description: t("solutions.additional.video360.desc"),
       price: t("solutions.additional.video360.price"),
+      link: "/contact",
     },
     {
       icon: Headphones,
       title: t("solutions.additional.audio.title"),
       description: t("solutions.additional.audio.desc"),
       price: t("solutions.additional.audio.price"),
+      link: "/contact",
+    },
+    {
+      icon: Wrench,
+      title: t("solutions.additional.custom.title"),
+      description: t("solutions.additional.custom.desc"),
+      price: t("solutions.additional.custom.price"),
+      link: "/contact",
     },
   ];
 
@@ -457,27 +468,28 @@ export default function Solutions() {
             whileInView="visible"
             viewport={{ once: true }}
             variants={staggerContainer}
-            className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto"
+            className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto"
           >
             {additionalServices.map((service, index) => (
-              <motion.div
-                key={index}
-                variants={fadeInUp}
-                className="glass-card glass-card-hover rounded-2xl p-8 text-center"
-              >
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500/20 to-teal-500/20 flex items-center justify-center mx-auto mb-6">
-                  <service.icon className="w-8 h-8 text-amber-500" />
-                </div>
-                <h3 className="text-xl font-bold text-foreground mb-2">
-                  {service.title}
-                </h3>
-                <p className="text-muted-foreground mb-4">
-                  {service.description}
-                </p>
-                <span className="text-amber-500 font-semibold">
-                  {service.price}
-                </span>
-              </motion.div>
+              <Link key={index} href={service.link}>
+                <motion.div
+                  variants={fadeInUp}
+                  className="glass-card glass-card-hover rounded-2xl p-6 text-center cursor-pointer h-full"
+                >
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500/20 to-teal-500/20 flex items-center justify-center mx-auto mb-4">
+                    <service.icon className="w-7 h-7 text-amber-500" />
+                  </div>
+                  <h3 className="text-lg font-bold text-foreground mb-2">
+                    {service.title}
+                  </h3>
+                  <p className="text-muted-foreground mb-4 text-sm">
+                    {service.description}
+                  </p>
+                  <span className="text-amber-500 font-semibold text-sm">
+                    {service.price}
+                  </span>
+                </motion.div>
+              </Link>
             ))}
           </motion.div>
         </div>

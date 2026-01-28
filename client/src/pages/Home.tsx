@@ -21,6 +21,12 @@ import {
   Star,
   Play,
   Sparkles,
+  MessageSquare,
+  Smartphone,
+  Video,
+  Headphones,
+  Wrench,
+  Heart,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -149,6 +155,77 @@ export default function Home() {
     t("home.hero.badge2"),
     t("home.hero.badge3"),
     t("home.hero.badge4"),
+  ];
+
+  // 6 Products / Expertises
+  const expertises = [
+    {
+      icon: MessageSquare,
+      title: t("home.expertises.chatbot.title"),
+      description: t("home.expertises.chatbot.desc"),
+      price: t("home.expertises.chatbot.price"),
+      link: "/solutions",
+      color: "from-amber-500/20 to-orange-500/20",
+    },
+    {
+      icon: Globe,
+      title: t("home.expertises.website.title"),
+      description: t("home.expertises.website.desc"),
+      price: t("home.expertises.website.price"),
+      link: "/websites",
+      color: "from-blue-500/20 to-cyan-500/20",
+    },
+    {
+      icon: Smartphone,
+      title: t("home.expertises.mobile.title"),
+      description: t("home.expertises.mobile.desc"),
+      price: t("home.expertises.mobile.price"),
+      link: "/applications-mobiles",
+      color: "from-purple-500/20 to-pink-500/20",
+    },
+    {
+      icon: Video,
+      title: t("home.expertises.video360.title"),
+      description: t("home.expertises.video360.desc"),
+      price: t("home.expertises.video360.price"),
+      link: "/solutions",
+      color: "from-teal-500/20 to-emerald-500/20",
+    },
+    {
+      icon: Headphones,
+      title: t("home.expertises.audio.title"),
+      description: t("home.expertises.audio.desc"),
+      price: t("home.expertises.audio.price"),
+      link: "/solutions",
+      color: "from-red-500/20 to-orange-500/20",
+    },
+    {
+      icon: Wrench,
+      title: t("home.expertises.custom.title"),
+      description: t("home.expertises.custom.desc"),
+      price: t("home.expertises.custom.price"),
+      link: "/contact",
+      color: "from-slate-500/20 to-gray-500/20",
+    },
+  ];
+
+  // 3 Value Pillars
+  const pillars = [
+    {
+      icon: Zap,
+      title: t("home.pillars.speed.title"),
+      description: t("home.pillars.speed.desc"),
+    },
+    {
+      icon: Sparkles,
+      title: t("home.pillars.simplicity.title"),
+      description: t("home.pillars.simplicity.desc"),
+    },
+    {
+      icon: Heart,
+      title: t("home.pillars.accessibility.title"),
+      description: t("home.pillars.accessibility.desc"),
+    },
   ];
 
   return (
@@ -280,6 +357,121 @@ export default function Home() {
               </div>
             </motion.div>
           </div>
+        </div>
+      </section>
+
+      {/* Expertises Section - 6 Products */}
+      <section className="relative py-24 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-200/50 via-background to-slate-200/50 dark:from-slate-900/50 dark:via-background dark:to-slate-900/50">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(245,158,11,0.05)_0%,_transparent_60%)] dark:bg-[radial-gradient(ellipse_at_center,_rgba(245,158,11,0.08)_0%,_transparent_60%)]" />
+        </div>
+
+        <div className="relative container mx-auto px-4 lg:px-8 xl:px-12 2xl:px-16">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+            className="text-center mb-16"
+          >
+            <motion.h2
+              variants={fadeInUp}
+              className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4"
+            >
+              {t("home.expertises.title1")}{" "}
+              <span className="text-gradient-gold">{t("home.expertises.highlight")}</span> {t("home.expertises.title2")}
+            </motion.h2>
+            <motion.p
+              variants={fadeInUp}
+              className="text-xl text-muted-foreground max-w-3xl mx-auto"
+            >
+              {t("home.expertises.description")}
+            </motion.p>
+          </motion.div>
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {expertises.map((expertise, index) => (
+              <Link key={index} href={expertise.link}>
+                <motion.div
+                  variants={fadeInUp}
+                  className="group relative glass-card glass-card-hover rounded-2xl p-6 cursor-pointer h-full"
+                >
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-br ${expertise.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl`}
+                  />
+                  <div className="relative">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500/20 to-teal-500/20 flex items-center justify-center mb-4">
+                      <expertise.icon className="w-7 h-7 text-amber-500" />
+                    </div>
+                    <h3 className="text-xl font-bold text-foreground mb-2">
+                      {expertise.title}
+                    </h3>
+                    <p className="text-muted-foreground mb-4 text-sm">
+                      {expertise.description}
+                    </p>
+                    <span className="inline-flex items-center gap-1 text-sm font-semibold text-amber-500">
+                      {expertise.price}
+                    </span>
+                  </div>
+                </motion.div>
+              </Link>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Value Pillars Section */}
+      <section className="relative py-24 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-slate-200/30 to-background dark:via-slate-900/30">
+          <div className="absolute inset-0 bg-grid-pattern opacity-20 dark:opacity-10" />
+        </div>
+
+        <div className="relative container mx-auto px-4 lg:px-8 xl:px-12 2xl:px-16">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+            className="text-center mb-16"
+          >
+            <motion.h2
+              variants={fadeInUp}
+              className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4"
+            >
+              {t("home.pillars.title1")}{" "}
+              <span className="text-gradient-gold">{t("home.pillars.highlight")}</span> {t("home.pillars.title2")}
+            </motion.h2>
+          </motion.div>
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+            className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto"
+          >
+            {pillars.map((pillar, index) => (
+              <motion.div
+                key={index}
+                variants={fadeInUp}
+                className="glass-card rounded-2xl p-8 text-center"
+              >
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500/20 to-teal-500/20 flex items-center justify-center mx-auto mb-6">
+                  <pillar.icon className="w-8 h-8 text-amber-500" />
+                </div>
+                <h3 className="text-xl font-bold text-foreground mb-4">
+                  {pillar.title}
+                </h3>
+                <p className="text-muted-foreground">{pillar.description}</p>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
 

@@ -6,7 +6,7 @@
  */
 
 import { Link, useLocation } from "wouter";
-import { Mail, Phone, MapPin, Linkedin, Facebook, Instagram, Youtube } from "lucide-react";
+import { Mail, Phone, MapPin, Linkedin, Facebook, Instagram, Youtube, Heart, Users, Shield, Award, Globe, Smile } from "lucide-react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -150,8 +150,30 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom Bar */}
+        {/* Trust Messages */}
         <div className="mt-12 pt-8 border-t border-border/30">
+          <div className="flex flex-wrap justify-center gap-4 mb-8">
+            {[
+              { icon: Users, text: t("footer.trust.humanTeam") },
+              { icon: Heart, text: t("footer.trust.support") },
+              { icon: Globe, text: t("footer.trust.location") },
+              { icon: Shield, text: t("footer.trust.ethical") },
+              { icon: Award, text: t("footer.trust.ownership") },
+              { icon: Smile, text: t("footer.trust.smile") },
+            ].map((item, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-background/50 border border-border/30"
+              >
+                <item.icon className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                <span className="text-xs text-muted-foreground">{item.text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="pt-8 border-t border-border/30">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
               © {new Date().getFullYear()} Botler™. {t("footer.rights")}

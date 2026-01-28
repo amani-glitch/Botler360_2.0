@@ -34,6 +34,8 @@ export default function Contact() {
     email: "",
     company: "",
     sector: "",
+    projectType: "",
+    phone: "",
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -90,6 +92,8 @@ export default function Contact() {
       email: "",
       company: "",
       sector: "",
+      projectType: "",
+      phone: "",
       message: "",
     });
     setIsSubmitting(false);
@@ -218,6 +222,42 @@ export default function Contact() {
                         <option value="hebergements">{t("sector.accommodation")}</option>
                         <option value="autre">{t("contact.form.other")}</option>
                       </select>
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        {t("contact.form.projectType")}
+                      </label>
+                      <select
+                        name="projectType"
+                        value={formData.projectType}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 rounded-xl bg-background/50 border border-border focus:border-amber-500 focus:ring-1 focus:ring-amber-500 text-foreground transition-colors"
+                      >
+                        <option value="">{t("contact.form.projectTypePlaceholder")}</option>
+                        <option value="chatbot">{t("contact.form.projectType.chatbot")}</option>
+                        <option value="website">{t("contact.form.projectType.website")}</option>
+                        <option value="website-chatbot">{t("contact.form.projectType.websiteChatbot")}</option>
+                        <option value="mobile-app">{t("contact.form.projectType.mobileApp")}</option>
+                        <option value="video360">{t("contact.form.projectType.video360")}</option>
+                        <option value="music-podcast">{t("contact.form.projectType.musicPodcast")}</option>
+                        <option value="custom">{t("contact.form.projectType.custom")}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        {t("contact.form.phone")} <span className="text-muted-foreground text-xs">(optionnel)</span>
+                      </label>
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 rounded-xl bg-background/50 border border-border focus:border-amber-500 focus:ring-1 focus:ring-amber-500 text-foreground placeholder-muted-foreground transition-colors"
+                        placeholder={t("contact.form.phonePlaceholder")}
+                      />
                     </div>
                   </div>
 
