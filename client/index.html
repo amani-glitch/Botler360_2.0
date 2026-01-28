@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="fr">
+
+  <head>
+
+  <!-- Start of digital hawk chatbot -->
+  <link rel="stylesheet" href="http://72.61.194.168:5001/chatbot.css">
+  <script src="http://72.61.194.168:5001/chatbot.js"></script>
+  <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          if (typeof DigitalHawkChatbot === 'function') {
+              window.DigitalHawkChatbot_id = '0O8liCQjo586NwYaMrfN';
+              window.DigitalHawkChatbot_baseUrl = 'http://72.61.194.168:5001/';
+              const digitalhawk_chatbot_container = document.createElement('div');
+              digitalhawk_chatbot_container.id = 'digitalhawk-chatbot-container';
+              document.body.appendChild(digitalhawk_chatbot_container);
+              DigitalHawkChatbot('#digitalhawk-chatbot-container');
+          }
+      });
+  </script>
+  <!-- End of digital hawk chatbot -->
+
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <title>Botler360 - AI Chatbot Solutions</title>
+    <meta name="description" content="Botler™ : le chatbot pour tous, simple et rapide. Améliorez votre relation client en déployant un chatbot sur votre site web." />
+    <link rel="icon" type="image/x-icon" href="/images/botler-logo-full.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script
+      defer
+      src="%VITE_ANALYTICS_ENDPOINT%/umami"
+      data-website-id="%VITE_ANALYTICS_WEBSITE_ID%"></script>
+  </body>
+
+</html>

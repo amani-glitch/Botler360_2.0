@@ -1,0 +1,583 @@
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+
+type Language = "fr" | "en";
+
+interface LanguageContextType {
+  language: Language;
+  setLanguage: (lang: Language) => void;
+  t: (key: string) => string;
+}
+
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+
+// Translations object
+const translations: Record<Language, Record<string, string>> = {
+  fr: {
+    // Navbar
+    "nav.home": "Accueil",
+    "nav.solutions": "Nos Solutions",
+    "nav.demo": "Démo",
+    "nav.contact": "Contact",
+    "nav.sectors": "Secteurs",
+    "nav.getStarted": "Démarrer maintenant",
+    
+    // Sectors
+    "sector.tourism": "Tourisme",
+    "sector.viticulture": "Viticulture",
+    "sector.restaurants": "Restaurants",
+    "sector.bakery": "Boulangerie",
+    "sector.realEstate": "Immobilier",
+    "sector.accommodation": "Hébergements",
+    
+    // Home Hero Section
+    "home.hero.tagline": "La transition numérique, c'est pour tout le monde",
+    "home.hero.title1": "Botler™ : le chatbot",
+    "home.hero.title2": "pour tous,",
+    "home.hero.title3": "simple et rapide.",
+    "home.hero.description": "Améliorez votre relation client en déployant un chatbot sur votre site web, facilement et rapidement.",
+    "home.hero.badge1": "Installation en 5 minutes",
+    "home.hero.badge2": "Automatisation intelligente",
+    "home.hero.badge3": "Personnalisation complète",
+    "home.hero.badge4": "Équipe support 9h-18h",
+    "home.trust.compatible": "Compatible Shopify, WordPress, etc.",
+    "home.trust.secure": "100% sécurisé, hébergé en Europe",
+    "home.trust.pme": "Idéal PME",
+    "home.hero.cta1": "Voir les démos",
+    "home.hero.cta2": "Récupérez mon chatbot",
+    "home.hero.stat": "15 heures",
+    "home.hero.statLabel": "économisées",
+    "home.hero.statSub": "par semaine",
+    
+    // Home Stats Section
+    "home.stats.title1": "Automatisez",
+    "home.stats.title2": "de vos réponses client",
+    "home.stats.description": "Libérez votre équipe des questions répétitives pour qu'elle se concentre sur les tâches à forte valeur ajoutée.",
+    "home.stats.card.title1": "Plus de",
+    "home.stats.card.title2": "des consommateurs préfèrent échanger avec un chatbot plutôt que par téléphone.",
+    "home.stats.card.description": "Avec Botler™, évitez que vos visiteurs quittent le site web faute d'obtenir rapidement une réponse à leurs questions.",
+    "home.stats.card.highlight": "Ne perdez plus 50% de clients potentiels",
+    
+    // Home Features Section
+    "home.features.title1": "Botler™, le chatbot pensé pour",
+    "home.features.highlight": "booster",
+    "home.features.title2": "votre relation client",
+    "home.features.description": "Déployez rapidement un assistant conversationnel sur votre site web et gagnez en efficacité.",
+    "home.features.install.title": "Installation en 5 minutes",
+    "home.features.install.desc": "Déployez rapidement un assistant conversationnel sur votre site web et gagnez en efficacité.",
+    "home.features.available.title": "Disponible 24h/24",
+    "home.features.available.desc": "Répondez instantanément aux questions de vos visiteurs 24h/24 et 7j/7.",
+    "home.features.qualify.title": "Qualification automatique",
+    "home.features.qualify.desc": "Qualifiez automatiquement vos prospects et augmentez vos conversions.",
+    
+    // Home Sectors Section
+    "home.sectors.title1": "Des solutions",
+    "home.sectors.highlight": "adaptées",
+    "home.sectors.title2": "à votre métier",
+    "home.sectors.description": "Chaque secteur d'activité a ses propres défis. Botler™ a développé des chatbots intelligents qui maîtrisent parfaitement les spécificités de votre domaine.",
+    "home.sectors.botlerSays": "Moi c'est Botler™ : vous voulez savoir de quoi je suis capable ?",
+    "home.sectors.viewDemos": "Voir les démos",
+    "home.sectors.tourism.desc": "Guide virtuel pour vos visiteurs",
+    "home.sectors.tourism.stat": "+40% de satisfaction",
+    "home.sectors.viticulture.desc": "Sommelier virtuel pour conseils œnologiques",
+    "home.sectors.viticulture.stat": "+35% de ventes",
+    "home.sectors.restaurants.desc": "Votre meilleur assistant restaurateur 24h/24",
+    "home.sectors.restaurants.stat": "+50% de réservations",
+    "home.sectors.bakery.desc": "Le vendeur en boulangerie que vous rêvez",
+    "home.sectors.bakery.stat": "+30% de commandes",
+    "home.sectors.realEstate.desc": "Votre agent virtuel pour mieux qualifier vos futurs clients",
+    "home.sectors.realEstate.stat": "+45% de contacts",
+    "home.sectors.accommodation.desc": "Concierge virtuel pour vos clients",
+    "home.sectors.accommodation.stat": "+35% de réservations",
+    
+    // Home Testimonials Section
+    "home.testimonials.title1": "Ce que nos",
+    "home.testimonials.highlight": "clients",
+    "home.testimonials.title2": "disent",
+    "home.testimonials.description": "Découvrez comment Botler™ transforme leur relation client",
+    "home.testimonials.1.text": "Botler™ a révolutionné notre accueil visiteur. +40% de satisfaction client et une disponibilité 24h/24 qui fait la différence.",
+    "home.testimonials.1.author": "Hotel du Phare",
+    "home.testimonials.1.sector": "Hébergement",
+    "home.testimonials.1.stat": "+40% de satisfaction client",
+    "home.testimonials.2.text": "Nos réservations ont augmenté de 35% grâce à la disponibilité permanente de Botler™. Plus aucune perte d'opportunité !",
+    "home.testimonials.2.author": "Restaurant Le Gourmet",
+    "home.testimonials.2.sector": "Restauration",
+    "home.testimonials.2.stat": "+35% de réservations",
+    "home.testimonials.3.text": "Botler™ nous fait économiser 15 heures par semaine en répondant aux questions récurrentes de nos clients.",
+    "home.testimonials.3.author": "Domaine des Vignes",
+    "home.testimonials.3.sector": "Viticulture",
+    "home.testimonials.3.stat": "15h économisées/semaine",
+    
+    // CTA Section
+    "cta.title1": "Rejoignez les entreprises qui ont déjà",
+    "cta.highlight": "révolutionné",
+    "cta.title2": "leur relation client avec Botler™.",
+    "cta.description": "Déployez votre chatbot en moins de 5 minutes et commencez à améliorer votre relation client dès aujourd'hui.",
+    "cta.button": "Récupérez mon chatbot",
+    
+    // Footer
+    "footer.description": "Des chatbots intelligents adaptés à votre secteur d'activité pour révolutionner votre relation client.",
+    "footer.company": "Entreprise",
+    "footer.location": "France & Royaume-Uni",
+    "footer.legal": "Mentions légales",
+    "footer.privacy": "Politique de confidentialité",
+    "footer.cookies": "Politique de cookies",
+    "footer.rights": "Tous droits réservés.",
+    "footer.tagline": "Créé avec passion pour révolutionner votre relation client.",
+    
+    // Demo Page
+    "demo.title1": "Découvrez Botler™",
+    "demo.highlight": "en action",
+    "demo.description": "Explorez nos démonstrations vidéo pour chaque secteur d'activité et découvrez comment Botler™ peut transformer votre relation client.",
+    "demo.selectSector": "Sélectionnez un secteur",
+    "demo.watchVideo": "Regarder la vidéo",
+    "demo.features": "Fonctionnalités clés",
+    "demo.noVideo": "Vidéo bientôt disponible",
+    "demo.tourism.name": "Tourisme",
+    "demo.tourism.description": "Découvrez comment Botler™ guide vos visiteurs et répond à toutes leurs questions sur votre destination.",
+    "demo.tourism.feature1": "Recommandations personnalisées",
+    "demo.tourism.feature2": "Support multilingue",
+    "demo.tourism.feature3": "Disponible 24h/24",
+    "demo.viticulture.name": "Viticulture",
+    "demo.viticulture.description": "Votre sommelier virtuel conseille vos clients sur les accords mets-vins et vos cuvées.",
+    "demo.viticulture.feature1": "Conseils œnologiques",
+    "demo.viticulture.feature2": "Réservation de visites",
+    "demo.viticulture.feature3": "Présentation des cuvées",
+    "demo.restaurants.name": "Restaurants",
+    "demo.restaurants.description": "Botler™ gère vos réservations et présente votre carte à vos clients gourmets.",
+    "demo.restaurants.feature1": "Gestion des réservations",
+    "demo.restaurants.feature2": "Présentation du menu",
+    "demo.restaurants.feature3": "Informations allergènes",
+    "demo.bakery.name": "Boulangerie",
+    "demo.bakery.description": "Le vendeur virtuel idéal pour présenter vos produits et prendre les commandes.",
+    "demo.bakery.feature1": "Catalogue produits",
+    "demo.bakery.feature2": "Prise de commandes",
+    "demo.bakery.feature3": "Horaires et disponibilités",
+    "demo.realEstate.name": "Immobilier",
+    "demo.realEstate.description": "Qualifiez automatiquement vos prospects et présentez vos biens immobiliers.",
+    "demo.realEstate.feature1": "Qualification prospects",
+    "demo.realEstate.feature2": "Présentation des biens",
+    "demo.realEstate.feature3": "Prise de rendez-vous",
+    "demo.accommodation.name": "Hébergements",
+    "demo.accommodation.description": "Votre concierge virtuel répond aux questions de vos clients voyageurs.",
+    "demo.accommodation.feature1": "Informations séjour",
+    "demo.accommodation.feature2": "Services disponibles",
+    "demo.accommodation.feature3": "Recommandations locales",
+    
+    // Solutions Page
+    "solutions.title1": "Nos",
+    "solutions.highlight": "Solutions Digitales",
+    "solutions.description": "Développez votre présence en ligne avec nos solutions sur mesure, conçues pour booster votre activité.",
+    "solutions.pricing.title1": "Tarifs",
+    "solutions.pricing.highlight": "Chatbot",
+    "solutions.pricing.subtitle": "Tarifs transparents et adaptés à vos besoins",
+    "solutions.pricing.perMonth": "/mois",
+    "solutions.pricing.recommended": "Recommandé",
+    "solutions.pricing.commission": "1% de commission sur chaque vente effectuée entièrement avec Botler (Packs Expert et Expert PME)",
+    
+    // Pack Junior
+    "solutions.pricing.junior.desc": "Pour tous types d'entreprises",
+    "solutions.pricing.junior.f1": "Installation rapide",
+    "solutions.pricing.junior.f2": "Personnalisé à votre charte graphique",
+    "solutions.pricing.junior.f3": "Réponses sur-mesure aux questions visiteurs",
+    "solutions.pricing.junior.f4": "Multi-langues",
+    "solutions.pricing.junior.cta": "Commencer",
+    
+    // Pack Expert
+    "solutions.pricing.expert.desc": "Parfait pour indépendants et micro-équipes",
+    "solutions.pricing.expert.f1": "Matching intelligent sur base de données ciblée",
+    "solutions.pricing.expert.f2": "Installation simple et rapide",
+    "solutions.pricing.expert.f3": "Personnalisé à votre charte graphique",
+    "solutions.pricing.expert.f4": "Assistant commercial intégré (prospects, alertes email, prise de RDV)",
+    "solutions.pricing.expert.f5": "Multilingue",
+    "solutions.pricing.expert.f6": "Solution clé en main pour générer vos premiers leads",
+    "solutions.pricing.expert.cta": "Choisir Expert",
+    
+    // Pack Expert PME
+    "solutions.pricing.expertPME.desc": "Conçu pour les PME en croissance",
+    "solutions.pricing.expertPME.f1": "Pensé pour les petites et moyennes entreprises",
+    "solutions.pricing.expertPME.f2": "Filtrage intelligent + matching avancé",
+    "solutions.pricing.expertPME.f3": "Optimisé pour un contenu volumineux",
+    "solutions.pricing.expertPME.f4": "Personnalisé à votre image et multilingue",
+    "solutions.pricing.expertPME.f5": "Assistant commercial avec alertes et création auto de prospects",
+    "solutions.pricing.expertPME.f6": "Bot robuste pour gérer un volume important de demandes",
+    "solutions.pricing.expertPME.cta": "Choisir Expert PME",
+    
+    // Pack Custom
+    "solutions.pricing.custom.name": "Demande ou besoin spécifique ?",
+    "solutions.pricing.custom.price": "Sur devis",
+    "solutions.pricing.custom.desc": "Solution personnalisée selon vos besoins spécifiques",
+    "solutions.pricing.custom.f1": "Accompagnement sur-mesure",
+    "solutions.pricing.custom.f2": "Fonctionnalités avancées à la carte",
+    "solutions.pricing.custom.cta": "Nous contacter",
+    "solutions.guarantees.satisfaction.title": "Satisfaction garantie",
+    "solutions.guarantees.satisfaction.desc": "30 jours d'essai gratuit",
+    "solutions.guarantees.deploy.title": "Déploiement rapide",
+    "solutions.guarantees.deploy.desc": "En ligne en 24h maximum",
+    "solutions.guarantees.support.title": "Support expert",
+    "solutions.guarantees.support.desc": "Équipe dédiée à votre succès",
+    "solutions.website.badge": "Offre Spéciale",
+    "solutions.website.title": "Site Web Vitrine Professionnel",
+    "solutions.website.description": "Une solution complète pour créer votre présence en ligne professionnelle rapidement et efficacement.",
+    "solutions.website.h1": "Livraison en 24h",
+    "solutions.website.h2": "Design responsive",
+    "solutions.website.h3": "Hébergement inclus",
+    "solutions.website.h4": "Compatible mobile",
+    "solutions.website.f1": "Design moderne et responsive",
+    "solutions.website.f2": "Hébergement web sécurisé",
+    "solutions.website.f3": "Certificat SSL gratuit",
+    "solutions.website.f4": "Optimisation SEO de base",
+    "solutions.website.f5": "Formulaire de contact",
+    "solutions.website.f6": "Intégration réseaux sociaux",
+    "solutions.website.f7": "Support technique 30 jours",
+    "solutions.website.f8": "Formation à l'utilisation",
+    "solutions.website.f9": "Sauvegarde automatique",
+    "solutions.website.f10": "Statistiques de visite",
+    "solutions.website.included": "Ce qui est inclus",
+    "solutions.website.cta": "Commander maintenant",
+    "solutions.additional.title1": "Autres",
+    "solutions.additional.highlight": "Solutions",
+    "solutions.additional.description": "Complétez votre présence digitale avec nos services additionnels",
+    "solutions.additional.mobile.title": "Application Mobile",
+    "solutions.additional.mobile.desc": "App iOS et Android sur mesure pour votre entreprise",
+    "solutions.additional.video360.title": "Vidéos 360° immersives",
+    "solutions.additional.video360.desc": "Visites virtuelles pour hôtels, restaurants, musées - une expérience immersive",
+    "solutions.additional.video360.price": "À partir de 125€",
+    "solutions.additional.audio.title": "Musiques & podcasts",
+    "solutions.additional.audio.desc": "Identité sonore sur-mesure : musiques d'ambiance, annonces, podcasts brandés",
+    "solutions.additional.audio.price": "À partir de 5€",
+    
+    // Contact Page
+    "contact.title1": "Contactez",
+    "contact.highlight": "notre équipe",
+    "contact.description": "Discutons de votre projet et découvrez comment Botler™ peut transformer votre relation client.",
+    "contact.form.title": "Envoyez-nous un message",
+    "contact.form.name": "Nom complet",
+    "contact.form.namePlaceholder": "Votre nom",
+    "contact.form.email": "Email",
+    "contact.form.emailPlaceholder": "votre@email.com",
+    "contact.form.company": "Entreprise",
+    "contact.form.companyPlaceholder": "Nom de votre entreprise",
+    "contact.form.sector": "Secteur d'activité",
+    "contact.form.sectorPlaceholder": "Sélectionnez un secteur",
+    "contact.form.other": "Autre",
+    "contact.form.message": "Message",
+    "contact.form.messagePlaceholder": "Décrivez votre projet...",
+    "contact.form.submit": "Envoyer le message",
+    "contact.form.sending": "Envoi en cours...",
+    "contact.form.success": "Message envoyé avec succès ! Nous vous répondrons sous 24h.",
+    "contact.info.title": "Nos coordonnées",
+    "contact.info.phone": "Téléphone",
+    "contact.info.email": "Email",
+    "contact.info.location": "Localisation",
+    "contact.benefits.title": "Pourquoi nous contacter ?",
+    "contact.benefits.fast.title": "Réponse rapide",
+    "contact.benefits.fast.desc": "Notre équipe vous répond sous 24h",
+    "contact.benefits.personal.title": "Accompagnement personnalisé",
+    "contact.benefits.personal.desc": "Un expert dédié à votre projet",
+    "contact.benefits.free.title": "Devis gratuit",
+    "contact.benefits.free.desc": "Sans engagement de votre part",
+    "contact.mascot": "Notre équipe est là pour vous accompagner dans votre transformation digitale.",
+  },
+  en: {
+    // Navbar
+    "nav.home": "Home",
+    "nav.solutions": "Our Solutions",
+    "nav.demo": "Demo",
+    "nav.contact": "Contact",
+    "nav.sectors": "Sectors",
+    "nav.getStarted": "Get Started",
+    
+    // Sectors
+    "sector.tourism": "Tourism",
+    "sector.viticulture": "Viticulture",
+    "sector.restaurants": "Restaurants",
+    "sector.bakery": "Bakery",
+    "sector.realEstate": "Real Estate",
+    "sector.accommodation": "Accommodation",
+    
+    // Home Hero Section
+    "home.hero.tagline": "Digital transformation is for everyone",
+    "home.hero.title1": "Botler™: the chatbot",
+    "home.hero.title2": "for everyone,",
+    "home.hero.title3": "simple and fast.",
+    "home.hero.description": "Improve your customer relationships by deploying a chatbot on your website, easily and quickly.",
+    "home.hero.badge1": "5-minute setup",
+    "home.hero.badge2": "Smart automation",
+    "home.hero.badge3": "Full customization",
+    "home.hero.badge4": "Support team 9am-6pm",
+    "home.trust.compatible": "Compatible with Shopify, WordPress, etc.",
+    "home.trust.secure": "100% secure, hosted in Europe",
+    "home.trust.pme": "Ideal for SMEs",
+    "home.hero.cta1": "Watch demos",
+    "home.hero.cta2": "Get my chatbot",
+    "home.hero.stat": "15 hours",
+    "home.hero.statLabel": "saved",
+    "home.hero.statSub": "per week",
+    
+    // Home Stats Section
+    "home.stats.title1": "Automate",
+    "home.stats.title2": "of your customer responses",
+    "home.stats.description": "Free your team from repetitive questions so they can focus on high-value tasks.",
+    "home.stats.card.title1": "More than",
+    "home.stats.card.title2": "of consumers prefer to interact with a chatbot rather than by phone.",
+    "home.stats.card.description": "With Botler™, prevent your visitors from leaving your website because they couldn't quickly get an answer to their questions.",
+    "home.stats.card.highlight": "Stop losing 50% of potential customers",
+    
+    // Home Features Section
+    "home.features.title1": "Botler™, the chatbot designed to",
+    "home.features.highlight": "boost",
+    "home.features.title2": "your customer relationships",
+    "home.features.description": "Quickly deploy a conversational assistant on your website and gain efficiency.",
+    "home.features.install.title": "5-minute setup",
+    "home.features.install.desc": "Quickly deploy a conversational assistant on your website and gain efficiency.",
+    "home.features.available.title": "Available 24/7",
+    "home.features.available.desc": "Instantly respond to your visitors' questions 24 hours a day, 7 days a week.",
+    "home.features.qualify.title": "Automatic qualification",
+    "home.features.qualify.desc": "Automatically qualify your prospects and increase your conversions.",
+    
+    // Home Sectors Section
+    "home.sectors.title1": "Solutions",
+    "home.sectors.highlight": "tailored",
+    "home.sectors.title2": "to your business",
+    "home.sectors.description": "Every industry has its own challenges. Botler™ has developed intelligent chatbots that perfectly master the specifics of your field.",
+    "home.sectors.botlerSays": "I'm Botler™: want to see what I can do?",
+    "home.sectors.viewDemos": "Watch demos",
+    "home.sectors.tourism.desc": "Virtual guide for your visitors",
+    "home.sectors.tourism.stat": "+40% satisfaction",
+    "home.sectors.viticulture.desc": "Virtual sommelier for wine advice",
+    "home.sectors.viticulture.stat": "+35% sales",
+    "home.sectors.restaurants.desc": "Your best restaurant assistant 24/7",
+    "home.sectors.restaurants.stat": "+50% bookings",
+    "home.sectors.bakery.desc": "The bakery salesperson you've dreamed of",
+    "home.sectors.bakery.stat": "+30% orders",
+    "home.sectors.realEstate.desc": "Your virtual agent to better qualify future clients",
+    "home.sectors.realEstate.stat": "+45% contacts",
+    "home.sectors.accommodation.desc": "Virtual concierge for your guests",
+    "home.sectors.accommodation.stat": "+35% bookings",
+    
+    // Home Testimonials Section
+    "home.testimonials.title1": "What our",
+    "home.testimonials.highlight": "clients",
+    "home.testimonials.title2": "say",
+    "home.testimonials.description": "Discover how Botler™ transforms their customer relationships",
+    "home.testimonials.1.text": "Botler™ has revolutionized our visitor reception. +40% customer satisfaction and 24/7 availability that makes the difference.",
+    "home.testimonials.1.author": "Hotel du Phare",
+    "home.testimonials.1.sector": "Accommodation",
+    "home.testimonials.1.stat": "+40% customer satisfaction",
+    "home.testimonials.2.text": "Our bookings increased by 35% thanks to Botler™'s permanent availability. No more lost opportunities!",
+    "home.testimonials.2.author": "Restaurant Le Gourmet",
+    "home.testimonials.2.sector": "Restaurant",
+    "home.testimonials.2.stat": "+35% bookings",
+    "home.testimonials.3.text": "Botler™ saves us 15 hours per week by answering our customers' recurring questions.",
+    "home.testimonials.3.author": "Domaine des Vignes",
+    "home.testimonials.3.sector": "Viticulture",
+    "home.testimonials.3.stat": "15h saved/week",
+    
+    // CTA Section
+    "cta.title1": "Join the companies that have already",
+    "cta.highlight": "revolutionized",
+    "cta.title2": "their customer relationships with Botler™.",
+    "cta.description": "Deploy your chatbot in less than 5 minutes and start improving your customer relationships today.",
+    "cta.button": "Get my chatbot",
+    
+    // Footer
+    "footer.description": "Intelligent chatbots tailored to your industry to revolutionize your customer relationships.",
+    "footer.company": "Company",
+    "footer.location": "France & United Kingdom",
+    "footer.legal": "Legal Notice",
+    "footer.privacy": "Privacy Policy",
+    "footer.cookies": "Cookie Policy",
+    "footer.rights": "All rights reserved.",
+    "footer.tagline": "Created with passion to revolutionize your customer relationships.",
+    
+    // Demo Page
+    "demo.title1": "Discover Botler™",
+    "demo.highlight": "in action",
+    "demo.description": "Explore our video demonstrations for each industry and discover how Botler™ can transform your customer relationships.",
+    "demo.selectSector": "Select a sector",
+    "demo.watchVideo": "Watch video",
+    "demo.features": "Key features",
+    "demo.noVideo": "Video coming soon",
+    "demo.tourism.name": "Tourism",
+    "demo.tourism.description": "Discover how Botler™ guides your visitors and answers all their questions about your destination.",
+    "demo.tourism.feature1": "Personalized recommendations",
+    "demo.tourism.feature2": "Multilingual support",
+    "demo.tourism.feature3": "Available 24/7",
+    "demo.viticulture.name": "Viticulture",
+    "demo.viticulture.description": "Your virtual sommelier advises your customers on food-wine pairings and your vintages.",
+    "demo.viticulture.feature1": "Wine advice",
+    "demo.viticulture.feature2": "Visit booking",
+    "demo.viticulture.feature3": "Vintage presentation",
+    "demo.restaurants.name": "Restaurants",
+    "demo.restaurants.description": "Botler™ manages your reservations and presents your menu to your gourmet customers.",
+    "demo.restaurants.feature1": "Reservation management",
+    "demo.restaurants.feature2": "Menu presentation",
+    "demo.restaurants.feature3": "Allergen information",
+    "demo.bakery.name": "Bakery",
+    "demo.bakery.description": "The ideal virtual salesperson to present your products and take orders.",
+    "demo.bakery.feature1": "Product catalog",
+    "demo.bakery.feature2": "Order taking",
+    "demo.bakery.feature3": "Hours and availability",
+    "demo.realEstate.name": "Real Estate",
+    "demo.realEstate.description": "Automatically qualify your prospects and present your properties.",
+    "demo.realEstate.feature1": "Prospect qualification",
+    "demo.realEstate.feature2": "Property presentation",
+    "demo.realEstate.feature3": "Appointment booking",
+    "demo.accommodation.name": "Accommodation",
+    "demo.accommodation.description": "Your virtual concierge answers your traveling guests' questions.",
+    "demo.accommodation.feature1": "Stay information",
+    "demo.accommodation.feature2": "Available services",
+    "demo.accommodation.feature3": "Local recommendations",
+    
+    // Solutions Page
+    "solutions.title1": "Our",
+    "solutions.highlight": "Digital Solutions",
+    "solutions.description": "Develop your online presence with our custom solutions, designed to boost your business.",
+    "solutions.pricing.title1": "Chatbot",
+    "solutions.pricing.highlight": "Pricing",
+    "solutions.pricing.subtitle": "Transparent pricing tailored to your needs",
+    "solutions.pricing.perMonth": "/month",
+    "solutions.pricing.recommended": "Recommended",
+    "solutions.pricing.commission": "1% commission on each sale made entirely with Botler (Expert and Expert SME packs)",
+    
+    // Pack Junior
+    "solutions.pricing.junior.desc": "For all types of businesses",
+    "solutions.pricing.junior.f1": "Quick installation",
+    "solutions.pricing.junior.f2": "Customized to your brand identity",
+    "solutions.pricing.junior.f3": "Custom responses to visitor questions",
+    "solutions.pricing.junior.f4": "Multi-language support",
+    "solutions.pricing.junior.cta": "Get Started",
+    
+    // Pack Expert
+    "solutions.pricing.expert.desc": "Perfect for freelancers and micro-teams",
+    "solutions.pricing.expert.f1": "Smart matching on targeted database",
+    "solutions.pricing.expert.f2": "Simple and quick installation",
+    "solutions.pricing.expert.f3": "Customized to your brand identity",
+    "solutions.pricing.expert.f4": "Integrated sales assistant (leads, email alerts, appointments)",
+    "solutions.pricing.expert.f5": "Multilingual",
+    "solutions.pricing.expert.f6": "Turnkey solution to generate your first leads",
+    "solutions.pricing.expert.cta": "Choose Expert",
+    
+    // Pack Expert PME
+    "solutions.pricing.expertPME.desc": "Designed for growing SMEs",
+    "solutions.pricing.expertPME.f1": "Built for small and medium businesses",
+    "solutions.pricing.expertPME.f2": "Smart filtering + advanced matching",
+    "solutions.pricing.expertPME.f3": "Optimized for large content volumes",
+    "solutions.pricing.expertPME.f4": "Customized to your image and multilingual",
+    "solutions.pricing.expertPME.f5": "Sales assistant with alerts and auto lead creation",
+    "solutions.pricing.expertPME.f6": "Robust bot to handle high volume of requests",
+    "solutions.pricing.expertPME.cta": "Choose Expert SME",
+    
+    // Pack Custom
+    "solutions.pricing.custom.name": "Specific request or need?",
+    "solutions.pricing.custom.price": "Quote",
+    "solutions.pricing.custom.desc": "Custom solution based on your specific needs",
+    "solutions.pricing.custom.f1": "Tailored support",
+    "solutions.pricing.custom.f2": "Advanced features à la carte",
+    "solutions.pricing.custom.cta": "Contact us",
+    "solutions.guarantees.satisfaction.title": "Satisfaction guaranteed",
+    "solutions.guarantees.satisfaction.desc": "30-day free trial",
+    "solutions.guarantees.deploy.title": "Fast deployment",
+    "solutions.guarantees.deploy.desc": "Online within 24 hours",
+    "solutions.guarantees.support.title": "Expert support",
+    "solutions.guarantees.support.desc": "Team dedicated to your success",
+    "solutions.website.badge": "Special Offer",
+    "solutions.website.title": "Professional Showcase Website",
+    "solutions.website.description": "A complete solution to create your professional online presence quickly and efficiently.",
+    "solutions.website.h1": "24h delivery",
+    "solutions.website.h2": "Responsive design",
+    "solutions.website.h3": "Hosting included",
+    "solutions.website.h4": "Mobile compatible",
+    "solutions.website.f1": "Modern responsive design",
+    "solutions.website.f2": "Secure web hosting",
+    "solutions.website.f3": "Free SSL certificate",
+    "solutions.website.f4": "Basic SEO optimization",
+    "solutions.website.f5": "Contact form",
+    "solutions.website.f6": "Social media integration",
+    "solutions.website.f7": "30-day technical support",
+    "solutions.website.f8": "Usage training",
+    "solutions.website.f9": "Automatic backup",
+    "solutions.website.f10": "Visit statistics",
+    "solutions.website.included": "What's included",
+    "solutions.website.cta": "Order now",
+    "solutions.additional.title1": "Other",
+    "solutions.additional.highlight": "Solutions",
+    "solutions.additional.description": "Complete your digital presence with our additional services",
+    "solutions.additional.mobile.title": "Mobile Application",
+    "solutions.additional.mobile.desc": "Custom iOS and Android app for your business",
+    "solutions.additional.video360.title": "360° Immersive Videos",
+    "solutions.additional.video360.desc": "Virtual tours for hotels, restaurants, museums - an immersive experience",
+    "solutions.additional.video360.price": "Starting at €125",
+    "solutions.additional.audio.title": "Music & Podcasts",
+    "solutions.additional.audio.desc": "Custom audio identity: ambient music, announcements, branded podcasts",
+    "solutions.additional.audio.price": "Starting at €5",
+    
+    // Contact Page
+    "contact.title1": "Contact",
+    "contact.highlight": "our team",
+    "contact.description": "Let's discuss your project and discover how Botler™ can transform your customer relationships.",
+    "contact.form.title": "Send us a message",
+    "contact.form.name": "Full name",
+    "contact.form.namePlaceholder": "Your name",
+    "contact.form.email": "Email",
+    "contact.form.emailPlaceholder": "your@email.com",
+    "contact.form.company": "Company",
+    "contact.form.companyPlaceholder": "Your company name",
+    "contact.form.sector": "Industry",
+    "contact.form.sectorPlaceholder": "Select a sector",
+    "contact.form.other": "Other",
+    "contact.form.message": "Message",
+    "contact.form.messagePlaceholder": "Describe your project...",
+    "contact.form.submit": "Send message",
+    "contact.form.sending": "Sending...",
+    "contact.form.success": "Message sent successfully! We'll respond within 24 hours.",
+    "contact.info.title": "Our contact details",
+    "contact.info.phone": "Phone",
+    "contact.info.email": "Email",
+    "contact.info.location": "Location",
+    "contact.benefits.title": "Why contact us?",
+    "contact.benefits.fast.title": "Quick response",
+    "contact.benefits.fast.desc": "Our team responds within 24 hours",
+    "contact.benefits.personal.title": "Personalized support",
+    "contact.benefits.personal.desc": "An expert dedicated to your project",
+    "contact.benefits.free.title": "Free quote",
+    "contact.benefits.free.desc": "No commitment required",
+    "contact.mascot": "Our team is here to support you in your digital transformation.",
+  },
+};
+
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [language, setLanguageState] = useState<Language>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("botler-language");
+      if (saved === "en" || saved === "fr") return saved;
+    }
+    return "fr";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("botler-language", language);
+  }, [language]);
+
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+  };
+
+  const t = (key: string): string => {
+    return translations[language][key] || key;
+  };
+
+  return (
+    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+}
+
+export function useLanguage() {
+  const context = useContext(LanguageContext);
+  if (context === undefined) {
+    throw new Error("useLanguage must be used within a LanguageProvider");
+  }
+  return context;
+}
