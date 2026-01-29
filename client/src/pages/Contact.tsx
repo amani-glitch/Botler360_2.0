@@ -4,11 +4,12 @@
  * - Contact form with glass morphism styling
  * - Contact information cards
  * - Elegant form validation
+ * - Google Apps Script integration
  */
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Send, CheckCircle, Clock, Users } from "lucide-react";
+import { Mail, Phone, MapPin, Send, CheckCircle, Clock, Users, Sparkles, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -27,10 +28,15 @@ const staggerContainer = {
   },
 };
 
+// Google Apps Script URL for form submission
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxYfiq638QVgBMit-77SoaYbiojcxMuPK1ZrVHB2r4JxlS3gi_leZoQunkpuPmymaFw/exec";
+
 export default function Contact() {
   const { t } = useLanguage();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     company: "",
     sector: "",
@@ -38,6 +44,7 @@ export default function Contact() {
     phone: "",
     message: "",
   });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const contactInfo = [
@@ -83,20 +90,88 @@ export default function Contact() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      // Create FormData for submission
+      const submitData = new FormData();
+      submitData.append("firstName", formData.firstName);
+      submitData.append("lastName", formData.lastName);
+      submitData.append("email", formData.email);
+      submitData.append("company", formData.company);
+      submitData.append("sector", formData.sector);
+      submitData.append("projectType", formData.projectType);
+      submitData.append("phone", formData.phone);
+      submitData.append("message", formData.message);
 
-    toast.success(t("contact.form.success"));
-    setFormData({
-      name: "",
-      email: "",
-      company: "",
-      sector: "",
-      projectType: "",
-      phone: "",
-      message: "",
-    });
-    setIsSubmitting(false);
+      if (selectedFile) {
+        submitData.append("attachment", selectedFile);
+      }
+
+      // Submit to Google Apps Script
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        body: submitData,
+        mode: "no-cors", // Google Apps Script requires no-cors for POST
+      });
+
+      // Since no-cors doesn't return response body, assume success
+      toast.success(t("contact.form.success"));
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        company: "",
+        sector: "",
+        projectType: "",
+        phone: "",
+        message: "",
+      });
+      setSelectedFile(null);
+    } catch (error) {
+      console.error("Form submission error:", error);
+      toast.error(t("contact.form.error"));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSurpriseMe = async () => {
+    setIsSubmitting(true);
+
+    try {
+      // Submit with special "surprise" flag
+      const submitData = new FormData();
+      submitData.append("firstName", formData.firstName || "Visiteur");
+      submitData.append("lastName", formData.lastName || "Curieux");
+      submitData.append("email", formData.email);
+      submitData.append("company", formData.company || "Non spécifié");
+      submitData.append("sector", formData.sector || "Non spécifié");
+      submitData.append("projectType", "surprise");
+      submitData.append("phone", formData.phone);
+      submitData.append("message", "Je veux être surpris(e) ! Proposez-moi votre meilleure idée pour mon projet.");
+
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        body: submitData,
+        mode: "no-cors",
+      });
+
+      toast.success(t("contact.form.surpriseSuccess"));
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        company: "",
+        sector: "",
+        projectType: "",
+        phone: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error("Form submission error:", error);
+      toast.error(t("contact.form.error"));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (
@@ -106,6 +181,25 @@ export default function Contact() {
       ...prev,
       [e.target.name]: e.target.value,
     }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Check file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error(t("contact.form.fileTooLarge"));
+        return;
+      }
+      setSelectedFile(file);
+    }
+  };
+
+  const removeFile = () => {
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   return (
@@ -158,21 +252,40 @@ export default function Contact() {
                   {t("contact.form.title")}
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* First Name & Last Name */}
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
-                        {t("contact.form.name")} *
+                        {t("contact.form.firstName")} *
                       </label>
                       <input
                         type="text"
-                        name="name"
-                        value={formData.name}
+                        name="firstName"
+                        value={formData.firstName}
                         onChange={handleChange}
                         required
                         className="w-full px-4 py-3 rounded-xl bg-background/50 border border-border focus:border-amber-500 focus:ring-1 focus:ring-amber-500 text-foreground placeholder-muted-foreground transition-colors"
-                        placeholder={t("contact.form.namePlaceholder")}
+                        placeholder={t("contact.form.firstNamePlaceholder")}
                       />
                     </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        {t("contact.form.lastName")} *
+                      </label>
+                      <input
+                        type="text"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-4 py-3 rounded-xl bg-background/50 border border-border focus:border-amber-500 focus:ring-1 focus:ring-amber-500 text-foreground placeholder-muted-foreground transition-colors"
+                        placeholder={t("contact.form.lastNamePlaceholder")}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Email & Phone */}
+                  <div className="grid md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
                         {t("contact.form.email")} *
@@ -187,8 +300,22 @@ export default function Contact() {
                         placeholder={t("contact.form.emailPlaceholder")}
                       />
                     </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        {t("contact.form.phone")} <span className="text-muted-foreground text-xs">({t("contact.form.optional")})</span>
+                      </label>
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 rounded-xl bg-background/50 border border-border focus:border-amber-500 focus:ring-1 focus:ring-amber-500 text-foreground placeholder-muted-foreground transition-colors"
+                        placeholder={t("contact.form.phonePlaceholder")}
+                      />
+                    </div>
                   </div>
 
+                  {/* Company & Sector */}
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
@@ -225,42 +352,71 @@ export default function Contact() {
                     </div>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-foreground mb-2">
-                        {t("contact.form.projectType")}
-                      </label>
-                      <select
-                        name="projectType"
-                        value={formData.projectType}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 rounded-xl bg-background/50 border border-border focus:border-amber-500 focus:ring-1 focus:ring-amber-500 text-foreground transition-colors"
-                      >
-                        <option value="">{t("contact.form.projectTypePlaceholder")}</option>
-                        <option value="chatbot">{t("contact.form.projectType.chatbot")}</option>
-                        <option value="website">{t("contact.form.projectType.website")}</option>
-                        <option value="website-chatbot">{t("contact.form.projectType.websiteChatbot")}</option>
-                        <option value="mobile-app">{t("contact.form.projectType.mobileApp")}</option>
-                        <option value="video360">{t("contact.form.projectType.video360")}</option>
-                        <option value="music-podcast">{t("contact.form.projectType.musicPodcast")}</option>
-                        <option value="custom">{t("contact.form.projectType.custom")}</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-foreground mb-2">
-                        {t("contact.form.phone")} <span className="text-muted-foreground text-xs">(optionnel)</span>
-                      </label>
+                  {/* Project Type (Required) */}
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      {t("contact.form.projectType")} *
+                    </label>
+                    <select
+                      name="projectType"
+                      value={formData.projectType}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-3 rounded-xl bg-background/50 border border-border focus:border-amber-500 focus:ring-1 focus:ring-amber-500 text-foreground transition-colors"
+                    >
+                      <option value="">{t("contact.form.projectTypePlaceholder")}</option>
+                      <option value="chatbot">{t("contact.form.projectType.chatbot")}</option>
+                      <option value="website">{t("contact.form.projectType.website")}</option>
+                      <option value="website-chatbot">{t("contact.form.projectType.websiteChatbot")}</option>
+                      <option value="mobile-app">{t("contact.form.projectType.mobileApp")}</option>
+                      <option value="video360">{t("contact.form.projectType.video360")}</option>
+                      <option value="music-podcast">{t("contact.form.projectType.musicPodcast")}</option>
+                      <option value="custom">{t("contact.form.projectType.custom")}</option>
+                    </select>
+                  </div>
+
+                  {/* File Attachment */}
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      {t("contact.form.attachment")} <span className="text-muted-foreground text-xs">({t("contact.form.optional")})</span>
+                    </label>
+                    <div className="relative">
                       <input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 rounded-xl bg-background/50 border border-border focus:border-amber-500 focus:ring-1 focus:ring-amber-500 text-foreground placeholder-muted-foreground transition-colors"
-                        placeholder={t("contact.form.phonePlaceholder")}
+                        ref={fileInputRef}
+                        type="file"
+                        name="attachment"
+                        onChange={handleFileChange}
+                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif"
+                        className="hidden"
+                        id="file-upload"
                       />
+                      {selectedFile ? (
+                        <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-background/50 border border-border text-foreground">
+                          <div className="flex items-center gap-2">
+                            <Upload className="w-5 h-5 text-amber-500" />
+                            <span className="text-sm truncate max-w-[200px]">{selectedFile.name}</span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={removeFile}
+                            className="p-1 hover:bg-red-500/20 rounded-full transition-colors"
+                          >
+                            <X className="w-4 h-4 text-red-500" />
+                          </button>
+                        </div>
+                      ) : (
+                        <label
+                          htmlFor="file-upload"
+                          className="flex items-center gap-2 px-4 py-3 rounded-xl bg-background/50 border border-border border-dashed cursor-pointer hover:border-amber-500 transition-colors text-muted-foreground"
+                        >
+                          <Upload className="w-5 h-5" />
+                          <span className="text-sm">{t("contact.form.attachmentPlaceholder")}</span>
+                        </label>
+                      )}
                     </div>
                   </div>
 
+                  {/* Message */}
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
                       {t("contact.form.message")} *
@@ -276,25 +432,39 @@ export default function Contact() {
                     />
                   </div>
 
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full btn-gold flex items-center justify-center gap-2 disabled:opacity-50"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <div className="w-5 h-5 border-2 border-slate-900/30 border-t-slate-900 rounded-full animate-spin" />
-                        {t("contact.form.sending")}
-                      </>
-                    ) : (
-                      <>
-                        {t("contact.form.submit")}
-                        <Send className="w-4 h-4" />
-                      </>
-                    )}
-                  </motion.button>
+                  {/* Submit Buttons */}
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="flex-1 btn-gold flex items-center justify-center gap-2 disabled:opacity-50"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="w-5 h-5 border-2 border-slate-900/30 border-t-slate-900 rounded-full animate-spin" />
+                          {t("contact.form.sending")}
+                        </>
+                      ) : (
+                        <>
+                          {t("contact.form.submit")}
+                          <Send className="w-4 h-4" />
+                        </>
+                      )}
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      type="button"
+                      onClick={handleSurpriseMe}
+                      disabled={isSubmitting || !formData.email}
+                      className="flex-1 sm:flex-none px-6 py-3 rounded-xl font-semibold bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    >
+                      <Sparkles className="w-4 h-4" />
+                      {t("contact.form.surpriseMe")}
+                    </motion.button>
+                  </div>
                 </form>
               </motion.div>
             </motion.div>

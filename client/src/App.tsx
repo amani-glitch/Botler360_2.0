@@ -9,6 +9,7 @@ import Home from "./pages/Home";
 import Demo from "./pages/Demo";
 import Contact from "./pages/Contact";
 import Solutions from "./pages/Solutions";
+import Faq from "./pages/Faq";
 import Tourisme from "./pages/sectors/Tourisme";
 import Viticulture from "./pages/sectors/Viticulture";
 import Restaurants from "./pages/sectors/Restaurants";
@@ -25,6 +26,7 @@ function Router() {
       <Route path={"/demo"} component={Demo} />
       <Route path={"/demo/:sector"} component={Demo} />
       <Route path={"/contact"} component={Contact} />
+      <Route path={"/faq"} component={Faq} />
       <Route path={"/solutions"} component={Solutions} />
       <Route path={"/tourisme"} component={Tourisme} />
       <Route path={"/viticulture"} component={Viticulture} />

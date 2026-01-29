@@ -31,6 +31,7 @@ import {
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useChatbotByKey } from "@/hooks/useChatbot";
 
 // Animation variants
 const fadeInUp = {
@@ -48,6 +49,9 @@ const staggerContainer = {
 
 export default function Home() {
   const { t } = useLanguage();
+
+  // Load homepage chatbot
+  useChatbotByKey("home");
 
   // Sector data with translations
   const sectors = [

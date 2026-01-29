@@ -19,6 +19,7 @@ export default function Footer() {
       { label: t("nav.home"), href: "/" },
       { label: t("nav.solutions"), href: "/solutions" },
       { label: t("nav.demo"), href: "/demo" },
+      { label: t("nav.faq"), href: "/faq" },
       { label: t("nav.contact"), href: "/contact" },
     ],
     sectors: [

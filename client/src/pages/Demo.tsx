@@ -1,18 +1,20 @@
 /*
  * Design: Botler360 - Elegant Professional Theme
  * - Supports both light and dark modes
- * - Demo videos for each sector
+ * - Demo videos for each sector and product
  * - Glass morphism video cards
- * - URL-based sector selection
+ * - URL-based sector/product selection
+ * - Dual category navigation (Sectors & Products)
  */
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link, useParams } from "wouter";
-import { Play, ArrowRight, Users, Clock, Star } from "lucide-react";
+import { Play, ArrowRight, Users, Clock, Star, Briefcase, ShoppingBag } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useChatbot, CHATBOT_IDS } from "@/hooks/useChatbot";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
@@ -27,7 +29,19 @@ const staggerContainer = {
   },
 };
 
-const getDemos = (t: (key: string) => string) => [
+type DemoCategory = "sectors" | "products";
+
+interface Demo {
+  id: string;
+  name: string;
+  description: string;
+  video: string;
+  image: string;
+  features: string[];
+  category: DemoCategory;
+}
+
+const getSectorDemos = (t: (key: string) => string): Demo[] => [
   {
     id: "tourisme",
     name: t("demo.tourism.name"),
@@ -39,6 +53,7 @@ const getDemos = (t: (key: string) => string) => [
       t("demo.tourism.feature2"),
       t("demo.tourism.feature3"),
     ],
+    category: "sectors",
   },
   {
     id: "viticulture",
@@ -51,6 +66,7 @@ const getDemos = (t: (key: string) => string) => [
       t("demo.viticulture.feature2"),
       t("demo.viticulture.feature3"),
     ],
+    category: "sectors",
   },
   {
     id: "restaurants",
@@ -63,6 +79,7 @@ const getDemos = (t: (key: string) => string) => [
       t("demo.restaurants.feature2"),
       t("demo.restaurants.feature3"),
     ],
+    category: "sectors",
   },
   {
     id: "boulangerie",
@@ -75,6 +92,7 @@ const getDemos = (t: (key: string) => string) => [
       t("demo.bakery.feature2"),
       t("demo.bakery.feature3"),
     ],
+    category: "sectors",
   },
   {
     id: "immobilier",
@@ -87,6 +105,7 @@ const getDemos = (t: (key: string) => string) => [
       t("demo.realEstate.feature2"),
       t("demo.realEstate.feature3"),
     ],
+    category: "sectors",
   },
   {
     id: "hebergements",
@@ -99,72 +118,122 @@ const getDemos = (t: (key: string) => string) => [
       t("demo.accommodation.feature2"),
       t("demo.accommodation.feature3"),
     ],
+    category: "sectors",
   },
-  {
-    id: "boutiques",
-    name: t("demo.boutiques.name"),
-    description: t("demo.boutiques.description"),
-    video: "/videos/botler-demo-video.mp4",
-    image: "/images/botler_demo.png",
-    features: [
-      t("demo.boutiques.feature1"),
-      t("demo.boutiques.feature2"),
-      t("demo.boutiques.feature3"),
-    ],
-  },
+];
+
+const getProductDemos = (t: (key: string) => string): Demo[] => [
   {
     id: "websites",
     name: t("demo.websites.name"),
-    description: t("demo.websites.description"),
+    description: t("demo.websites.fullDescription"),
     video: "/videos/botler-demo-video.mp4",
     image: "/images/botler-logo-full.png",
     features: [
       t("demo.websites.feature1"),
       t("demo.websites.feature2"),
       t("demo.websites.feature3"),
+      t("demo.websites.feature4"),
     ],
+    category: "products",
+  },
+  {
+    id: "ecommerce",
+    name: t("demo.ecommerce.name"),
+    description: t("demo.ecommerce.description"),
+    video: "/videos/botler-demo-video.mp4",
+    image: "/images/botler_demo.png",
+    features: [
+      t("demo.ecommerce.feature1"),
+      t("demo.ecommerce.feature2"),
+      t("demo.ecommerce.feature3"),
+      t("demo.ecommerce.feature4"),
+    ],
+    category: "products",
   },
 ];
+
+// Map demo IDs to chatbot IDs
+const getChatbotId = (demoId: string): string => {
+  const mapping: Record<string, string> = {
+    tourisme: CHATBOT_IDS.tourisme,
+    viticulture: CHATBOT_IDS.viticulture,
+    restaurants: CHATBOT_IDS.restaurants,
+    boulangerie: CHATBOT_IDS.boulangerie,
+    immobilier: CHATBOT_IDS.immobilier,
+    hebergements: CHATBOT_IDS.hebergements,
+    websites: CHATBOT_IDS.websites,
+    ecommerce: CHATBOT_IDS.ecommerce,
+  };
+  return mapping[demoId] || CHATBOT_IDS.demo;
+};
 
 export default function Demo() {
   const { t } = useLanguage();
   const params = useParams<{ sector?: string }>();
-  const demos = getDemos(t);
-  
-  // Initialize with the correct demo based on URL params
-  const getInitialDemo = () => {
+
+  const sectorDemos = getSectorDemos(t);
+  const productDemos = getProductDemos(t);
+  const allDemos = [...sectorDemos, ...productDemos];
+
+  // Determine active category and demo based on URL params
+  const getInitialState = () => {
     if (params.sector) {
-      const found = demos.find((d) => d.id === params.sector);
-      return found || demos[0];
+      const foundDemo = allDemos.find((d) => d.id === params.sector);
+      if (foundDemo) {
+        return {
+          category: foundDemo.category,
+          demo: foundDemo,
+        };
+      }
     }
-    return demos[0];
+    return {
+      category: "sectors" as DemoCategory,
+      demo: sectorDemos[0],
+    };
   };
-  
-  const [activeDemo, setActiveDemo] = useState(getInitialDemo);
+
+  const [activeCategory, setActiveCategory] = useState<DemoCategory>(getInitialState().category);
+  const [activeDemo, setActiveDemo] = useState<Demo>(getInitialState().demo);
   const [isPlaying, setIsPlaying] = useState(false);
+
+  // Get current chatbot ID based on active demo
+  const currentChatbotId = activeDemo ? getChatbotId(activeDemo.id) : CHATBOT_IDS.demo;
+
+  // Load chatbot
+  useChatbot(currentChatbotId);
 
   // Update active demo when URL sector changes
   useEffect(() => {
-    const currentDemos = getDemos(t);
+    const currentSectorDemos = getSectorDemos(t);
+    const currentProductDemos = getProductDemos(t);
+    const currentAllDemos = [...currentSectorDemos, ...currentProductDemos];
+
     if (params.sector) {
-      const foundDemo = currentDemos.find((d) => d.id === params.sector);
+      const foundDemo = currentAllDemos.find((d) => d.id === params.sector);
       if (foundDemo) {
         setActiveDemo(foundDemo);
+        setActiveCategory(foundDemo.category);
         setIsPlaying(false);
       }
     } else {
-      setActiveDemo(currentDemos[0]);
+      setActiveDemo(currentSectorDemos[0]);
+      setActiveCategory("sectors");
     }
   }, [params.sector, t]);
 
   // Update demos when language changes
   useEffect(() => {
-    const updatedDemos = getDemos(t);
-    const currentDemo = updatedDemos.find((d) => d.id === activeDemo.id);
+    const updatedSectorDemos = getSectorDemos(t);
+    const updatedProductDemos = getProductDemos(t);
+    const updatedAllDemos = [...updatedSectorDemos, ...updatedProductDemos];
+    const currentDemo = updatedAllDemos.find((d) => d.id === activeDemo.id);
     if (currentDemo) {
       setActiveDemo(currentDemo);
     }
   }, [t]);
+
+  const currentDemos = activeCategory === "sectors" ? sectorDemos : productDemos;
 
   return (
     <div className="min-h-screen bg-background">
@@ -228,8 +297,51 @@ export default function Demo() {
         </div>
       </section>
 
+      {/* Category Selector */}
+      <section className="py-4">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer}
+            className="flex justify-center gap-4 mb-8"
+          >
+            <motion.button
+              variants={fadeInUp}
+              onClick={() => {
+                setActiveCategory("sectors");
+                setActiveDemo(sectorDemos[0]);
+              }}
+              className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all ${
+                activeCategory === "sectors"
+                  ? "bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900"
+                  : "glass-card text-foreground/80 hover:text-amber-500"
+              }`}
+            >
+              <Briefcase className="w-5 h-5" />
+              {t("demo.categorySectors")}
+            </motion.button>
+            <motion.button
+              variants={fadeInUp}
+              onClick={() => {
+                setActiveCategory("products");
+                setActiveDemo(productDemos[0]);
+              }}
+              className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all ${
+                activeCategory === "products"
+                  ? "bg-gradient-to-r from-teal-500 to-teal-600 text-slate-900"
+                  : "glass-card text-foreground/80 hover:text-teal-500"
+              }`}
+            >
+              <ShoppingBag className="w-5 h-5" />
+              {t("demo.categoryProducts")}
+            </motion.button>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Demo Selector */}
-      <section className="py-8">
+      <section className="py-4">
         <div className="container mx-auto px-4">
           <motion.div
             initial="hidden"
@@ -237,13 +349,15 @@ export default function Demo() {
             variants={staggerContainer}
             className="flex flex-wrap justify-center gap-3"
           >
-            {demos.map((demo) => (
+            {currentDemos.map((demo) => (
               <Link key={demo.id} href={`/demo/${demo.id}`}>
                 <motion.button
                   variants={fadeInUp}
                   className={`px-6 py-3 rounded-xl font-medium transition-all ${
                     activeDemo.id === demo.id
-                      ? "bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900"
+                      ? activeCategory === "sectors"
+                        ? "bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900"
+                        : "bg-gradient-to-r from-teal-500 to-teal-600 text-slate-900"
                       : "glass-card text-foreground/80 hover:text-amber-500"
                   }`}
                 >
@@ -288,7 +402,11 @@ export default function Demo() {
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => setIsPlaying(true)}
-                          className="w-20 h-20 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/30"
+                          className={`w-20 h-20 rounded-full flex items-center justify-center shadow-lg ${
+                            activeCategory === "sectors"
+                              ? "bg-gradient-to-r from-amber-500 to-amber-600 shadow-amber-500/30"
+                              : "bg-gradient-to-r from-teal-500 to-teal-600 shadow-teal-500/30"
+                          }`}
                         >
                           <Play className="w-8 h-8 text-slate-900 ml-1" />
                         </motion.button>
@@ -309,9 +427,17 @@ export default function Demo() {
                 />
                 <div>
                   <h2 className="font-heading text-3xl font-bold text-foreground">
-                    Botler™ <span className="text-gradient-gold">{activeDemo.name}</span>
+                    {activeCategory === "sectors" ? (
+                      <>Botler™ <span className="text-gradient-gold">{activeDemo.name}</span></>
+                    ) : (
+                      <span className={activeCategory === "products" ? "text-gradient-teal" : "text-gradient-gold"}>
+                        {activeDemo.name}
+                      </span>
+                    )}
                   </h2>
-                  <p className="text-muted-foreground">Expert</p>
+                  <p className="text-muted-foreground">
+                    {activeCategory === "sectors" ? "Expert" : t("demo.productLabel")}
+                  </p>
                 </div>
               </div>
 
@@ -324,7 +450,9 @@ export default function Demo() {
                 <ul className="space-y-2">
                   {activeDemo.features.map((feature, index) => (
                     <li key={index} className="flex items-center gap-3">
-                      <div className="w-2 h-2 rounded-full bg-amber-500" />
+                      <div className={`w-2 h-2 rounded-full ${
+                        activeCategory === "sectors" ? "bg-amber-500" : "bg-teal-500"
+                      }`} />
                       <span className="text-foreground/80">{feature}</span>
                     </li>
                   ))}
@@ -336,12 +464,24 @@ export default function Demo() {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="btn-gold flex items-center gap-2"
+                    className={activeCategory === "sectors" ? "btn-gold flex items-center gap-2" : "btn-teal flex items-center gap-2"}
                   >
                     {t("nav.contact")}
                     <ArrowRight className="w-4 h-4" />
                   </motion.button>
                 </Link>
+                {activeCategory === "products" && activeDemo.id === "websites" && (
+                  <Link href="/websites">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="btn-outline-teal flex items-center gap-2"
+                    >
+                      {t("demo.learnMore")}
+                      <ArrowRight className="w-4 h-4" />
+                    </motion.button>
+                  </Link>
+                )}
               </div>
             </div>
           </motion.div>
@@ -361,11 +501,14 @@ export default function Demo() {
               variants={fadeInUp}
               className="font-heading text-2xl font-bold text-foreground text-center mb-12"
             >
-              {t("demo.title1")} <span className="text-gradient-gold">{t("demo.highlight")}</span>
+              {activeCategory === "sectors"
+                ? <>{t("demo.allSectorDemos")} <span className="text-gradient-gold">{t("demo.highlight")}</span></>
+                : <>{t("demo.allProductDemos")} <span className="text-gradient-teal">{t("demo.highlight")}</span></>
+              }
             </motion.h2>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {demos.map((demo) => (
+              {currentDemos.map((demo) => (
                 <Link key={demo.id} href={`/demo/${demo.id}`}>
                   <motion.div
                     variants={fadeInUp}
@@ -378,7 +521,9 @@ export default function Demo() {
                         className="w-full h-full object-contain p-4"
                       />
                       <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                        <div className="w-12 h-12 rounded-full bg-amber-500/90 flex items-center justify-center">
+                        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                          activeCategory === "sectors" ? "bg-amber-500/90" : "bg-teal-500/90"
+                        }`}>
                           <Play className="w-5 h-5 text-slate-900 ml-0.5" />
                         </div>
                       </div>
