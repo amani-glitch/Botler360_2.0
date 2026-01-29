@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { loadChatbot, loadChatbotByKey, unloadChatbot, ChatbotId, CHATBOT_IDS } from '@/utils/chatbotLoader';
+import { loadChatbot, loadChatbotByKey, unloadChatbot, CHATBOT_IDS } from '@/utils/chatbotLoader';
+import type { ChatbotId } from '@/utils/chatbotLoader';
 
 /**
  * React hook to load a chatbot by its ID
@@ -44,4 +45,5 @@ export function useNoChatbot(): void {
   }, []);
 }
 
-export { CHATBOT_IDS, ChatbotId };
+export { CHATBOT_IDS };
+export type { ChatbotId };
