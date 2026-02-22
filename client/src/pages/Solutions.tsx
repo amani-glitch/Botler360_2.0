@@ -31,7 +31,9 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useChat } from "@/contexts/ChatContext";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
@@ -48,6 +50,7 @@ const staggerContainer = {
 
 export default function Solutions() {
   const { t } = useLanguage();
+  const { openChat } = useChat();
 
   const pricingPlans = [
     {
@@ -171,26 +174,27 @@ export default function Solutions() {
       title: t("solutions.additional.video360.title"),
       description: t("solutions.additional.video360.desc"),
       price: t("solutions.additional.video360.price"),
-      link: "/contact",
+      link: "chat",
     },
     {
       icon: Headphones,
       title: t("solutions.additional.audio.title"),
       description: t("solutions.additional.audio.desc"),
       price: t("solutions.additional.audio.price"),
-      link: "/contact",
+      link: "chat",
     },
     {
       icon: Wrench,
       title: t("solutions.additional.custom.title"),
       description: t("solutions.additional.custom.desc"),
       price: t("solutions.additional.custom.price"),
-      link: "/contact",
+      link: "chat",
     },
   ];
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title={t("seo.solutions.title")} description={t("seo.solutions.description")} canonical="/solutions" />
       <Navbar />
 
       {/* Hero Section */}
@@ -297,19 +301,18 @@ export default function Solutions() {
                   ))}
                 </ul>
 
-                <Link href="/contact">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={`w-full py-2.5 rounded-xl font-semibold text-sm transition-all ${
-                      plan.highlighted
-                        ? "btn-gold"
-                        : "btn-outline-gold"
-                    }`}
-                  >
-                    {plan.cta}
-                  </motion.button>
-                </Link>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={openChat}
+                  className={`w-full py-2.5 rounded-xl font-semibold text-sm transition-all ${
+                    plan.highlighted
+                      ? "btn-gold"
+                      : "btn-outline-gold"
+                  }`}
+                >
+                  {plan.cta}
+                </motion.button>
               </motion.div>
             ))}
           </motion.div>
@@ -405,16 +408,15 @@ export default function Solutions() {
                 </div>
 
                 <div className="flex flex-wrap gap-4">
-                  <Link href="/contact">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="btn-gold flex items-center gap-2"
-                    >
-                      {t("solutions.website.cta")}
-                      <ArrowRight className="w-4 h-4" />
-                    </motion.button>
-                  </Link>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={openChat}
+                    className="btn-gold flex items-center gap-2"
+                  >
+                    {t("solutions.website.cta")}
+                    <ArrowRight className="w-4 h-4" />
+                  </motion.button>
                 </div>
               </motion.div>
 
@@ -470,8 +472,8 @@ export default function Solutions() {
             variants={staggerContainer}
             className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto"
           >
-            {additionalServices.map((service, index) => (
-              <Link key={index} href={service.link}>
+            {additionalServices.map((service, index) => {
+              const cardContent = (
                 <motion.div
                   variants={fadeInUp}
                   className="glass-card glass-card-hover rounded-2xl p-6 text-center cursor-pointer h-full"
@@ -489,8 +491,13 @@ export default function Solutions() {
                     {service.price}
                   </span>
                 </motion.div>
-              </Link>
-            ))}
+              );
+              return service.link === "chat" ? (
+                <div key={index} onClick={openChat}>{cardContent}</div>
+              ) : (
+                <Link key={index} href={service.link}>{cardContent}</Link>
+              );
+            })}
           </motion.div>
         </div>
       </section>
@@ -520,15 +527,14 @@ export default function Solutions() {
                 {t("cta.description")}
               </motion.p>
               <motion.div variants={fadeInUp}>
-                <Link href="/contact">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="btn-gold text-lg px-8 py-4"
-                  >
-                    {t("cta.button")}
-                  </motion.button>
-                </Link>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={openChat}
+                  className="btn-gold text-lg px-8 py-4"
+                >
+                  {t("cta.button")}
+                </motion.button>
               </motion.div>
             </div>
           </motion.div>

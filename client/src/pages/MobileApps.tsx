@@ -4,7 +4,6 @@
  */
 
 import { motion } from "framer-motion";
-import { Link } from "wouter";
 import {
   Check,
   ArrowRight,
@@ -18,10 +17,13 @@ import {
   Code,
   Rocket,
   HelpCircle,
+  MessageSquare,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useChat } from "@/contexts/ChatContext";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
@@ -38,6 +40,7 @@ const staggerContainer = {
 
 export default function MobileApps() {
   const { t } = useLanguage();
+  const { openChat } = useChat();
 
   const sellingPoints = [
     {
@@ -112,6 +115,7 @@ export default function MobileApps() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title={t("seo.mobileapps.title")} description={t("seo.mobileapps.description")} canonical="/applications-mobiles" />
       <Navbar />
 
       {/* Hero Section */}
@@ -176,16 +180,15 @@ export default function MobileApps() {
 
             {/* CTA */}
             <motion.div variants={fadeInUp} className="flex flex-wrap justify-center gap-4">
-              <Link href="/contact">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="btn-gold flex items-center gap-2"
-                >
-                  {t("mobileapps.cta")}
-                  <ArrowRight className="w-4 h-4" />
-                </motion.button>
-              </Link>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={openChat}
+                className="btn-gold flex items-center gap-2"
+              >
+                {t("mobileapps.cta")}
+                <ArrowRight className="w-4 h-4" />
+              </motion.button>
             </motion.div>
           </motion.div>
         </div>
@@ -376,15 +379,14 @@ export default function MobileApps() {
                 {t("mobileapps.cta.description")}
               </motion.p>
               <motion.div variants={fadeInUp}>
-                <Link href="/contact">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="btn-gold text-lg px-8 py-4"
-                  >
-                    {t("mobileapps.cta.button")}
-                  </motion.button>
-                </Link>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={openChat}
+                  className="btn-gold text-lg px-8 py-4"
+                >
+                  {t("mobileapps.cta.button")}
+                </motion.button>
               </motion.div>
             </div>
           </motion.div>

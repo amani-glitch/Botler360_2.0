@@ -11,7 +11,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, MessageSquare, Globe, HelpCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useChat } from "@/contexts/ChatContext";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
@@ -455,6 +457,7 @@ function AccordionItem({ item, isOpen, onToggle, accentColor }: AccordionItemPro
 
 export default function Faq() {
   const { t, language } = useLanguage();
+  const { openChat } = useChat();
   const [activeCategory, setActiveCategory] = useState<FaqCategory>("chatbots");
   const [openItems, setOpenItems] = useState<Set<number>>(new Set());
 
@@ -481,6 +484,23 @@ export default function Faq() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title={t("seo.faq.title")}
+        description={t("seo.faq.description")}
+        canonical="/faq"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [...faqChatbotsFr, ...faqWebsitesFr].map((item) => ({
+            "@type": "Question",
+            "name": item.question,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": item.answer,
+            },
+          })),
+        }}
+      />
       <Navbar />
 
       {/* Hero Section */}
@@ -597,15 +617,14 @@ export default function Faq() {
               {t("faq.cta.description")}
             </motion.p>
             <motion.div variants={fadeInUp} className="flex flex-wrap justify-center gap-4">
-              <a href="/contact">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="btn-gold"
-                >
-                  {t("faq.cta.button")}
-                </motion.button>
-              </a>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={openChat}
+                className="btn-gold"
+              >
+                {t("faq.cta.button")}
+              </motion.button>
             </motion.div>
           </motion.div>
         </div>

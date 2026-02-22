@@ -13,8 +13,9 @@ import { Link, useParams } from "wouter";
 import { Play, ArrowRight, Users, Clock, Star, Briefcase, ShoppingBag } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useChatbot, CHATBOT_IDS } from "@/hooks/useChatbot";
+import { useChat } from "@/contexts/ChatContext";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
@@ -153,23 +154,9 @@ const getProductDemos = (t: (key: string) => string): Demo[] => [
   },
 ];
 
-// Map demo IDs to chatbot IDs
-const getChatbotId = (demoId: string): string => {
-  const mapping: Record<string, string> = {
-    tourisme: CHATBOT_IDS.tourisme,
-    viticulture: CHATBOT_IDS.viticulture,
-    restaurants: CHATBOT_IDS.restaurants,
-    boulangerie: CHATBOT_IDS.boulangerie,
-    immobilier: CHATBOT_IDS.immobilier,
-    hebergements: CHATBOT_IDS.hebergements,
-    websites: CHATBOT_IDS.websites,
-    ecommerce: CHATBOT_IDS.ecommerce,
-  };
-  return mapping[demoId] || CHATBOT_IDS.demo;
-};
-
 export default function Demo() {
   const { t } = useLanguage();
+  const { openChat } = useChat();
   const params = useParams<{ sector?: string }>();
 
   const sectorDemos = getSectorDemos(t);
@@ -196,12 +183,6 @@ export default function Demo() {
   const [activeCategory, setActiveCategory] = useState<DemoCategory>(getInitialState().category);
   const [activeDemo, setActiveDemo] = useState<Demo>(getInitialState().demo);
   const [isPlaying, setIsPlaying] = useState(false);
-
-  // Get current chatbot ID based on active demo
-  const currentChatbotId = activeDemo ? getChatbotId(activeDemo.id) : CHATBOT_IDS.demo;
-
-  // Load chatbot
-  useChatbot(currentChatbotId);
 
   // Update active demo when URL sector changes
   useEffect(() => {
@@ -237,6 +218,7 @@ export default function Demo() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title={t("seo.demo.title")} description={t("seo.demo.description")} canonical="/demo" />
       <Navbar />
 
       {/* Hero Section */}
@@ -460,16 +442,15 @@ export default function Demo() {
               </div>
 
               <div className="flex flex-wrap gap-4 pt-4">
-                <Link href="/contact">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className={activeCategory === "sectors" ? "btn-gold flex items-center gap-2" : "btn-teal flex items-center gap-2"}
-                  >
-                    {t("nav.contact")}
-                    <ArrowRight className="w-4 h-4" />
-                  </motion.button>
-                </Link>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={openChat}
+                  className={activeCategory === "sectors" ? "btn-gold flex items-center gap-2" : "btn-teal flex items-center gap-2"}
+                >
+                  {t("nav.contact")}
+                  <ArrowRight className="w-4 h-4" />
+                </motion.button>
                 {activeCategory === "products" && activeDemo.id === "websites" && (
                   <Link href="/websites">
                     <motion.button
@@ -567,15 +548,14 @@ export default function Demo() {
               {t("cta.description")}
             </motion.p>
             <motion.div variants={fadeInUp}>
-              <Link href="/contact">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="btn-gold text-lg px-8 py-4"
-                >
-                  {t("cta.button")}
-                </motion.button>
-              </Link>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={openChat}
+                className="btn-gold text-lg px-8 py-4"
+              >
+                {t("cta.button")}
+              </motion.button>
             </motion.div>
           </motion.div>
         </div>

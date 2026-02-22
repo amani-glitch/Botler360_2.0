@@ -1,0 +1,45 @@
+# Moteurs de recherche classiques
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /404
+
+# Bots IA de RECHERCHE — AUTORISER (ils vous citent)
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Bots IA d'ENTRAINEMENT — BLOQUER (scraping sans citation)
+User-agent: GPTBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: Diffbot
+Disallow: /
+
+Sitemap: https://botler360.com/sitemap.xml

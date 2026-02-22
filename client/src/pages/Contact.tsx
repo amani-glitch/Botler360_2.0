@@ -13,6 +13,7 @@ import { Mail, Phone, MapPin, Send, CheckCircle, Clock, Users, Sparkles, Upload,
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const fadeInUp = {
@@ -28,8 +29,7 @@ const staggerContainer = {
   },
 };
 
-// Google Apps Script URL for form submission
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxYfiq638QVgBMit-77SoaYbiojcxMuPK1ZrVHB2r4JxlS3gi_leZoQunkpuPmymaFw/exec";
+import { CONTACT_API_URL } from "@/config/gemini";
 
 export default function Contact() {
   const { t } = useLanguage();
@@ -91,29 +91,14 @@ export default function Contact() {
     setIsSubmitting(true);
 
     try {
-      // Create FormData for submission
-      const submitData = new FormData();
-      submitData.append("firstName", formData.firstName);
-      submitData.append("lastName", formData.lastName);
-      submitData.append("email", formData.email);
-      submitData.append("company", formData.company);
-      submitData.append("sector", formData.sector);
-      submitData.append("projectType", formData.projectType);
-      submitData.append("phone", formData.phone);
-      submitData.append("message", formData.message);
-
-      if (selectedFile) {
-        submitData.append("attachment", selectedFile);
-      }
-
-      // Submit to Google Apps Script
-      const response = await fetch(GOOGLE_SCRIPT_URL, {
+      const response = await fetch(CONTACT_API_URL, {
         method: "POST",
-        body: submitData,
-        mode: "no-cors", // Google Apps Script requires no-cors for POST
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
 
-      // Since no-cors doesn't return response body, assume success
+      if (!response.ok) throw new Error("Submit failed");
+
       toast.success(t("contact.form.success"));
       setFormData({
         firstName: "",
@@ -138,22 +123,22 @@ export default function Contact() {
     setIsSubmitting(true);
 
     try {
-      // Submit with special "surprise" flag
-      const submitData = new FormData();
-      submitData.append("firstName", formData.firstName || "Visiteur");
-      submitData.append("lastName", formData.lastName || "Curieux");
-      submitData.append("email", formData.email);
-      submitData.append("company", formData.company || "Non spécifié");
-      submitData.append("sector", formData.sector || "Non spécifié");
-      submitData.append("projectType", "surprise");
-      submitData.append("phone", formData.phone);
-      submitData.append("message", "Je veux être surpris(e) ! Proposez-moi votre meilleure idée pour mon projet.");
-
-      const response = await fetch(GOOGLE_SCRIPT_URL, {
+      const response = await fetch(CONTACT_API_URL, {
         method: "POST",
-        body: submitData,
-        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: formData.firstName || "Visiteur",
+          lastName: formData.lastName || "Curieux",
+          email: formData.email,
+          company: formData.company || "Non spécifié",
+          sector: formData.sector || "Non spécifié",
+          projectType: "surprise",
+          phone: formData.phone,
+          message: "Je veux être surpris(e) ! Proposez-moi votre meilleure idée pour mon projet.",
+        }),
       });
+
+      if (!response.ok) throw new Error("Submit failed");
 
       toast.success(t("contact.form.surpriseSuccess"));
       setFormData({
@@ -204,6 +189,7 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title={t("seo.contact.title")} description={t("seo.contact.description")} canonical="/contact" />
       <Navbar />
 
       {/* Hero Section */}

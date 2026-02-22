@@ -4,7 +4,6 @@
  */
 
 import { motion } from "framer-motion";
-import { Link } from "wouter";
 import {
   Check,
   X,
@@ -22,7 +21,9 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useChat } from "@/contexts/ChatContext";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
@@ -39,6 +40,7 @@ const staggerContainer = {
 
 export default function Websites() {
   const { t } = useLanguage();
+  const { openChat } = useChat();
 
   const sellingPoints = [
     {
@@ -130,6 +132,7 @@ export default function Websites() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title={t("seo.websites.title")} description={t("seo.websites.description")} canonical="/websites" />
       <Navbar />
 
       {/* Hero Section */}
@@ -194,16 +197,15 @@ export default function Websites() {
 
             {/* CTA */}
             <motion.div variants={fadeInUp} className="flex flex-wrap justify-center gap-4">
-              <Link href="/contact">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="btn-gold flex items-center gap-2"
-                >
-                  {t("websites.cta")}
-                  <ArrowRight className="w-4 h-4" />
-                </motion.button>
-              </Link>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={openChat}
+                className="btn-gold flex items-center gap-2"
+              >
+                {t("websites.cta")}
+                <ArrowRight className="w-4 h-4" />
+              </motion.button>
             </motion.div>
           </motion.div>
         </div>
@@ -432,15 +434,14 @@ export default function Websites() {
                 {t("websites.cta.description")}
               </motion.p>
               <motion.div variants={fadeInUp}>
-                <Link href="/contact">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="btn-gold text-lg px-8 py-4"
-                  >
-                    {t("websites.cta.button")}
-                  </motion.button>
-                </Link>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={openChat}
+                  className="btn-gold text-lg px-8 py-4"
+                >
+                  {t("websites.cta.button")}
+                </motion.button>
               </motion.div>
             </div>
           </motion.div>

@@ -30,8 +30,9 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useChatbotByKey } from "@/hooks/useChatbot";
+import { useChat } from "@/contexts/ChatContext";
 
 // Animation variants
 const fadeInUp = {
@@ -49,9 +50,7 @@ const staggerContainer = {
 
 export default function Home() {
   const { t } = useLanguage();
-
-  // Load homepage chatbot
-  useChatbotByKey("home");
+  const { openChat } = useChat();
 
   // Sector data with translations
   const sectors = [
@@ -208,7 +207,7 @@ export default function Home() {
       title: t("home.expertises.custom.title"),
       description: t("home.expertises.custom.desc"),
       price: t("home.expertises.custom.price"),
-      link: "/contact",
+      link: "chat",
       color: "from-slate-500/20 to-gray-500/20",
     },
   ];
@@ -234,6 +233,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title={t("seo.home.title")} description={t("seo.home.description")} canonical="/" />
       <Navbar />
 
       {/* Hero Section */}
@@ -259,14 +259,14 @@ export default function Home() {
                   <Sparkles className="w-4 h-4" />
                   {t("home.hero.tagline")}
                 </span>
-                <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+                <h1 className="font-heading text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
                   <span className="text-foreground">{t("home.hero.title1")}</span>
                   <br />
                   <span className="text-gradient-gold">{t("home.hero.title2")}</span>
                   <br />
                   <span className="text-foreground">{t("home.hero.title3")}</span>
                 </h1>
-                <p className="text-xl text-muted-foreground max-w-xl">
+                <p className="text-base sm:text-xl text-muted-foreground max-w-xl">
                   {t("home.hero.description")}
                 </p>
               </motion.div>
@@ -317,16 +317,15 @@ export default function Home() {
                     <Play className="w-4 h-4" />
                   </motion.button>
                 </Link>
-                <Link href="/contact">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="btn-outline-gold flex items-center gap-2"
-                  >
-                    {t("home.hero.cta2")}
-                    <ArrowRight className="w-4 h-4" />
-                  </motion.button>
-                </Link>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={openChat}
+                  className="btn-outline-gold flex items-center gap-2"
+                >
+                  {t("chat.button")}
+                  <MessageSquare className="w-4 h-4" />
+                </motion.button>
               </motion.div>
 
               {/* Stats Highlight */}
@@ -400,8 +399,8 @@ export default function Home() {
             variants={staggerContainer}
             className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
-            {expertises.map((expertise, index) => (
-              <Link key={index} href={expertise.link}>
+            {expertises.map((expertise, index) => {
+              const cardContent = (
                 <motion.div
                   variants={fadeInUp}
                   className="group relative glass-card glass-card-hover rounded-2xl p-6 cursor-pointer h-full"
@@ -424,8 +423,13 @@ export default function Home() {
                     </span>
                   </div>
                 </motion.div>
-              </Link>
-            ))}
+              );
+              return expertise.link === "chat" ? (
+                <div key={index} onClick={openChat}>{cardContent}</div>
+              ) : (
+                <Link key={index} href={expertise.link}>{cardContent}</Link>
+              );
+            })}
           </motion.div>
         </div>
       </section>
@@ -779,15 +783,14 @@ export default function Home() {
               {t("cta.description")}
             </motion.p>
             <motion.div variants={fadeInUp}>
-              <Link href="/contact">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="btn-gold text-lg px-8 py-4 animate-pulse-glow"
-                >
-                  {t("home.hero.cta2")}
-                </motion.button>
-              </Link>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={openChat}
+                className="btn-gold text-lg px-8 py-4 animate-pulse-glow"
+              >
+                {t("chat.button")}
+              </motion.button>
             </motion.div>
           </motion.div>
         </div>

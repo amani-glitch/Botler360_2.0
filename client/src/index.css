@@ -211,12 +211,12 @@
     }
   }
 
-  /* Gold gradient text - protected from external CSS overrides */
+  /* Gold gradient text */
   .text-gradient-gold {
-    background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 50%, #F59E0B 100%) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    background-clip: text !important;
+    background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 50%, #F59E0B 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   /* Teal gradient text */
@@ -357,33 +357,6 @@
   .bg-radial-gradient {
     background: radial-gradient(ellipse at center, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
   }
-}
-
-/* Protection against external chatbot CSS overrides */
-
-/* Hero glow effect - protected from chatbot CSS */
-.hero-glow-effect {
-  background: linear-gradient(to right, rgba(245, 158, 11, 0.3), rgba(20, 184, 166, 0.3)) !important;
-  background-image: linear-gradient(to right, rgba(245, 158, 11, 0.3), rgba(20, 184, 166, 0.3)) !important;
-  background-color: transparent !important;
-}
-
-/* Prevent chatbot from forcing blue color on links */
-a:not([class*="chatbot"]):not([id*="chatbot"]) {
-  color: inherit !important;
-}
-
-/* Ensure links with specific button classes maintain their colors */
-a .btn-gold,
-a .btn-outline-gold,
-a button {
-  color: inherit !important;
-}
-
-/* Protect gradient text classes from being overridden */
-.text-gradient-gold,
-.text-gradient-teal {
-  color: transparent !important;
 }
 
 /* Smooth scrolling */

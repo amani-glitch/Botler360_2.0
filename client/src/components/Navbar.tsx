@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown, Sun, Moon } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useChat } from "@/contexts/ChatContext";
 
 const sectors = [
   { id: "tourisme", key: "sector.tourism", path: "/demo/tourisme" },
@@ -29,6 +30,7 @@ export default function Navbar() {
   const [location] = useLocation();
   const { theme, toggleTheme, switchable } = useTheme();
   const { language, setLanguage, t } = useLanguage();
+  const { openChat } = useChat();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -71,9 +73,9 @@ export default function Navbar() {
               <img
                 src="/images/botler-logo-full.png"
                 alt="Botler"
-                className="h-14 w-auto object-contain"
+                className="h-10 sm:h-14 w-auto object-contain"
               />
-              <span className="text-2xl font-bold text-slate-800 dark:text-white">
+              <span className="hidden sm:inline text-2xl font-bold text-slate-800 dark:text-white">
                 Botler<sup className="text-xs">™</sup>
               </span>
             </motion.div>
@@ -168,15 +170,14 @@ export default function Navbar() {
 
           {/* CTA Button */}
           <div className="hidden lg:block">
-            <Link href="/contact">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="btn-gold"
-              >
-                {t("nav.getStarted")}
-              </motion.button>
-            </Link>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={openChat}
+              className="btn-gold cursor-pointer"
+            >
+              {t("nav.getStarted")}
+            </motion.button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -259,14 +260,12 @@ export default function Navbar() {
                   ))}
                 </div>
               </div>
-              <Link href="/contact">
-                <button
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full btn-gold mt-4"
-                >
-                  {t("nav.getStarted")}
-                </button>
-              </Link>
+              <button
+                onClick={() => { setIsMobileMenuOpen(false); openChat(); }}
+                className="w-full btn-gold mt-4 cursor-pointer"
+              >
+                {t("nav.getStarted")}
+              </button>
             </div>
           </motion.div>
         )}

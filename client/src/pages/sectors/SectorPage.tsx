@@ -7,7 +7,6 @@ import { motion } from "framer-motion";
 import { Link } from "wouter";
 import {
   CheckCircle,
-  ArrowRight,
   Play,
   Star,
   MessageSquare,
@@ -17,7 +16,9 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useChat } from "@/contexts/ChatContext";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
@@ -40,6 +41,7 @@ interface SectorPageProps {
 
 export default function SectorPage({ sectorId, heroImage, videoSrc }: SectorPageProps) {
   const { t } = useLanguage();
+  const { openChat } = useChat();
 
   const challenges = [
     t(`sector.${sectorId}.challenge1`),
@@ -73,6 +75,7 @@ export default function SectorPage({ sectorId, heroImage, videoSrc }: SectorPage
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title={t(`seo.sector.${sectorId}.title`)} description={t(`seo.sector.${sectorId}.description`)} canonical={`/demo/${sectorId}`} />
       <Navbar />
 
       {/* Hero Section */}
@@ -118,16 +121,15 @@ export default function SectorPage({ sectorId, heroImage, videoSrc }: SectorPage
                     <Play className="w-4 h-4" />
                   </motion.button>
                 </Link>
-                <Link href="/contact">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="btn-outline-gold flex items-center gap-2"
-                  >
-                    {t("home.hero.cta2")}
-                    <ArrowRight className="w-4 h-4" />
-                  </motion.button>
-                </Link>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={openChat}
+                  className="btn-outline-gold flex items-center gap-2"
+                >
+                  {t("chat.button")}
+                  <MessageSquare className="w-4 h-4" />
+                </motion.button>
               </motion.div>
             </motion.div>
 
@@ -359,15 +361,14 @@ export default function SectorPage({ sectorId, heroImage, videoSrc }: SectorPage
                 {t("cta.description")}
               </motion.p>
               <motion.div variants={fadeInUp}>
-                <Link href="/contact">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="btn-gold text-lg px-8 py-4"
-                  >
-                    {t("cta.button")}
-                  </motion.button>
-                </Link>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={openChat}
+                  className="btn-gold text-lg px-8 py-4"
+                >
+                  {t("cta.button")}
+                </motion.button>
               </motion.div>
             </div>
           </motion.div>

@@ -1,0 +1,32 @@
+# Botler 360
+
+> Botler 360 est une plateforme SaaS française d'IA conversationnelle. Nous fournissons des chatbots intelligents, des sites web, des applications mobiles et des solutions d'automatisation pour les PME et grandes entreprises francophones.
+
+Botler 360 aide les entreprises à automatiser leur relation client grâce à des chatbots IA multicanaux (site web, WhatsApp, Instagram, Facebook Messenger). La plateforme propose des packs clé-en-main adaptés à chaque secteur d'activité, incluant un chatbot IA personnalisé, un site web optimisé et des outils de gestion de la relation client.
+
+Siège : 44 chemin de Provence, Entraigues-sur-la-Sorgue, France
+Contact : contact@botler360.com
+Fondateur : Yacine Bakouche
+
+## Solutions
+- [Nos Solutions](https://botler360.com/solutions): Chatbots IA, sites web, applications mobiles — packs et tarifs pour les entreprises
+- [Sites Web](https://botler360.com/websites): Création de sites web professionnels optimisés avec chatbot IA intégré
+- [Applications Mobiles](https://botler360.com/applications-mobiles): Développement d'applications mobiles sur mesure pour les entreprises
+
+## Secteurs d'activité
+- [Tourisme](https://botler360.com/tourisme): Chatbot IA pour offices de tourisme et agences de voyage
+- [Viticulture](https://botler360.com/viticulture): Assistant IA pour domaines viticoles et caves
+- [Restaurants](https://botler360.com/restaurants): Chatbot pour restaurants — réservations, menus, commandes
+- [Boulangerie](https://botler360.com/boulangerie): Assistant IA pour boulangeries et pâtisseries
+- [Immobilier](https://botler360.com/immobilier): Chatbot IA pour agences immobilières — qualification de leads
+- [Hébergements](https://botler360.com/hebergements): Assistant IA pour hôtels, gîtes et locations de vacances
+
+## Ressources
+- [Démo](https://botler360.com/demo): Demander une démonstration gratuite de la plateforme
+- [FAQ](https://botler360.com/faq): Questions fréquemment posées sur nos solutions
+- [Contact](https://botler360.com/contact): Nous contacter — formulaire et coordonnées
+
+## Optional
+- [Mentions Légales](https://botler360.com/mentions-legales): Mentions légales et informations éditeur
+- [CGV](https://botler360.com/cgv): Conditions générales de vente
+- [Politique de Confidentialité](https://botler360.com/politique-confidentialite): Politique de protection des données personnelles (RGPD)

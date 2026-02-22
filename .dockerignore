@@ -1,0 +1,15 @@
+node_modules
+dist
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+*.md
+!client/src/config/BOTLER360_AGENT_SYSTEM_PROMPT.md
+.claude
+.github
+coverage
+logs
+*.log
+.DS_Store

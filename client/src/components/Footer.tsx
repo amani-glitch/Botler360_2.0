@@ -31,9 +31,10 @@ export default function Footer() {
       { label: t("sector.accommodation"), href: "/demo/hebergements" },
     ],
     legal: [
-      { label: t("footer.legal"), href: "#" },
-      { label: t("footer.privacy"), href: "#" },
-      { label: t("footer.cookies"), href: "#" },
+      { label: t("footer.legal"), href: "/mentions-legales" },
+      { label: t("footer.cgv"), href: "/cgv" },
+      { label: t("footer.privacy"), href: "/politique-confidentialite" },
+      { label: t("footer.cookies"), href: "/politique-confidentialite#cookies" },
     ],
   };
 
@@ -181,13 +182,14 @@ export default function Footer() {
             </p>
             <div className="flex gap-6">
               {footerLinks.legal.map((link) => (
-                <a
+                <Link
                   key={link.label}
                   href={link.href}
-                  className="text-sm text-muted-foreground hover:text-amber-500 transition-colors"
                 >
-                  {link.label}
-                </a>
+                  <span className="text-sm text-muted-foreground hover:text-amber-500 transition-colors cursor-pointer">
+                    {link.label}
+                  </span>
+                </Link>
               ))}
             </div>
           </div>
