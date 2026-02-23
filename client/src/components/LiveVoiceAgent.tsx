@@ -6,6 +6,7 @@ import {
   encodeBytes,
   decodeBase64,
   pcmToAudioBuffer,
+  type LiveSession,
 } from "@/lib/gemini-live";
 
 interface LiveVoiceAgentProps {
@@ -25,7 +26,7 @@ export default function LiveVoiceAgent({ onClose }: LiveVoiceAgentProps) {
   const [showTranscript, setShowTranscript] = useState(false);
 
   // Audio refs
-  const sessionRef = useRef<Awaited<ReturnType<typeof connectGeminiLive>> | null>(null);
+  const sessionRef = useRef<LiveSession | null>(null);
   const inputCtxRef = useRef<AudioContext | null>(null);
   const outputCtxRef = useRef<AudioContext | null>(null);
   const audioSourcesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
@@ -47,26 +48,49 @@ export default function LiveVoiceAgent({ onClose }: LiveVoiceAgentProps) {
     setErrorMsg("");
 
     try {
-      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-      if (!apiKey) {
-        throw new Error("Cle API Gemini manquante. Ajoutez VITE_GEMINI_API_KEY dans .env");
+      // Step 1: Check mic availability
+      console.log("[LiveVoice] Step 1: Checking microphone availability...");
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error("Votre navigateur ne supporte pas l'acces au microphone. Utilisez Chrome ou Safari recent.");
       }
 
-      // Fetch voice config (system prompt + voice) from server
-      const configRes = await fetch("/api/voice-config");
-      if (!configRes.ok) throw new Error("Impossible de charger la configuration vocale");
-      const voiceConfig = await configRes.json();
-
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      // Step 2: Request mic permission FIRST (before any network call)
+      console.log("[LiveVoice] Step 2: Requesting microphone access...");
+      let stream: MediaStream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch (micErr) {
+        const name = micErr instanceof DOMException ? micErr.name : "";
+        if (name === "NotAllowedError") {
+          throw new Error("Acces au microphone refuse. Autorisez le micro dans les reglages de votre navigateur, puis reessayez.");
+        } else if (name === "NotFoundError") {
+          throw new Error("Aucun microphone detecte. Verifiez que votre micro est branche.");
+        } else {
+          throw new Error(`Erreur microphone: ${micErr instanceof Error ? micErr.message : String(micErr)}`);
+        }
+      }
       streamRef.current = stream;
+      console.log("[LiveVoice] Microphone access granted!");
 
+      // Step 3: Fetch voice config + API key from server
+      console.log("[LiveVoice] Step 3: Fetching voice config...");
+      const configRes = await fetch("/api/voice-config");
+      if (!configRes.ok) throw new Error(`Configuration vocale indisponible (HTTP ${configRes.status})`);
+      const voiceConfig = await configRes.json();
+      if (!voiceConfig.liveApiKey) throw new Error("Cle API Live manquante dans la config serveur");
+      console.log("[LiveVoice] Voice config loaded, voice:", voiceConfig.voiceName);
+
+      // Step 4: Create audio contexts
+      console.log("[LiveVoice] Step 4: Creating audio contexts...");
       const inputCtx = new AudioContext({ sampleRate: 16000 });
       const outputCtx = new AudioContext({ sampleRate: 24000 });
       inputCtxRef.current = inputCtx;
       outputCtxRef.current = outputCtx;
 
-      const session = await connectGeminiLive(
-        { systemInstruction: voiceConfig.systemInstruction, voiceName: voiceConfig.voiceName || "Puck" },
+      // Step 5: Connect to Gemini Live WebSocket
+      console.log("[LiveVoice] Step 5: Connecting to Gemini Live...");
+      const liveSession = await connectGeminiLive(
+        { apiKey: voiceConfig.liveApiKey, systemInstruction: voiceConfig.systemInstruction, voiceName: voiceConfig.voiceName || "Puck" },
         {
           onAudio: (base64) => {
             const ctx = outputCtxRef.current;
@@ -105,23 +129,35 @@ export default function LiveVoiceAgent({ onClose }: LiveVoiceAgentProps) {
             ]);
           },
           onTurnComplete: () => {},
+          onClose: (reason) => {
+            console.error("[LiveVoice] WebSocket closed unexpectedly:", reason);
+            // Stop audio processing
+            try { processorRef.current?.disconnect(); } catch {}
+            streamRef.current?.getTracks().forEach((t) => t.stop());
+            setErrorMsg(reason);
+            setStatus("error");
+          },
         }
       );
 
-      sessionRef.current = session;
+      sessionRef.current = liveSession;
+      console.log("[LiveVoice] WebSocket connected!");
 
       const source = inputCtx.createMediaStreamSource(stream);
       const processor = inputCtx.createScriptProcessor(4096, 1, 1);
       processorRef.current = processor;
 
       processor.onaudioprocess = (e) => {
+        // Don't send if WebSocket is closed
+        if (liveSession.closed) return;
+
         const inputData = e.inputBuffer.getChannelData(0);
         const int16 = new Int16Array(inputData.length);
         for (let i = 0; i < inputData.length; i++) {
           int16[i] = Math.max(-32768, Math.min(32767, inputData[i] * 32768));
         }
         try {
-          session.sendRealtimeInput({
+          liveSession.session.sendRealtimeInput({
             audio: {
               data: encodeBytes(new Uint8Array(int16.buffer)),
               mimeType: "audio/pcm;rate=16000",
@@ -135,9 +171,13 @@ export default function LiveVoiceAgent({ onClose }: LiveVoiceAgentProps) {
       source.connect(processor);
       processor.connect(inputCtx.destination);
 
+      console.log("[LiveVoice] Step 6: All connected! Session active.");
       setStatus("active");
     } catch (err) {
-      console.error("[LiveVoice] Connection failed:", err);
+      console.error("[LiveVoice] Connection failed at step:", err);
+      // Clean up mic stream if we got it
+      streamRef.current?.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
       setErrorMsg(err instanceof Error ? err.message : String(err));
       setStatus("error");
     }
@@ -145,7 +185,10 @@ export default function LiveVoiceAgent({ onClose }: LiveVoiceAgentProps) {
 
   // ── Cleanup ────────────────────────────────────────────
   const cleanup = useCallback(() => {
-    try { sessionRef.current?.close(); } catch {}
+    if (sessionRef.current) {
+      sessionRef.current.closed = true; // prevent further sends
+      try { sessionRef.current.session.close(); } catch {}
+    }
     sessionRef.current = null;
 
     audioSourcesRef.current.forEach((s) => {
@@ -430,9 +473,11 @@ export default function LiveVoiceAgent({ onClose }: LiveVoiceAgentProps) {
         )}
 
         {status === "error" && (
-          <div className="flex flex-col items-center gap-3">
+          <div className="flex flex-col items-center gap-4">
             {errorMsg && (
-              <div className="text-white/40 text-xs text-center max-w-sm">{errorMsg}</div>
+              <div className="px-4 py-3 rounded-xl bg-red-500/15 border border-red-500/30 text-red-300 text-sm text-center max-w-sm leading-relaxed">
+                {errorMsg}
+              </div>
             )}
             <div className="flex gap-3">
               <button

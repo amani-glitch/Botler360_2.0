@@ -219,12 +219,13 @@ const GENERATION_CONFIG = {
   maxOutputTokens: 1024,
 };
 
-// ── GET /api/voice-config — Serve system prompt (not bundled in client) ──
+// ── GET /api/voice-config — Serve system prompt + live API key (not bundled) ──
 app.get("/api/voice-config", chatLimiter, (_req, res) => {
   res.json({
     systemInstruction: SYSTEM_PROMPT,
     voiceName: "Puck",
     model: "gemini-2.5-flash-native-audio-preview-12-2025",
+    liveApiKey: GEMINI_API_KEY,
   });
 });
 

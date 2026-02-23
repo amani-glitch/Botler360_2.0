@@ -49,16 +49,26 @@ export interface LiveCallbacks {
 }
 
 export interface LiveConfig {
+  apiKey: string;
   systemInstruction: string;
   voiceName: string;
 }
 
 // ── Connect to Gemini Live API ──────────────────────────
-export function connectGeminiLive(config: LiveConfig, callbacks: LiveCallbacks) {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-  if (!apiKey) throw new Error("VITE_GEMINI_API_KEY not set");
+export interface LiveSession {
+  session: Awaited<ReturnType<InstanceType<typeof GoogleGenAI>["live"]["connect"]>>;
+  closed: boolean;
+}
+
+export function connectGeminiLive(
+  config: LiveConfig,
+  callbacks: LiveCallbacks & { onClose?: (reason: string) => void }
+): Promise<LiveSession> {
+  const apiKey = config.apiKey;
+  if (!apiKey) throw new Error("API key not provided for Live session");
 
   const ai = new GoogleGenAI({ apiKey });
+  const wrapper: LiveSession = { session: null as never, closed: false };
 
   return ai.live.connect({
     model: "gemini-2.5-flash-native-audio-preview-12-2025",
@@ -102,8 +112,18 @@ export function connectGeminiLive(config: LiveConfig, callbacks: LiveCallbacks) 
         console.error("[GeminiLive] WebSocket ERROR:", e);
       },
       onclose: (e: unknown) => {
-        console.warn("[GeminiLive] WebSocket CLOSED:", e);
+        wrapper.closed = true;
+        const evt = e as { code?: number; reason?: string; message?: string };
+        const code = evt?.code ?? "?";
+        const reason = evt?.reason || evt?.message || "unknown";
+        console.error(`[GeminiLive] WebSocket CLOSED — code=${code}, reason=${reason}`, e);
+        callbacks.onClose?.(
+          `Connexion Gemini fermee (code ${code}). Verifiez que la cle API autorise votre domaine.`
+        );
       },
     },
+  }).then((session) => {
+    wrapper.session = session;
+    return wrapper;
   });
 }
