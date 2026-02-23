@@ -154,14 +154,14 @@ const FUNCTION_DECLARATIONS = [
   {
     name: "write_to_crm",
     description:
-      "Écrit les données du prospect qualifié dans le CRM Google Sheets de Botler 360. Appeler dès que le nom d'entreprise et l'email sont collectés.",
+      "Écrit les données du prospect dans le CRM. Appeler DÈS qu'un email validé est obtenu. Peut être appelé plusieurs fois pour mettre à jour avec plus d'infos.",
     parameters: {
       type: "OBJECT",
       properties: {
-        company_name: { type: "STRING", description: "Nom de l'entreprise" },
+        company_name: { type: "STRING", description: "Nom de l'entreprise (si connu)" },
         first_name: { type: "STRING", description: "Prénom du contact" },
         last_name: { type: "STRING", description: "Nom du contact" },
-        email: { type: "STRING", description: "Email du contact" },
+        email: { type: "STRING", description: "Email du contact — DOIT être confirmé avec le prospect avant envoi" },
         phone: { type: "STRING", description: "Téléphone" },
         country: { type: "STRING", description: "Pays" },
         location: { type: "STRING", description: "Ville ou adresse" },
@@ -171,11 +171,12 @@ const FUNCTION_DECLARATIONS = [
         pain_points: { type: "STRING", description: "Résumé des problèmes identifiés" },
         score: { type: "INTEGER", description: "Score de qualification 0-100" },
         stage: { type: "STRING", description: "Étape pipeline: new, qualified, ou demo_scheduled" },
-        conversation_summary: { type: "STRING", description: "Résumé de la conversation en 3-5 phrases" },
-        next_action: { type: "STRING", description: "Prochaine action recommandée" },
+        conversation_summary: { type: "STRING", description: "RÉSUMÉ stratégique (3-5 phrases) suivi de --- HISTORIQUE --- avec les échanges clés de la conversation" },
+        next_action: { type: "STRING", description: "Prochaine action recommandée pour l'équipe commerciale" },
         revenue_potential: { type: "NUMBER", description: "Estimation revenue annuel en EUR" },
+        full_conversation_log: { type: "STRING", description: "Transcript complet de la conversation (PROSPECT: ... / BOTLER: ...)" },
       },
-      required: ["company_name", "email"],
+      required: ["email"],
     },
   },
   {
@@ -360,7 +361,7 @@ const CRM_ALLOWED_FIELDS = [
   "company_name", "first_name", "last_name", "email", "phone",
   "country", "location", "website", "sector", "product_interest",
   "pain_points", "score", "stage", "conversation_summary",
-  "next_action", "revenue_potential",
+  "next_action", "revenue_potential", "full_conversation_log",
 ] as const;
 
 app.post("/api/crm", crmLimiter, async (req, res) => {
@@ -376,10 +377,11 @@ app.post("/api/crm", crmLimiter, async (req, res) => {
     }
   }
 
-  if (!sanitized.company_name || !isValidEmail(sanitized.email)) {
-    res.status(400).json({ error: "company_name and valid email are required" });
+  if (!isValidEmail(sanitized.email)) {
+    res.status(400).json({ error: "Valid email is required" });
     return;
   }
+  if (!sanitized.company_name) sanitized.company_name = "Non renseigné";
 
   try {
     const upstream = await fetch(CRM_WEBHOOK_URL, {

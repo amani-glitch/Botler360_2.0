@@ -44,9 +44,22 @@ const FUNCTION_ENDPOINTS: Record<string, string> = {
 async function executeFunctionCall(
   name: string,
   args: Record<string, unknown>,
+  conversationHistory?: ConversationMessage[],
 ): Promise<string> {
   const url = FUNCTION_ENDPOINTS[name];
   if (!url) return `Fonction inconnue: ${name}`;
+
+  // Attach full conversation log for CRM writes
+  if (name === "write_to_crm" && conversationHistory) {
+    const log = conversationHistory
+      .filter(m => m.role === "user" || (m.role === "model" && m.parts?.some(p => p.text)))
+      .map(m => {
+        const text = m.parts?.find(p => p.text)?.text || "";
+        return `${m.role === "user" ? "PROSPECT" : "BOTLER"}: ${text}`;
+      })
+      .join("\n");
+    args.full_conversation_log = log;
+  }
 
   try {
     const res = await fetch(url, {
@@ -125,6 +138,7 @@ export function useGeminiChat() {
         const result = await executeFunctionCall(
           functionCallPart.functionCall.name,
           functionCallPart.functionCall.args,
+          conversationHistory.current,
         );
 
         conversationHistory.current.push({
