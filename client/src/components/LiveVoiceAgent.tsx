@@ -58,7 +58,13 @@ export default function LiveVoiceAgent({ onClose }: LiveVoiceAgentProps) {
       console.log("[LiveVoice] Step 2: Requesting microphone access...");
       let stream: MediaStream;
       try {
-        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+          },
+        });
       } catch (micErr) {
         const name = micErr instanceof DOMException ? micErr.name : "";
         if (name === "NotAllowedError") {

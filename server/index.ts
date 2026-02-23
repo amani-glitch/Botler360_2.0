@@ -320,28 +320,28 @@ app.post("/api/availability", chatLimiter, async (req, res) => {
   const availability: Record<string, { available: boolean; packs: string[]; note: string }> = {
     chatbot: {
       available: true,
-      packs: ["Chatbot Pack 1 (29€/mois)", "Chatbot Pack 2 (49€/mois)"],
-      note: "Déploiement en 48-72h. Chatbot entraîné sur les données du client.",
+      packs: ["Pack Junior (9€/mois)", "Pack Expert (19€/mois)", "Pack Expert PME (49€/mois — recommandé)"],
+      note: "Déploiement en 48-72h. Chatbot entraîné sur les données du client. 1% de commission sur ventes via Botler (Packs Expert).",
     },
     website: {
       available: true,
-      packs: ["Pack 1 + Website (249€ + mensuel)", "Pack 2 + Website (456€+ + mensuel)"],
-      note: "Site livré sous 2-3 semaines avec chatbot intégré.",
+      packs: ["Site Web Vitrine Professionnel (249€ TTC, livré en 24h)"],
+      note: "Prix unique, pas d'abonnement. Design responsive, hébergement + SSL inclus, SEO de base.",
     },
     ucp: {
       available: true,
-      packs: ["UCP-Ready (500€ + 49€/mois)", "UCP + Botler (800€ + 79€/mois)"],
-      note: "Audit de visibilité IA inclus. Optimisation pour Google AI, ChatGPT, Perplexity.",
+      packs: ["Sur devis"],
+      note: "Optimisation visibilité IA (Google AI, ChatGPT, Perplexity). Contactez l'équipe pour un audit.",
     },
     mobile_app: {
       available: true,
-      packs: ["Sur devis"],
-      note: "Applications mobiles sur mesure. Devis après analyse des besoins.",
+      packs: ["Application Mobile (249€)"],
+      note: "App iOS & Android sur mesure. Prix unique.",
     },
     custom: {
       available: true,
       packs: ["Sur devis"],
-      note: "Solutions personnalisées: automations, intégrations API, IA sur mesure.",
+      note: "Solutions personnalisées: dashboards, automatisations, outils métier avec IA.",
     },
   };
 
