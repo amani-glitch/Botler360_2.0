@@ -25,6 +25,7 @@ export default defineConfig({
         manualChunks: {
           vendor: ["react", "react-dom"],
           ui: ["lucide-react", "framer-motion", "wouter"],
+          "gemini-live": ["@google/genai"],
         },
       },
     },

@@ -4,10 +4,11 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Route, Switch } from "wouter";
 import { HelmetProvider } from "react-helmet-async";
 import ErrorBoundary from "./components/ErrorBoundary";
-import BotlerChat from "./components/BotlerChat";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { ChatProvider } from "./contexts/ChatContext";
+
+const BotlerChat = lazy(() => import("./components/BotlerChat"));
 
 // Eager: landing page (critical path)
 import Home from "./pages/Home";
@@ -65,10 +66,14 @@ function App() {
             <ChatProvider>
               <TooltipProvider>
                 <Toaster />
-                <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="w-8 h-8 border-4 border-amber-500 border-t-transparent rounded-full animate-spin" /></div>}>
-                  <Router />
+                <main>
+                  <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="w-8 h-8 border-4 border-amber-500 border-t-transparent rounded-full animate-spin" /></div>}>
+                    <Router />
+                  </Suspense>
+                </main>
+                <Suspense fallback={null}>
+                  <BotlerChat />
                 </Suspense>
-                <BotlerChat />
               </TooltipProvider>
             </ChatProvider>
           </LanguageProvider>

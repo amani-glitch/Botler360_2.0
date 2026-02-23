@@ -12,6 +12,13 @@ export default function BotlerAvatar({
   const isTalking = state === "talking";
   const isListening = state === "listening";
 
+  // Scale all decorations proportionally
+  const scale = size / 44; // 44px = base reference
+  const borderWidth = Math.max(2, Math.round(2.5 * scale));
+  const barWidth = Math.max(2, Math.round(3 * scale));
+  const barGap = Math.max(1, Math.round(2 * scale));
+  const micSize = Math.max(6, Math.round(10 * scale));
+
   return (
     <div
       className={`relative flex-shrink-0 ${className}`}
@@ -20,8 +27,9 @@ export default function BotlerAvatar({
       {/* Glow ping when talking */}
       {isTalking && (
         <div
-          className="absolute -inset-1 rounded-full bg-amber-400/25"
+          className="absolute rounded-full bg-amber-400/25"
           style={{
+            inset: -Math.round(4 * scale),
             animation: "ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite",
           }}
         />
@@ -39,77 +47,65 @@ export default function BotlerAvatar({
       />
 
       {/* Golden background (matches logo circle) */}
-      <div className="absolute inset-[2.5px] rounded-full bg-[#f5c518]" />
+      <div
+        className="absolute rounded-full bg-[#f5c518]"
+        style={{ inset: borderWidth }}
+      />
 
       {/* Botler character face */}
       <img
         src="/images/botler-logo.png"
         alt="Botler"
         draggable={false}
-        className="absolute inset-[2.5px] rounded-full object-cover"
-        style={{ objectPosition: "center 20%" }}
+        className="absolute rounded-full object-cover"
+        style={{ inset: borderWidth, objectPosition: "center 20%" }}
       />
 
       {/* Breathing scale for idle */}
       {state === "idle" && (
         <div
           className="absolute inset-0 rounded-full border-2 border-amber-500/20"
-          style={{
-            animation: "pulse 3s ease-in-out infinite",
-          }}
+          style={{ animation: "pulse 3s ease-in-out infinite" }}
         />
       )}
 
       {/* Voice bars when talking */}
       {isTalking && (
-        <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 flex items-end gap-[2px]">
-          <span
-            className="rounded-full bg-amber-500"
-            style={{
-              width: size > 36 ? 3 : 2,
-              animation: "bounce 0.5s ease-in-out infinite",
-              animationDelay: "0ms",
-              height: size > 36 ? 8 : 5,
-            }}
-          />
-          <span
-            className="rounded-full bg-amber-400"
-            style={{
-              width: size > 36 ? 3 : 2,
-              animation: "bounce 0.4s ease-in-out infinite",
-              animationDelay: "120ms",
-              height: size > 36 ? 12 : 7,
-            }}
-          />
-          <span
-            className="rounded-full bg-amber-500"
-            style={{
-              width: size > 36 ? 3 : 2,
-              animation: "bounce 0.45s ease-in-out infinite",
-              animationDelay: "60ms",
-              height: size > 36 ? 10 : 6,
-            }}
-          />
-          <span
-            className="rounded-full bg-amber-400"
-            style={{
-              width: size > 36 ? 3 : 2,
-              animation: "bounce 0.35s ease-in-out infinite",
-              animationDelay: "180ms",
-              height: size > 36 ? 7 : 4,
-            }}
-          />
+        <div
+          className="absolute left-1/2 -translate-x-1/2 flex items-end"
+          style={{ bottom: -Math.round(2 * scale), gap: barGap }}
+        >
+          {[
+            { h: 8, dur: "0.5s", delay: "0ms" },
+            { h: 12, dur: "0.4s", delay: "120ms" },
+            { h: 10, dur: "0.45s", delay: "60ms" },
+            { h: 7, dur: "0.35s", delay: "180ms" },
+          ].map((bar, i) => (
+            <span
+              key={i}
+              className={`rounded-full ${i % 2 === 0 ? "bg-amber-500" : "bg-amber-400"}`}
+              style={{
+                width: barWidth,
+                height: Math.round(bar.h * scale),
+                animation: `bounce ${bar.dur} ease-in-out infinite`,
+                animationDelay: bar.delay,
+              }}
+            />
+          ))}
         </div>
       )}
 
       {/* Mic pulse when listening */}
       {isListening && (
-        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2">
+        <div
+          className="absolute left-1/2 -translate-x-1/2"
+          style={{ bottom: -Math.round(4 * scale) }}
+        >
           <div
             className="rounded-full bg-red-500"
             style={{
-              width: size > 36 ? 10 : 7,
-              height: size > 36 ? 10 : 7,
+              width: micSize,
+              height: micSize,
               animation: "pulse 1s ease-in-out infinite",
             }}
           />

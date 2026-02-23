@@ -93,7 +93,7 @@ export default function Contact() {
     try {
       const response = await fetch(CONTACT_API_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
         body: JSON.stringify(formData),
       });
 
@@ -125,7 +125,7 @@ export default function Contact() {
     try {
       const response = await fetch(CONTACT_API_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
         body: JSON.stringify({
           firstName: formData.firstName || "Visiteur",
           lastName: formData.lastName || "Curieux",

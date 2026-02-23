@@ -16,6 +16,10 @@ COPY server/ server/
 COPY shared/ shared/
 COPY tsconfig.json vite.config.ts ./
 
+# Client-side Gemini API key (restricted by HTTP referrer + API scope)
+ARG VITE_GEMINI_API_KEY
+ENV VITE_GEMINI_API_KEY=$VITE_GEMINI_API_KEY
+
 # Build frontend (dist/public/) + server (dist/index.js)
 RUN pnpm build
 

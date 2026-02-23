@@ -16,14 +16,13 @@ export interface ChatMessage {
   id: string;
   role: "user" | "assistant";
   content: string;
-  timestamp: Date;
 }
 
 // Server injects system prompt, tools, and generation config
 async function callGemini(contents: ConversationMessage[]) {
   const res = await fetch(CHAT_API_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
     body: JSON.stringify({ contents }),
   });
 
@@ -35,26 +34,47 @@ async function callGemini(contents: ConversationMessage[]) {
   return res.json();
 }
 
+// ── Function call handlers (via backend proxy) ─────────
+const FUNCTION_ENDPOINTS: Record<string, string> = {
+  write_to_crm: CRM_API_URL,
+  schedule_callback: "/api/schedule",
+  check_availability: "/api/availability",
+};
+
 async function executeFunctionCall(
   name: string,
   args: Record<string, unknown>,
 ): Promise<string> {
-  if (name === "write_to_crm") {
-    try {
-      const res = await fetch(CRM_API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(args),
-      });
-      if (!res.ok) throw new Error(`CRM ${res.status}`);
-      return "Lead enregistré avec succès dans le CRM.";
-    } catch (error) {
-      console.error("[BotlerChat] CRM write error:", error);
-      return "ERREUR: L'enregistrement dans le CRM a échoué. Informe l'utilisateur que ses informations ont été notées et qu'un membre de l'équipe le recontactera.";
-    }
-  }
+  const url = FUNCTION_ENDPOINTS[name];
+  if (!url) return `Fonction inconnue: ${name}`;
 
-  return `Fonction inconnue: ${name}`;
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
+      body: JSON.stringify(args),
+    });
+
+    if (!res.ok) throw new Error(`${name} ${res.status}`);
+    const data = await res.json();
+
+    if (name === "write_to_crm") {
+      return data.status === "ok"
+        ? "Lead enregistré avec succès dans le CRM."
+        : "ERREUR: L'enregistrement CRM a échoué.";
+    }
+    if (name === "schedule_callback") {
+      return data.status === "ok"
+        ? "Rappel planifié avec succès. L'équipe recontactera le prospect."
+        : "ERREUR: La planification du rappel a échoué.";
+    }
+    if (name === "check_availability") {
+      return JSON.stringify(data);
+    }
+    return JSON.stringify(data);
+  } catch {
+    return `ERREUR: L'appel à ${name} a échoué. Informe l'utilisateur que ses informations ont été notées et qu'un membre de l'équipe le recontactera.`;
+  }
 }
 
 const GREETING: ChatMessage = {
@@ -62,7 +82,6 @@ const GREETING: ChatMessage = {
   role: "assistant",
   content:
     "Bonjour ! Je suis Botler, l'assistant IA de Botler 360. Je suis là pour comprendre vos besoins et voir comment on peut vous aider. Qu'est-ce qui vous amène aujourd'hui ?",
-  timestamp: new Date(),
 };
 
 export function useGeminiChat() {
@@ -73,13 +92,10 @@ export function useGeminiChat() {
   const sendMessage = useCallback(async (userText: string) => {
     if (!userText.trim()) return;
 
-    const userMsg: ChatMessage = {
-      id: crypto.randomUUID(),
-      role: "user",
-      content: userText,
-      timestamp: new Date(),
-    };
-    setMessages((prev) => [...prev, userMsg]);
+    setMessages((prev) => [
+      ...prev,
+      { id: crypto.randomUUID(), role: "user", content: userText },
+    ]);
     setIsLoading(true);
 
     conversationHistory.current.push({
@@ -133,40 +149,32 @@ export function useGeminiChat() {
         candidate.parts
           ?.filter((p: MessagePart) => p.text)
           .map((p: MessagePart) => p.text)
-          .join("") || "Désolé, je n'ai pas pu générer de réponse.";
+          .join("") || "...";
 
       conversationHistory.current.push({
         role: "model",
         parts: [{ text: assistantText }],
       });
 
-      const assistantMsg: ChatMessage = {
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content: assistantText,
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, assistantMsg]);
+      setMessages((prev) => [
+        ...prev,
+        { id: crypto.randomUUID(), role: "assistant", content: assistantText },
+      ]);
     } catch (error) {
-      console.error("[BotlerChat] Error:", error);
+      console.error("[useGeminiChat]", error);
       conversationHistory.current.pop();
-      const errorMsg: ChatMessage = {
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content:
-          "Désolé, une erreur est survenue. Veuillez réessayer dans quelques instants.",
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, errorMsg]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          content: "Désolé, une erreur est survenue. Réessayez.",
+        },
+      ]);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  const resetChat = useCallback(() => {
-    setMessages([]);
-    conversationHistory.current = [];
-  }, []);
-
-  return { messages, isLoading, sendMessage, resetChat };
+  return { messages, isLoading, sendMessage };
 }
