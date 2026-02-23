@@ -114,7 +114,12 @@ export function connectGeminiLive(
       onclose: (e: unknown) => {
         wrapper.closed = true;
         const evt = e as { code?: number; reason?: string; message?: string };
-        const code = evt?.code ?? "?";
+        const code = evt?.code ?? 0;
+        // Code 1000 = normal closure (user hung up or session ended gracefully)
+        if (code === 1000) {
+          console.log("[GeminiLive] WebSocket closed normally (1000)");
+          return;
+        }
         const reason = evt?.reason || evt?.message || "unknown";
         console.error(`[GeminiLive] WebSocket CLOSED — code=${code}, reason=${reason}`, e);
         callbacks.onClose?.(
