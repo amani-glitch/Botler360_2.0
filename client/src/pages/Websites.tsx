@@ -132,7 +132,36 @@ export default function Websites() {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead title={t("seo.websites.title")} description={t("seo.websites.description")} canonical="/websites" />
+      <SEOHead
+        title={t("seo.websites.title")}
+        description={t("seo.websites.description")}
+        canonical="/websites"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "name": "Site Web Professionnel Botler 360",
+          "description": "Site web professionnel livré en 24-48h. Design moderne, responsive, SEO optimisé, hébergement et SSL inclus. Chatbot IA offert 1 mois.",
+          "brand": { "@type": "Brand", "name": "Botler 360" },
+          "offers": {
+            "@type": "Offer",
+            "price": "249",
+            "priceCurrency": "EUR",
+            "priceValidUntil": "2026-12-31",
+            "availability": "https://schema.org/InStock",
+            "seller": {
+              "@type": "Organization",
+              "name": "Botler 360",
+              "url": "https://botler360.com",
+            },
+          },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "ratingCount": "30",
+            "bestRating": "5",
+          },
+        }}
+      />
       <Navbar />
 
       {/* Hero Section */}

@@ -233,7 +233,39 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead title={t("seo.home.title")} description={t("seo.home.description")} canonical="/" />
+      <SEOHead
+        title={t("seo.home.title")}
+        description={t("seo.home.description")}
+        canonical="/"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          "name": "Botler 360",
+          "applicationCategory": "BusinessApplication",
+          "applicationSubCategory": "Chatbot IA conversationnel",
+          "operatingSystem": "Web",
+          "description": "Plateforme SaaS de chatbots IA pour entreprises. Assistant virtuel intelligent qui automatise votre relation client 24h/24.",
+          "offers": {
+            "@type": "AggregateOffer",
+            "priceCurrency": "EUR",
+            "lowPrice": "9",
+            "highPrice": "49",
+            "offerCount": "4",
+          },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.8",
+            "ratingCount": "50",
+            "bestRating": "5",
+          },
+          "featureList": "Chatbot IA multilingue, Installation 5 minutes, Qualification de prospects, Réservations automatiques, Intégration CRM, Support 24/7",
+          "provider": {
+            "@type": "Organization",
+            "name": "Botler 360",
+            "url": "https://botler360.com",
+          },
+        }}
+      />
       <Navbar />
 
       {/* Hero Section */}

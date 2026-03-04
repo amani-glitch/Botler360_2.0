@@ -11,15 +11,30 @@
     <link rel="icon" type="image/x-icon" href="/images/botler-logo-full.png" />
     <link rel="canonical" href="https://botler360.com/" />
 
+    <!-- Alternate languages -->
+    <link rel="alternate" hreflang="fr" href="https://botler360.com/" />
+    <link rel="alternate" hreflang="en" href="https://botler360.com/" />
+    <link rel="alternate" hreflang="x-default" href="https://botler360.com/" />
+
     <!-- Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-    <!-- Open Graph -->
+    <!-- Open Graph (defaults — pages override via react-helmet-async) -->
     <meta property="og:site_name" content="Botler 360" />
     <meta property="og:locale" content="fr_FR" />
     <meta property="og:type" content="website" />
+    <meta property="og:title" content="Botler 360 — Chatbots IA & Solutions Digitales pour Entreprises" />
+    <meta property="og:description" content="Botler 360 : plateforme SaaS d'IA conversationnelle. Chatbots intelligents, sites web et applications mobiles pour automatiser votre relation client." />
+    <meta property="og:image" content="https://botler360.com/images/botler-logo-full.png" />
+    <meta property="og:url" content="https://botler360.com/" />
+
+    <!-- Twitter Card (defaults) -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Botler 360 — Chatbots IA & Solutions Digitales" />
+    <meta name="twitter:description" content="Chatbots IA, sites web et applications mobiles pour automatiser la relation client des entreprises." />
+    <meta name="twitter:image" content="https://botler360.com/images/botler-logo-full.png" />
 
     <!-- Schema.org JSON-LD -->
     <script type="application/ld+json">
@@ -34,41 +49,81 @@
           "url": "https://botler360.com",
           "logo": {
             "@type": "ImageObject",
-            "url": "https://botler360.com/images/botler-logo-full.png"
+            "url": "https://botler360.com/images/botler-logo-full.png",
+            "width": 512,
+            "height": 512
           },
+          "image": "https://botler360.com/images/botler-logo-full.png",
           "description": "Plateforme SaaS d'IA conversationnelle pour les entreprises francophones. Chatbots intelligents, sites web et applications mobiles.",
+          "foundingDate": "2024",
+          "areaServed": [
+            { "@type": "Country", "name": "France" },
+            { "@type": "Country", "name": "United Kingdom" }
+          ],
           "address": {
             "@type": "PostalAddress",
             "streetAddress": "44 chemin de Provence",
             "addressLocality": "Entraigues-sur-la-Sorgue",
+            "postalCode": "84320",
+            "addressRegion": "Provence-Alpes-Côte d'Azur",
             "addressCountry": "FR"
           },
-          "contactPoint": {
-            "@type": "ContactPoint",
-            "contactType": "sales",
-            "email": "contact@botler360.com",
-            "availableLanguage": ["French", "English"]
-          },
+          "contactPoint": [
+            {
+              "@type": "ContactPoint",
+              "contactType": "sales",
+              "telephone": "+33186260390",
+              "email": "contact@botler360.com",
+              "availableLanguage": ["French", "English"],
+              "areaServed": ["FR", "GB"]
+            },
+            {
+              "@type": "ContactPoint",
+              "contactType": "customer support",
+              "telephone": "+33186260390",
+              "email": "contact@botler360.com",
+              "hoursAvailable": {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+                "opens": "09:00",
+                "closes": "18:00"
+              },
+              "availableLanguage": ["French", "English"]
+            }
+          ],
           "founder": {
             "@type": "Person",
             "name": "Yacine Bakouche"
           },
+          "knowsAbout": ["Chatbot IA", "Intelligence artificielle conversationnelle", "SaaS", "Automatisation relation client", "Création de sites web"],
           "makesOffer": [
             {
               "@type": "Offer",
               "itemOffered": {
                 "@type": "SoftwareApplication",
-                "name": "Botler 360",
+                "name": "Botler 360 — Chatbot IA",
                 "applicationCategory": "BusinessApplication",
                 "applicationSubCategory": "Chatbot IA",
                 "operatingSystem": "Web",
                 "offers": {
                   "@type": "AggregateOffer",
                   "priceCurrency": "EUR",
-                  "lowPrice": "0",
+                  "lowPrice": "9",
+                  "highPrice": "49",
                   "offerCount": "4"
                 }
               }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Création de site web professionnel",
+                "description": "Site web professionnel livré en 24-48h, hébergement et SSL inclus",
+                "provider": { "@id": "https://botler360.com/#organization" }
+              },
+              "price": "249",
+              "priceCurrency": "EUR"
             }
           ]
         },
@@ -78,8 +133,13 @@
           "name": "Botler 360",
           "url": "https://botler360.com",
           "publisher": { "@id": "https://botler360.com/#organization" },
-          "inLanguage": "fr-FR",
-          "description": "Chatbots IA, sites web et applications mobiles pour automatiser la relation client des entreprises."
+          "inLanguage": ["fr-FR", "en"],
+          "description": "Chatbots IA, sites web et applications mobiles pour automatiser la relation client des entreprises.",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://botler360.com/faq?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
         }
       ]
     }
@@ -88,11 +148,47 @@
 
   <body>
     <div id="root"></div>
+    <noscript>
+      <h1>Botler 360 — Chatbots IA & Solutions Digitales pour Entreprises</h1>
+      <p>Botler 360 est une plateforme SaaS d'IA conversationnelle qui aide les entreprises francophones à automatiser leur relation client grâce à des chatbots intelligents.</p>
+      <h2>Nos offres</h2>
+      <ul>
+        <li><strong>Pack Junior</strong> — Chatbot IA de base, 9€/mois</li>
+        <li><strong>Pack Expert</strong> — Chatbot IA avancé avec qualification de prospects, 19€/mois</li>
+        <li><strong>Pack Expert PME</strong> — Chatbot IA premium pour volumes importants, 49€/mois</li>
+        <li><strong>Site Web Professionnel</strong> — Livré en 24-48h, hébergement et SSL inclus, 249€</li>
+        <li><strong>Application Mobile</strong> — Application native pour iOS et Android, 249€</li>
+      </ul>
+      <h2>Secteurs d'activité</h2>
+      <ul>
+        <li><a href="/tourisme">Tourisme</a></li>
+        <li><a href="/viticulture">Viticulture</a></li>
+        <li><a href="/restaurants">Restaurants</a></li>
+        <li><a href="/boulangerie">Boulangerie</a></li>
+        <li><a href="/immobilier">Immobilier</a></li>
+        <li><a href="/hebergements">Hébergements</a></li>
+      </ul>
+      <h2>Contact</h2>
+      <p>Téléphone : <a href="tel:+33186260390">01 86 26 03 90</a> | Email : <a href="mailto:contact@botler360.com">contact@botler360.com</a></p>
+      <p>44 chemin de Provence, 84320 Entraigues-sur-la-Sorgue, France</p>
+      <nav>
+        <a href="/solutions">Nos solutions</a> |
+        <a href="/demo">Démonstrations</a> |
+        <a href="/faq">FAQ</a> |
+        <a href="/contact">Contact</a> |
+        <a href="/websites">Sites web</a> |
+        <a href="/applications-mobiles">Applications mobiles</a>
+      </nav>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
-    <script
-      defer
-      src="%VITE_ANALYTICS_ENDPOINT%/umami"
-      data-website-id="%VITE_ANALYTICS_WEBSITE_ID%"></script>
+    <!-- Google Analytics GA4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MQ5XVFQYFH"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-MQ5XVFQYFH');
+    </script>
   </body>
 
 </html>

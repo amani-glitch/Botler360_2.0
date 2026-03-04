@@ -31,11 +31,11 @@ app.use(helmet({
   contentSecurityPolicy: isProd ? {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://www.googletagmanager.com", "https://www.google-analytics.com"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'", "https://generativelanguage.googleapis.com", "wss://generativelanguage.googleapis.com"],
+      connectSrc: ["'self'", "https://generativelanguage.googleapis.com", "wss://generativelanguage.googleapis.com", "https://www.google-analytics.com", "https://analytics.google.com"],
       mediaSrc: ["'self'", "blob:"],
       workerSrc: ["'self'", "blob:"],
       frameSrc: ["'none'"],
@@ -59,8 +59,9 @@ app.use(cors({
       callback(null, true);
       return;
     }
-    // Allow Cloud Run self-referencing requests (same host)
-    if (isProd && requestOrigin.endsWith(".run.app")) {
+    // Allow Cloud Run self-referencing requests (exact URL only)
+    const cloudRunUrl = process.env.CLOUD_RUN_URL;
+    if (isProd && cloudRunUrl && requestOrigin === cloudRunUrl) {
       callback(null, true);
       return;
     }
@@ -81,7 +82,8 @@ app.use((req, res, next) => {
 
   // In production, require valid Origin header (allow same-origin Cloud Run)
   if (isProd && origin) {
-    const allowed = ALLOWED_ORIGINS.includes(origin) || origin.endsWith(".run.app");
+    const cloudRunUrl = process.env.CLOUD_RUN_URL;
+    const allowed = ALLOWED_ORIGINS.includes(origin) || (cloudRunUrl && origin === cloudRunUrl);
     if (!allowed) {
       console.warn(`[security] Blocked request from origin: ${origin}`);
       res.status(403).json({ error: "Forbidden" });
@@ -220,13 +222,32 @@ const GENERATION_CONFIG = {
   maxOutputTokens: 1024,
 };
 
-// ── GET /api/voice-config — Serve system prompt + live API key (not bundled) ──
-app.get("/api/voice-config", chatLimiter, (_req, res) => {
+// ── GET /api/voice-config — Serve voice config with restricted API key ──
+// Uses a separate referrer-restricted key (GEMINI_LIVE_API_KEY) to limit exposure.
+// Falls back to the main key in dev only.
+const GEMINI_LIVE_API_KEY = process.env.GEMINI_LIVE_API_KEY || (isProd ? "" : GEMINI_API_KEY);
+
+app.get("/api/voice-config", chatLimiter, (req, res) => {
+  // In production, require X-Requested-With to prevent direct browser access
+  if (isProd && !req.headers["x-requested-with"]) {
+    res.status(403).json({ error: "Forbidden" });
+    return;
+  }
+
+  if (!GEMINI_LIVE_API_KEY) {
+    res.status(500).json({ error: "Voice API key not configured" });
+    return;
+  }
+
+  // Send a condensed voice-only system instruction (not the full sales prompt)
+  const voiceInstruction = SYSTEM_PROMPT +
+    "\n\nMODE VOCAL ACTIVÉ. Sois extra concis, chaleureux et naturel. Maximum 2-3 phrases par réponse. Parle comme dans une vraie conversation téléphonique.";
+
   res.json({
-    systemInstruction: SYSTEM_PROMPT,
+    systemInstruction: voiceInstruction,
     voiceName: "Puck",
     model: "gemini-2.5-flash-native-audio-preview-12-2025",
-    liveApiKey: GEMINI_API_KEY,
+    liveApiKey: GEMINI_LIVE_API_KEY,
   });
 });
 
@@ -249,11 +270,14 @@ app.post("/api/chat", chatLimiter, async (req, res) => {
   }
 
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
     const upstream = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": GEMINI_API_KEY,
+      },
       signal: AbortSignal.timeout(30_000),
       body: JSON.stringify({
         system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
@@ -491,11 +515,14 @@ ${trimmed}
 
 Réponds UNIQUEMENT avec le JSON, sans markdown, sans explication.`;
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
     const upstream = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": GEMINI_API_KEY,
+      },
       signal: AbortSignal.timeout(30_000),
       body: JSON.stringify({
         contents: [{ role: "user", parts: [{ text: extractionPrompt }] }],

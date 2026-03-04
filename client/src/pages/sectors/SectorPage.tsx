@@ -75,7 +75,40 @@ export default function SectorPage({ sectorId, heroImage, videoSrc }: SectorPage
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead title={t(`seo.sector.${sectorId}.title`)} description={t(`seo.sector.${sectorId}.description`)} canonical={`/demo/${sectorId}`} />
+      <SEOHead
+        title={t(`seo.sector.${sectorId}.title`)}
+        description={t(`seo.sector.${sectorId}.description`)}
+        canonical={`/${sectorId}`}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://botler360.com/" },
+                { "@type": "ListItem", "position": 2, "name": t(`seo.sector.${sectorId}.title`), "item": `https://botler360.com/${sectorId}` },
+              ],
+            },
+            {
+              "@type": "Service",
+              "name": `Chatbot IA pour ${t(`seo.sector.${sectorId}.title`)}`,
+              "description": t(`seo.sector.${sectorId}.description`),
+              "provider": {
+                "@type": "Organization",
+                "name": "Botler 360",
+                "url": "https://botler360.com",
+              },
+              "areaServed": { "@type": "Country", "name": "France" },
+              "offers": {
+                "@type": "AggregateOffer",
+                "priceCurrency": "EUR",
+                "lowPrice": "9",
+                "highPrice": "49",
+              },
+            },
+          ],
+        }}
+      />
       <Navbar />
 
       {/* Hero Section */}

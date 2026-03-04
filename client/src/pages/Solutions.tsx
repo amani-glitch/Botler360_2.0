@@ -194,7 +194,91 @@ export default function Solutions() {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead title={t("seo.solutions.title")} description={t("seo.solutions.description")} canonical="/solutions" />
+      <SEOHead
+        title={t("seo.solutions.title")}
+        description={t("seo.solutions.description")}
+        canonical="/solutions"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          "name": "Offres Chatbot IA Botler 360",
+          "description": "Packs chatbot IA pour entreprises : du Pack Junior au Pack Sur Mesure",
+          "numberOfItems": 4,
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "item": {
+                "@type": "Product",
+                "name": "Pack Junior — Chatbot IA",
+                "description": "Chatbot IA de base pour les petites entreprises. Réponses automatiques, multilangue, installation en 5 minutes.",
+                "brand": { "@type": "Brand", "name": "Botler 360" },
+                "offers": {
+                  "@type": "Offer",
+                  "price": "9",
+                  "priceCurrency": "EUR",
+                  "priceValidUntil": "2026-12-31",
+                  "availability": "https://schema.org/InStock",
+                  "billingDuration": { "@type": "QuantitativeValue", "value": 1, "unitCode": "MON" },
+                },
+              },
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "item": {
+                "@type": "Product",
+                "name": "Pack Expert — Chatbot IA",
+                "description": "Chatbot IA avancé avec matching intelligent, assistant commercial et qualification de prospects.",
+                "brand": { "@type": "Brand", "name": "Botler 360" },
+                "offers": {
+                  "@type": "Offer",
+                  "price": "19",
+                  "priceCurrency": "EUR",
+                  "priceValidUntil": "2026-12-31",
+                  "availability": "https://schema.org/InStock",
+                  "billingDuration": { "@type": "QuantitativeValue", "value": 1, "unitCode": "MON" },
+                },
+              },
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "item": {
+                "@type": "Product",
+                "name": "Pack Expert PME — Chatbot IA",
+                "description": "Chatbot IA premium pour PME avec volumes importants, fonctionnalités avancées et support prioritaire.",
+                "brand": { "@type": "Brand", "name": "Botler 360" },
+                "offers": {
+                  "@type": "Offer",
+                  "price": "49",
+                  "priceCurrency": "EUR",
+                  "priceValidUntil": "2026-12-31",
+                  "availability": "https://schema.org/InStock",
+                  "billingDuration": { "@type": "QuantitativeValue", "value": 1, "unitCode": "MON" },
+                },
+              },
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "item": {
+                "@type": "Product",
+                "name": "Site Web Professionnel",
+                "description": "Site web professionnel livré en 24-48h. Hébergement, SSL, SEO et chatbot offert 1 mois inclus.",
+                "brand": { "@type": "Brand", "name": "Botler 360" },
+                "offers": {
+                  "@type": "Offer",
+                  "price": "249",
+                  "priceCurrency": "EUR",
+                  "priceValidUntil": "2026-12-31",
+                  "availability": "https://schema.org/InStock",
+                },
+              },
+            },
+          ],
+        }}
+      />
       <Navbar />
 
       {/* Hero Section */}

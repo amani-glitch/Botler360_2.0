@@ -189,7 +189,36 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead title={t("seo.contact.title")} description={t("seo.contact.description")} canonical="/contact" />
+      <SEOHead
+        title={t("seo.contact.title")}
+        description={t("seo.contact.description")}
+        canonical="/contact"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "ContactPage",
+          "name": "Contacter Botler 360",
+          "description": "Contactez l'équipe Botler 360 pour un devis gratuit. Chatbot IA, site web ou application mobile.",
+          "mainEntity": {
+            "@type": "Organization",
+            "name": "Botler 360",
+            "telephone": "+33186260390",
+            "email": "contact@botler360.com",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "44 chemin de Provence",
+              "addressLocality": "Entraigues-sur-la-Sorgue",
+              "postalCode": "84320",
+              "addressCountry": "FR",
+            },
+            "openingHoursSpecification": {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+              "opens": "09:00",
+              "closes": "18:00",
+            },
+          },
+        }}
+      />
       <Navbar />
 
       {/* Hero Section */}

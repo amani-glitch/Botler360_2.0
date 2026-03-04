@@ -80,7 +80,9 @@ export default function LiveVoiceAgent({ onClose }: LiveVoiceAgentProps) {
 
       // Step 3: Fetch voice config + API key from server
       console.log("[LiveVoice] Step 3: Fetching voice config...");
-      const configRes = await fetch("/api/voice-config");
+      const configRes = await fetch("/api/voice-config", {
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+      });
       if (!configRes.ok) throw new Error(`Configuration vocale indisponible (HTTP ${configRes.status})`);
       const voiceConfig = await configRes.json();
       if (!voiceConfig.liveApiKey) throw new Error("Cle API Live manquante dans la config serveur");
