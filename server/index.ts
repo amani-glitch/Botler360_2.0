@@ -286,9 +286,9 @@ app.post("/api/chat", chatLimiter, async (req, res) => {
       },
       signal: AbortSignal.timeout(30_000),
       body: JSON.stringify({
-        system_instruction: { parts: [{ text: SYSTEM_PROMPT + "\n\nQuand un prospect mentionne son site web ou son entreprise, utilise Google Search pour te renseigner sur son activité avant de faire ta recommandation. Mentionne des éléments concrets de leur activité dans ta réponse." }] },
+        system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
         contents,
-        tools: [{ google_search: {} }, { function_declarations: FUNCTION_DECLARATIONS }],
+        tools: [{ function_declarations: FUNCTION_DECLARATIONS }],
         generationConfig: GENERATION_CONFIG,
       }),
     });
