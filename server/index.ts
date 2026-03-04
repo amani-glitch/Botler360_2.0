@@ -286,9 +286,9 @@ app.post("/api/chat", chatLimiter, async (req, res) => {
       },
       signal: AbortSignal.timeout(30_000),
       body: JSON.stringify({
-        system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        system_instruction: { parts: [{ text: SYSTEM_PROMPT + "\n\nQuand un prospect mentionne son site web ou son entreprise, utilise Google Search pour te renseigner sur son activité avant de faire ta recommandation. Mentionne des éléments concrets de leur activité dans ta réponse." }] },
         contents,
-        tools: [{ function_declarations: FUNCTION_DECLARATIONS }],
+        tools: [{ google_search: {} }, { function_declarations: FUNCTION_DECLARATIONS }],
         generationConfig: GENERATION_CONFIG,
       }),
     });
@@ -439,11 +439,6 @@ const CONTACT_ALLOWED_FIELDS = [
 ] as const;
 
 app.post("/api/contact", contactLimiter, async (req, res) => {
-  if (!CONTACT_WEBHOOK_URL) {
-    res.status(500).json({ error: "Contact endpoint not configured" });
-    return;
-  }
-
   const sanitized: Record<string, unknown> = {};
   for (const field of CONTACT_ALLOWED_FIELDS) {
     if (req.body[field] !== undefined) {
@@ -456,19 +451,71 @@ app.post("/api/contact", contactLimiter, async (req, res) => {
     return;
   }
 
-  try {
-    const upstream = await fetch(CONTACT_WEBHOOK_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      signal: AbortSignal.timeout(10_000),
-      body: JSON.stringify(sanitized),
-    });
+  // Auto-score based on fields provided
+  let score = 10; // email is always present (validated above)
+  if (sanitized.phone) score += 5;
+  if (sanitized.company) score += 5;
+  if (sanitized.message) score += 5;
 
-    res.json({ status: upstream.ok ? "ok" : "error" });
-  } catch (err) {
-    console.error("[server] Contact proxy error:", err);
-    res.status(502).json({ error: "Failed to submit contact form" });
+  // Map form fields → CRM fields
+  const crmPayload = {
+    first_name: sanitized.firstName || "",
+    last_name: sanitized.lastName || "",
+    email: sanitized.email,
+    phone: sanitized.phone || "",
+    company_name: sanitized.company || "Non renseigné",
+    sector: sanitized.sector || "",
+    product_interest: sanitized.projectType || "",
+    conversation_summary: sanitized.message || "",
+    source: "website_contact_form",
+    stage: "new_lead",
+    score,
+    next_action: "Recontacter sous 24h",
+    api_key: CRM_API_KEY,
+  };
+
+  let contactStatus = "skipped";
+  let crmStatus = "skipped";
+
+  // 1. Send to legacy contact webhook (if configured)
+  if (CONTACT_WEBHOOK_URL) {
+    try {
+      const upstream = await fetch(CONTACT_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        signal: AbortSignal.timeout(10_000),
+        body: JSON.stringify(sanitized),
+      });
+      contactStatus = upstream.ok ? "ok" : "error";
+    } catch (err) {
+      console.error("[server] Contact proxy error:", err);
+      contactStatus = "error";
+    }
   }
+
+  // 2. Write to unified CRM
+  if (CRM_WEBHOOK_URL) {
+    try {
+      const crmRes = await fetch(CRM_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        signal: AbortSignal.timeout(10_000),
+        body: JSON.stringify(crmPayload),
+      });
+      crmStatus = crmRes.ok ? "ok" : "error";
+    } catch (err) {
+      console.error("[server] CRM write from contact form error:", err);
+      crmStatus = "error";
+    }
+  }
+
+  // Respond OK if at least one target succeeded
+  const success = contactStatus === "ok" || crmStatus === "ok";
+  res.status(success ? 200 : 502).json({
+    status: success ? "ok" : "error",
+    contact: contactStatus,
+    crm: crmStatus,
+  });
 });
 
 // ── POST /api/voice-summary — Analyze voice transcript + write to CRM ──
