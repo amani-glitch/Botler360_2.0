@@ -152,6 +152,16 @@ try {
   console.warn("[server] System prompt file not found — chat will work without it.");
 }
 
+let VOICE_SYSTEM_PROMPT = "";
+try {
+  const voicePromptPath = isProd
+    ? path.join(__dirname, "BOTLER_VOICE_SYSTEM_PROMPT_v2.1.md")
+    : path.join(__dirname, "..", "client", "src", "config", "BOTLER_VOICE_SYSTEM_PROMPT_v2.1.md");
+  VOICE_SYSTEM_PROMPT = fs.readFileSync(voicePromptPath, "utf-8");
+} catch {
+  console.warn("[server] Voice system prompt v2.1 not found — falling back to default.");
+}
+
 const FUNCTION_DECLARATIONS = [
   {
     name: "write_to_crm",
@@ -239,12 +249,8 @@ app.get("/api/voice-config", chatLimiter, (req, res) => {
     return;
   }
 
-  // Send a condensed voice-only system instruction (not the full sales prompt)
-  const voiceInstruction = SYSTEM_PROMPT +
-    "\n\nMODE VOCAL ACTIVÉ. Sois extra concis, chaleureux et naturel. Maximum 2-3 phrases par réponse. Parle comme dans une vraie conversation téléphonique.";
-
   res.json({
-    systemInstruction: voiceInstruction,
+    systemInstruction: VOICE_SYSTEM_PROMPT || SYSTEM_PROMPT,
     voiceName: "Puck",
     model: "gemini-2.5-flash-native-audio-preview-12-2025",
     liveApiKey: GEMINI_LIVE_API_KEY,

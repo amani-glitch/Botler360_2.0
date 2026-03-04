@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --host",
     "dev:server": "tsx --env-file=.env server/index.ts",
-    "build": "vite build && esbuild server/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js --packages=external && cp client/src/config/BOTLER360_AGENT_SYSTEM_PROMPT.md dist/",
+    "build": "vite build && esbuild server/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js --packages=external && cp client/src/config/BOTLER360_AGENT_SYSTEM_PROMPT.md client/src/config/BOTLER_VOICE_SYSTEM_PROMPT_v2.1.md dist/",
     "start": "NODE_ENV=production node dist/index.js",
     "preview": "vite preview --host",
     "check": "tsc --noEmit",
