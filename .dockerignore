@@ -1,0 +1,46 @@
+# --- Source we don't need at runtime ---
+# (client/ and shared/ ARE needed in the build context now — the frontend is
+# built inside the client-builder stage and its static output copied into
+# the runtime image alongside the API, so Cloud Run serves the whole site.)
+patches/
+.manus-logs/
+.claude/
+
+# --- Outputs ---
+dist/
+
+# --- Local env / secrets ---
+.env
+.env.local
+.env.development.local
+.env.production.local
+*.local
+
+# --- Build & dev artifacts ---
+node_modules/
+.npm/
+.pnpm-store/
+.cache/
+.parcel-cache/
+*.log
+npm-debug.log*
+
+# --- Editor / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# --- Docs / repo metadata not needed in the image ---
+.git/
+.github/
+.gitignore
+.gitkeep
+.prettierignore
+.prettierrc
+README*
+DEVELOPMENT_TASK_SPECIFICATION.md
+ideas.md
+scripts/test-live.mjs
+scripts/models*.json

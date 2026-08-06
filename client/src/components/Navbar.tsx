@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown, Sun, Moon } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { scrollToHomeSection } from "@/lib/homeAnchors";
 
 const sectors = [
   { id: "tourisme", key: "sector.tourism", path: "/demo/tourisme" },
@@ -26,9 +27,12 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSectorsOpen, setIsSectorsOpen] = useState(false);
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const { theme, toggleTheme, switchable } = useTheme();
   const { language, setLanguage, t } = useLanguage();
+  // The hub's sticky header shows in-page anchors instead of page links
+  // (brief §6bis section 1) — every other route keeps full site wayfinding.
+  const isHome = location === "/" || location === "/en";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,6 +48,15 @@ export default function Navbar() {
     { href: "/demo", label: t("nav.demo") },
     { href: "/contact", label: t("nav.contact") },
   ];
+
+  const homeAnchors = [
+    { id: "offre", label: t("nav.hub.offer") },
+    { id: "realisations", label: t("nav.hub.showcase") },
+    { id: "botler-live", label: t("nav.hub.talk") },
+    { id: "rendez-vous", label: t("nav.hub.book") },
+  ];
+
+  const goToHomeSection = (id: string) => scrollToHomeSection(id, setLocation, location);
 
   const toggleLanguage = () => {
     setLanguage(language === "fr" ? "en" : "fr");
@@ -71,9 +84,12 @@ export default function Navbar() {
               <img
                 src="/images/botler-logo-full.png"
                 alt="Botler"
-                className="h-14 w-auto object-contain"
+                className="h-10 sm:h-14 w-auto object-contain"
+                decoding="async"
+                width="180"
+                height="56"
               />
-              <span className="text-2xl font-bold text-slate-800 dark:text-white">
+              <span className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white">
                 Botler<sup className="text-xs">™</sup>
               </span>
             </motion.div>
@@ -81,68 +97,82 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <Link key={link.href} href={link.href}>
-                <motion.span
-                  whileHover={{ y: -2 }}
-                  className={`relative text-sm font-medium transition-colors cursor-pointer ${
-                    location === link.href
-                      ? "text-amber-500"
-                      : "text-foreground/80 hover:text-amber-500"
-                  }`}
+            {isHome ? (
+              homeAnchors.map((anchor) => (
+                <button
+                  key={anchor.id}
+                  onClick={() => goToHomeSection(anchor.id)}
+                  className="text-sm font-medium text-foreground/80 hover:text-amber-500 transition-colors"
                 >
-                  {link.label}
-                  {location === link.href && (
-                    <motion.div
-                      layoutId="activeNav"
-                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-amber-500 to-teal-500"
-                    />
-                  )}
-                </motion.span>
-              </Link>
-            ))}
+                  {anchor.label}
+                </button>
+              ))
+            ) : (
+              <>
+                {navLinks.map((link) => (
+                  <Link key={link.href} href={link.href}>
+                    <motion.span
+                      whileHover={{ y: -2 }}
+                      className={`relative text-sm font-medium transition-colors cursor-pointer ${
+                        location === link.href
+                          ? "text-amber-500"
+                          : "text-foreground/80 hover:text-amber-500"
+                      }`}
+                    >
+                      {link.label}
+                      {location === link.href && (
+                        <motion.div
+                          layoutId="activeNav"
+                          className="absolute -bottom-1 left-0 right-0 h-0.5 bg-amber-500"
+                        />
+                      )}
+                    </motion.span>
+                  </Link>
+                ))}
 
-            {/* Sectors Dropdown */}
-            <div
-              className="relative"
-              onMouseEnter={() => setIsSectorsOpen(true)}
-              onMouseLeave={() => setIsSectorsOpen(false)}
-            >
-              <button className="flex items-center gap-1 text-sm font-medium text-foreground/80 hover:text-amber-500 transition-colors">
-                {t("nav.sectors")}
-                <ChevronDown
-                  className={`w-4 h-4 transition-transform ${
-                    isSectorsOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-              <AnimatePresence>
-                {isSectorsOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    transition={{ duration: 0.2 }}
-                    className="absolute top-full left-0 mt-2 w-48 glass-card rounded-xl p-2"
-                  >
-                    {sectors.map((sector) => (
-                      <Link key={sector.id} href={sector.path}>
-                        <span className="block px-4 py-2 text-sm text-foreground/80 hover:text-amber-500 hover:bg-white/5 dark:hover:bg-white/5 rounded-lg transition-colors cursor-pointer">
-                          {t(sector.key)}
-                        </span>
-                      </Link>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+                {/* Sectors Dropdown */}
+                <div
+                  className="relative"
+                  onMouseEnter={() => setIsSectorsOpen(true)}
+                  onMouseLeave={() => setIsSectorsOpen(false)}
+                >
+                  <button className="flex items-center gap-1 text-sm font-medium text-foreground/80 hover:text-amber-500 transition-colors">
+                    {t("nav.sectors")}
+                    <ChevronDown
+                      className={`w-4 h-4 transition-transform ${
+                        isSectorsOpen ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+                  <AnimatePresence>
+                    {isSectorsOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute top-full left-0 mt-2 w-48 glass-card rounded-xl p-2"
+                      >
+                        {sectors.map((sector) => (
+                          <Link key={sector.id} href={sector.path}>
+                            <span className="block px-4 py-2 text-sm text-foreground/80 hover:text-amber-500 hover:bg-white/5 dark:hover:bg-white/5 rounded-lg transition-colors cursor-pointer">
+                              {t(sector.key)}
+                            </span>
+                          </Link>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </>
+            )}
 
             {/* Language Toggle */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={toggleLanguage}
-              className="px-3 py-1.5 text-sm font-bold rounded-lg border border-border/50 bg-secondary/50 hover:bg-secondary text-foreground transition-colors"
+              className="min-w-[44px] min-h-[44px] inline-flex items-center justify-center px-3 text-sm font-bold rounded-lg border border-border/50 bg-secondary/50 hover:bg-secondary text-foreground transition-colors"
               aria-label="Toggle language"
             >
               {language === "fr" ? "EN" : "FR"}
@@ -154,7 +184,7 @@ export default function Navbar() {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={toggleTheme}
-                className="p-2 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors"
+                className="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg bg-secondary/50 hover:bg-secondary transition-colors"
                 aria-label="Toggle theme"
               >
                 {theme === "dark" ? (
@@ -168,15 +198,26 @@ export default function Navbar() {
 
           {/* CTA Button */}
           <div className="hidden lg:block">
-            <Link href="/contact">
+            {isHome ? (
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                onClick={() => goToHomeSection("botler-live")}
                 className="btn-gold"
               >
-                {t("nav.getStarted")}
+                {t("nav.hub.talk")}
               </motion.button>
-            </Link>
+            ) : (
+              <Link href="/contact">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="btn-gold"
+                >
+                  {t("nav.getStarted")}
+                </motion.button>
+              </Link>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -185,7 +226,8 @@ export default function Navbar() {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={toggleLanguage}
-              className="px-2 py-1 text-xs font-bold rounded border border-border/50 bg-secondary/50 text-foreground"
+              className="min-w-[44px] min-h-[44px] inline-flex items-center justify-center px-2 text-sm font-bold rounded-lg border border-border/50 bg-secondary/50 text-foreground"
+              aria-label="Toggle language"
             >
               {language === "fr" ? "EN" : "FR"}
             </motion.button>
@@ -195,7 +237,7 @@ export default function Navbar() {
               <motion.button
                 whileTap={{ scale: 0.9 }}
                 onClick={toggleTheme}
-                className="p-2 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors"
+                className="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg bg-secondary/50 hover:bg-secondary transition-colors"
                 aria-label="Toggle theme"
               >
                 {theme === "dark" ? (
@@ -207,7 +249,8 @@ export default function Navbar() {
             )}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 text-foreground hover:text-amber-500 transition-colors"
+              className="min-w-[44px] min-h-[44px] inline-flex items-center justify-center text-foreground hover:text-amber-500 transition-colors"
+              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             >
               {isMobileMenuOpen ? (
                 <X className="w-6 h-6" />
@@ -230,43 +273,71 @@ export default function Navbar() {
             className="lg:hidden bg-background/95 backdrop-blur-xl border-b border-border/50"
           >
             <div className="container mx-auto px-4 py-6 space-y-4">
-              {navLinks.map((link) => (
-                <Link key={link.href} href={link.href}>
-                  <span
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={`block py-2 text-lg font-medium transition-colors cursor-pointer ${
-                      location === link.href
-                        ? "text-amber-500"
-                        : "text-foreground/80 hover:text-amber-500"
-                    }`}
+              {isHome ? (
+                <>
+                  {homeAnchors.map((anchor) => (
+                    <button
+                      key={anchor.id}
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        goToHomeSection(anchor.id);
+                      }}
+                      className="block w-full text-left py-2 text-lg font-medium text-foreground/80 hover:text-amber-500 transition-colors"
+                    >
+                      {anchor.label}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      goToHomeSection("botler-live");
+                    }}
+                    className="w-full btn-gold mt-4"
                   >
-                    {link.label}
-                  </span>
-                </Link>
-              ))}
-              <div className="pt-4 border-t border-border/50">
-                <p className="text-sm text-muted-foreground mb-3">{t("nav.sectors")}</p>
-                <div className="grid grid-cols-2 gap-2">
-                  {sectors.map((sector) => (
-                    <Link key={sector.id} href={sector.path}>
+                    {t("nav.hub.talk")}
+                  </button>
+                </>
+              ) : (
+                <>
+                  {navLinks.map((link) => (
+                    <Link key={link.href} href={link.href}>
                       <span
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="text-sm text-foreground/80 hover:text-amber-500 transition-colors cursor-pointer"
+                        className={`block py-2 text-lg font-medium transition-colors cursor-pointer ${
+                          location === link.href
+                            ? "text-amber-500"
+                            : "text-foreground/80 hover:text-amber-500"
+                        }`}
                       >
-                        {t(sector.key)}
+                        {link.label}
                       </span>
                     </Link>
                   ))}
-                </div>
-              </div>
-              <Link href="/contact">
-                <button
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full btn-gold mt-4"
-                >
-                  {t("nav.getStarted")}
-                </button>
-              </Link>
+                  <div className="pt-4 border-t border-border/50">
+                    <p className="text-sm text-muted-foreground mb-3">{t("nav.sectors")}</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {sectors.map((sector) => (
+                        <Link key={sector.id} href={sector.path}>
+                          <span
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="text-sm text-foreground/80 hover:text-amber-500 transition-colors cursor-pointer"
+                          >
+                            {t(sector.key)}
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                  <Link href="/contact">
+                    <button
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="w-full btn-gold mt-4"
+                    >
+                      {t("nav.getStarted")}
+                    </button>
+                  </Link>
+                </>
+              )}
             </div>
           </motion.div>
         )}

@@ -1,0 +1,38 @@
+# Botler360
+
+> Botler360 conçoit des sites, des applications et des agents IA pour les commerces et PME : sites avec agent intégré, e-commerce, applications mobiles, plateformes métier et formats IA sur-mesure.
+
+Botler360 (Botler 360 Ltd, Royaume-Uni) aide les petites et moyennes entreprises à automatiser leur relation client et à se doter d'une présence digitale professionnelle, sans compétences techniques.
+
+## Offres principales
+
+- Sites & commerce en ligne — site avec agent IA intégré, boutique en ligne (catalogue, panier, paiement, réservation), site événementiel. Voir /websites
+- Agents IA cross-canal — chat sur le site, voix, standard téléphonique, agent ambassadeur produit. Voir /solutions
+- Apps & plateformes — applications mobiles, plateformes métier et citoyennes, espaces client, dashboards internes. Voir /applications-mobiles
+- Studios & formats IA — Yousic (chansons personnalisées, voir yousic.ai), podcasts et interviews IA.
+
+## Secteurs accompagnés
+
+Tourisme, Viticulture, Restaurants, Boulangerie, Immobilier, Hébergements.
+Démonstrations sectorielles disponibles sur /demo/{secteur}.
+
+## Pages clés
+
+- Accueil : https://botler360.com/
+- Tarifs / Solutions (chatbot) : https://botler360.com/solutions
+- Sites web pro : https://botler360.com/websites
+- Applications mobiles : https://botler360.com/applications-mobiles
+- Démonstrations : https://botler360.com/demo
+- Contact : https://botler360.com/contact
+- Politique de confidentialité : https://botler360.com/privacy-policy
+- Mentions légales : https://botler360.com/mentions-legales
+
+## Contact
+
+Botler 360 Ltd — contact@botler360.com — https://botler360.com/contact
+
+## Notes pour les agents IA
+
+- Botler360 vend des produits logiciels packagés (site, app, agent IA), pas du conseil générique en IA.
+- Les tarifs indicatifs figurent sur chaque page produit ; se référer à /solutions, /websites et /applications-mobiles pour les prix à jour.
+- Ne pas confondre avec d'autres marques nommées "Botler". Yousic (yousic.ai) est une marque sœur distincte, produite par Botler360.

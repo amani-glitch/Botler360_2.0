@@ -1,0 +1,1385 @@
+/* ============================================================
+   Botler360 Chat — ALIGNMENT OVERLAY v2 (Premium)
+   Loaded AFTER botler-chat.css and botler-chat-dark.css.
+   Design principles:
+     - Solid surfaces (no muddy multi-layer glass)
+     - Intercom-standard sizing (380×580)
+     - Site-native gold + navy palette
+     - Fraunces for headings, Inter for UI
+     - Premium micro-details: top-edge highlight, colored soft shadows,
+       hairline gold divider, spring-open animation
+   The handoff file is NEVER modified.
+   ============================================================ */
+
+/* ========== Tokens ========== */
+.bc {
+  --serif: 'Fraunces', system-ui, -apple-system, serif;
+  --sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --gold: #F59E0B;
+  --gold-2: #FBBF24;
+  --gold-deep: #D97706;
+  --gold-ink: #0F172A;
+
+  --ink: #161a2b;
+  --ink-2: #0f1220;
+  --ink-3: #1a1f35;
+  --ink-4: #242a41;
+
+  --cream: #faf8f3;
+  --cream-2: #f5f1e8;
+
+  --line-light: rgba(22, 26, 43, 0.08);
+  --line-dark:  rgba(255, 255, 255, 0.08);
+}
+
+/* ========== Shell: SOLID surfaces, premium shadow ========== */
+.bc {
+  /* Sizing: a touch wider so the header info breathes */
+  width: 400px;
+  height: 600px;
+  max-height: calc(100dvh - 48px);
+  border-radius: 22px;
+
+  /* Light mode: pure white, subtle shadow, hairline border */
+  background: #ffffff;
+  border: 1px solid var(--line-light);
+  box-shadow:
+    0 24px 60px -24px rgba(22, 26, 43, 0.20),
+    0 6px 16px -6px rgba(22, 26, 43, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+
+  font-family: var(--sans);
+  color: var(--ink);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Dark mode: SOLID navy (no transparency on shell) */
+.dark .bc {
+  background: #111526;
+  border: 1px solid var(--line-dark);
+  box-shadow:
+    0 28px 70px -24px rgba(0, 0, 0, 0.65),
+    0 4px 14px -4px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  color: #e8e6df;
+}
+
+/* Top-edge gold shimmer (the "luxury" detail — very subtle) */
+.bc::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(245, 158, 11, 0.5) 30%,
+    rgba(245, 158, 11, 0.5) 70%,
+    transparent 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Inline mode: slightly smaller, fit grid cells */
+.bc[data-mode="inline"] {
+  width: 100%;
+  max-width: 420px;
+  height: 540px;
+}
+
+/* HERO CENTERPIECE — data-theme="hub" (Botler live, brief §3): the homepage's
+   embedded agent is the page's focal point, not a small demo-grid card. */
+.bc[data-theme="hub"][data-mode="inline"] {
+  width: 100%;
+  max-width: 640px;
+  height: 640px;
+}
+
+/* ========== Header ========== */
+.bc-header {
+  background: transparent;
+  padding: 16px 18px 14px;
+  gap: 14px;
+  border-bottom: 1px solid var(--line-light);
+  position: relative;
+}
+.dark .bc-header { border-bottom: 1px solid var(--line-dark); }
+
+/* Gold hairline at bottom of header — the signature accent */
+.bc-header::after {
+  left: 18px; right: 18px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--gold) 12%,
+    var(--gold) 88%,
+    transparent 100%);
+  opacity: 0.35;
+}
+
+/* Avatar: gold gradient ring with image inside */
+.bc .bc-avatar {
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
+  box-shadow:
+    0 0 0 3px rgba(245, 158, 11, 0.12),
+    0 4px 10px -2px rgba(245, 158, 11, 0.30);
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  font-size: 19px;
+}
+.dark .bc .bc-avatar {
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+}
+.bc-avatar img { border-radius: 50%; }
+
+/* Info column: clean 3-line stack — Name / Sector / Status */
+.bc-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-self: center;
+}
+
+/* Name: own line, big and clear */
+.bc-name {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: -0.012em;
+  color: var(--ink);
+  line-height: 1.2;
+  display: block;
+}
+.dark .bc-name { color: #f5f1e8; }
+
+.bc-name sup {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 500;
+  opacity: 0.5;
+  margin-left: 3px;
+  top: -0.55em;
+  letter-spacing: 0;
+}
+
+/* Sector badge: pulled out of the name line, on its own row */
+.bc-sector {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.10);
+  color: var(--gold-deep);
+  border: 1px solid rgba(245, 158, 11, 0.32);
+  line-height: 1.4;
+  white-space: nowrap;
+  display: block;
+  width: fit-content;
+  margin-top: 4px;
+  margin-left: 0;
+}
+.dark .bc-sector {
+  background: rgba(245, 158, 11, 0.14);
+  color: var(--gold-2);
+  border-color: rgba(245, 158, 11, 0.38);
+}
+
+/* Status line: more visible, breathing margin */
+.bc-status {
+  font-family: var(--sans);
+  font-size: 11.5px;
+  color: rgba(22, 26, 43, 0.58);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 1px;
+  line-height: 1.3;
+}
+.dark .bc-status { color: rgba(232, 230, 223, 0.62); }
+
+/* Pulsing green dot */
+.bc-dot {
+  width: 6px;
+  height: 6px;
+  background: #3fb27f;
+  box-shadow: 0 0 0 3px rgba(63, 178, 127, 0.18);
+  animation: bc-pulse 2.4s ease-in-out infinite;
+}
+@keyframes bc-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(63, 178, 127, 0.18); }
+  50%      { box-shadow: 0 0 0 5px rgba(63, 178, 127, 0.08); }
+}
+
+/* Close: minimal, gold hover */
+.bc-close {
+  width: 28px;
+  height: 28px;
+  color: rgba(22, 26, 43, 0.45);
+  font-family: var(--sans);
+  transition: background .18s cubic-bezier(.2,.8,.2,1), color .18s;
+}
+.bc-close:hover {
+  background: rgba(245, 158, 11, 0.10);
+  color: var(--gold-deep);
+}
+.dark .bc-close { color: rgba(232, 230, 223, 0.5); }
+.dark .bc-close:hover { background: rgba(245, 158, 11, 0.14); color: var(--gold); }
+
+/* ========== Intro ========== */
+.bc-intro {
+  padding: 14px 18px 8px;
+  background: transparent;
+}
+.bc-intro h2 {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 19px;
+  letter-spacing: -0.022em;
+  color: var(--ink);
+  line-height: 1.2;
+  margin: 0 0 4px;
+}
+.dark .bc-intro h2 { color: #f5f1e8; }
+
+.bc-intro p {
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(22, 26, 43, 0.65);
+}
+.dark .bc-intro p { color: rgba(232, 230, 223, 0.70); }
+
+/* ========== Messages zone ========== */
+.bc-messages {
+  background: var(--cream);
+  border-top: 1px solid var(--line-light);
+  border-bottom: 1px solid var(--line-light);
+  padding: 14px 16px 8px;
+  gap: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(22, 26, 43, 0.18) transparent;
+}
+.dark .bc-messages {
+  background: var(--ink-2);
+  border-top: 1px solid var(--line-dark);
+  border-bottom: 1px solid var(--line-dark);
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+}
+.bc-messages::-webkit-scrollbar { width: 4px; }
+.bc-messages::-webkit-scrollbar-thumb {
+  background: rgba(22, 26, 43, 0.18);
+  border-radius: 2px;
+}
+.dark .bc-messages::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); }
+
+/* ========== Bubbles ========== */
+.bc-msg {
+  font-size: 13px;
+  max-width: 82%;
+  padding: 9px 13px;
+  border-radius: 14px;
+}
+
+/* Bot: white card in light, solid dark card in dark */
+.bc-msg--bot {
+  background: #ffffff;
+  color: var(--ink);
+  border: 1px solid var(--line-light);
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 1px 2px rgba(22, 26, 43, 0.04);
+}
+.dark .bc-msg--bot {
+  background: var(--ink-3);
+  color: #e8e6df;
+  border: 1px solid var(--line-dark);
+  box-shadow: none;
+}
+
+/* User: gold gradient with colored shadow — feels like a CTA */
+.bc .bc-msg--user,
+.bc[data-theme] .bc-msg--user {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
+  color: var(--gold-ink);
+  border-bottom-right-radius: 4px;
+  font-weight: 500;
+  box-shadow:
+    0 6px 16px -4px rgba(245, 158, 11, 0.40),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* Meta (timestamp) */
+.bc-msg-meta {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  color: rgba(22, 26, 43, 0.40);
+  margin-top: 2px;
+}
+.dark .bc-msg-meta { color: rgba(232, 230, 223, 0.40); }
+
+/* Typing */
+.bc-typing { padding: 10px 14px; }
+.bc-typing span {
+  width: 5px; height: 5px;
+  background: rgba(22, 26, 43, 0.35);
+}
+.dark .bc-typing span { background: rgba(232, 230, 223, 0.35); }
+
+/* ========== Quick replies ========== */
+.bc-quick {
+  background: transparent;
+  padding: 10px 16px 6px;
+  gap: 6px;
+}
+
+.bc-chip {
+  background: rgba(22, 26, 43, 0.025);
+  border: 1px solid var(--line-light);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 11px 6px 9px;
+  transition: all .2s cubic-bezier(.2,.8,.2,1);
+}
+.bc-chip:hover {
+  background: rgba(245, 158, 11, 0.10);
+  border-color: rgba(245, 158, 11, 0.55);
+  color: var(--gold-deep);
+  transform: translateY(-1px);
+}
+
+.dark .bc-chip {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--line-dark);
+  color: #e8e6df;
+}
+.dark .bc-chip:hover {
+  background: rgba(245, 158, 11, 0.14);
+  border-color: rgba(245, 158, 11, 0.55);
+  color: var(--gold-2);
+}
+
+.bc-chip-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--gold);
+  box-shadow: 0 0 0 2.5px rgba(245, 158, 11, 0.16);
+}
+
+/* ========== Input ========== */
+.bc-input {
+  background: transparent;
+  border-top: 1px solid var(--line-light);
+  padding: 10px 14px;
+}
+.dark .bc-input { border-top: 1px solid var(--line-dark); }
+
+.bc-field {
+  background: rgba(22, 26, 43, 0.03);
+  border: 1px solid var(--line-light);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 13px;
+  border-radius: 999px;
+  padding: 9px 14px;
+  transition: border-color .18s, box-shadow .18s, background .18s;
+}
+.bc-field::placeholder { color: rgba(22, 26, 43, 0.38); }
+.bc-field:focus {
+  border-color: var(--gold);
+  border-width: 1.5px;
+  padding: 8.5px 13.5px;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.14);
+}
+
+.dark .bc-field {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--line-dark);
+  color: #e8e6df;
+}
+.dark .bc-field::placeholder { color: rgba(232, 230, 223, 0.38); }
+.dark .bc-field:focus {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.18);
+}
+
+/* Voice buttons (mic + speaker) injected by ChatWidget enhancer */
+.bc-voice-btn {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: 50%;
+  border: 1px solid var(--line-light);
+  background: rgba(22, 26, 43, 0.03);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all .18s cubic-bezier(.2,.8,.2,1);
+  padding: 0;
+  font-family: var(--sans);
+}
+.bc-voice-btn:hover {
+  border-color: rgba(245, 158, 11, 0.55);
+  background: rgba(245, 158, 11, 0.08);
+  color: var(--gold-deep);
+}
+.bc-voice-btn:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+.bc-voice-btn.bc-speaker { width: 28px; height: 28px; }
+
+/* Mic in voice mode, listening: gold gradient with a subtle pulse */
+.bc-mic.is-listening {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
+  border-color: transparent;
+  color: var(--gold-ink);
+  animation: bc-mic-pulse 1.6s ease-in-out infinite;
+  box-shadow: 0 4px 12px -2px rgba(245, 158, 11, 0.45);
+}
+@keyframes bc-mic-pulse {
+  0%, 100% { box-shadow: 0 4px 12px -2px rgba(245, 158, 11, 0.45), 0 0 0 0 rgba(245, 158, 11, 0.45); }
+  50%      { box-shadow: 0 4px 12px -2px rgba(245, 158, 11, 0.45), 0 0 0 10px rgba(245, 158, 11, 0); }
+}
+
+/* Mic when bot is speaking: red stop icon, click to interrupt (barge-in) */
+.bc-mic.is-speaking {
+  background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+  border-color: transparent;
+  color: #fff;
+  animation: bc-mic-speaking 1.2s ease-in-out infinite;
+  box-shadow: 0 4px 12px -2px rgba(239, 68, 68, 0.45);
+}
+@keyframes bc-mic-speaking {
+  0%, 100% { box-shadow: 0 4px 12px -2px rgba(239, 68, 68, 0.45), 0 0 0 0 rgba(239, 68, 68, 0.5); }
+  50%      { box-shadow: 0 4px 12px -2px rgba(239, 68, 68, 0.45), 0 0 0 10px rgba(239, 68, 68, 0); }
+}
+
+/* Mic connecting (Gemini Live handshake): subtle spin */
+.bc-mic.is-connecting {
+  background: rgba(245, 158, 11, 0.14);
+  border-color: rgba(245, 158, 11, 0.55);
+  color: var(--gold-deep);
+  animation: bc-mic-connecting 1s linear infinite;
+}
+@keyframes bc-mic-connecting {
+  0%   { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.45); }
+  100% { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
+}
+
+/* Volume visualiser ring around the mic button when in voice mode */
+.bc-mic { position: relative; overflow: visible; }
+.bc-mic-icon {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+}
+.bc-mic-ring {
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(1);
+  transform-origin: center;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.28) 0%, rgba(245, 158, 11, 0) 70%);
+  transition: transform .06s linear, opacity .12s linear;
+  z-index: 1;
+}
+.bc-mic.is-speaking .bc-mic-ring {
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.32) 0%, rgba(239, 68, 68, 0) 70%);
+}
+
+/* Speaker actively on */
+.bc-speaker.is-active {
+  background: rgba(245, 158, 11, 0.14);
+  border-color: rgba(245, 158, 11, 0.55);
+  color: var(--gold-deep);
+}
+
+.dark .bc-voice-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--line-dark);
+  color: #e8e6df;
+}
+.dark .bc-voice-btn:hover {
+  background: rgba(245, 158, 11, 0.14);
+  border-color: rgba(245, 158, 11, 0.55);
+  color: var(--gold-2);
+}
+.dark .bc-speaker.is-active {
+  background: rgba(245, 158, 11, 0.16);
+  border-color: rgba(245, 158, 11, 0.55);
+  color: var(--gold-2);
+}
+
+/* Viticulture adaptations */
+.bc[data-theme="viticulture"] .bc-voice-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.10);
+  color: #f0e6d2;
+}
+.bc[data-theme="viticulture"] .bc-voice-btn:hover {
+  background: rgba(212, 168, 79, 0.10);
+  border-color: #D4A84F;
+  color: #D4A84F;
+}
+.bc[data-theme="viticulture"] .bc-mic.is-listening {
+  background: linear-gradient(135deg, #D4A84F 0%, #8B1F3D 100%);
+  color: #f0e6d2;
+}
+
+/* Send button: icon-only circle — frees room in the input row for mic+speaker+field */
+.bc-send {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
+  color: var(--gold-ink);
+  font-size: 0;          /* hides the "Envoyer" text node while keeping SVG intact */
+  line-height: 0;
+  display: grid;
+  place-items: center;
+  box-shadow:
+    0 4px 12px -2px rgba(245, 158, 11, 0.40),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30);
+  transition: transform .15s cubic-bezier(.2,.8,.2,1), box-shadow .22s, background .18s;
+  cursor: pointer;
+}
+.bc-send svg,
+.bc-send .bc-send-arrow {
+  display: block;
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+}
+.bc-send:hover {
+  background: linear-gradient(135deg, var(--gold-2) 0%, var(--gold) 100%);
+  transform: translateY(-1px) scale(1.04);
+  box-shadow:
+    0 6px 18px -4px rgba(245, 158, 11, 0.60),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+.bc-send:active { transform: translateY(0) scale(0.96); }
+.bc-send:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+/* ========== Footer ========== */
+.bc-footer {
+  background: transparent;
+  color: rgba(22, 26, 43, 0.42);
+  font-family: var(--sans);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  padding: 6px 14px 9px;
+}
+.bc-footer b {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-style: normal;
+  color: var(--ink);
+}
+.dark .bc-footer { color: rgba(232, 230, 223, 0.42); }
+.dark .bc-footer b { color: #f5f1e8; }
+
+/* ========== Sector badge colors (subtle identity cue) ========== */
+.bc[data-theme="tourisme"]     .bc-sector { color: #2D6B9F; border-color: rgba(45, 107, 159, 0.45); }
+.bc[data-theme="tourisme"]     .bc-chip-dot { background: #2D6B9F; box-shadow: 0 0 0 2.5px rgba(45, 107, 159, 0.16); }
+
+.bc[data-theme="restaurants"]  .bc-sector { color: #C15F3C; border-color: rgba(193, 95, 60, 0.45); }
+.bc[data-theme="restaurants"]  .bc-chip-dot { background: #C15F3C; box-shadow: 0 0 0 2.5px rgba(193, 95, 60, 0.16); }
+
+.bc[data-theme="boulangerie"]  .bc-sector { color: #B8722C; border-color: rgba(184, 114, 44, 0.45); }
+.bc[data-theme="boulangerie"]  .bc-chip-dot { background: #B8722C; box-shadow: 0 0 0 2.5px rgba(184, 114, 44, 0.16); }
+
+.bc[data-theme="immobilier"]   .bc-sector { color: #34557A; border-color: rgba(52, 85, 122, 0.45); }
+.bc[data-theme="immobilier"]   .bc-chip-dot { background: #34557A; box-shadow: 0 0 0 2.5px rgba(52, 85, 122, 0.16); }
+
+.bc[data-theme="hebergements"] .bc-sector { color: #3F6B4D; border-color: rgba(63, 107, 77, 0.45); }
+.bc[data-theme="hebergements"] .bc-chip-dot { background: #3F6B4D; box-shadow: 0 0 0 2.5px rgba(63, 107, 77, 0.16); }
+
+.bc[data-theme="viticulture"]  .bc-sector { color: #D4A84F; border-color: rgba(212, 168, 79, 0.50); }
+.bc[data-theme="viticulture"]  .bc-chip-dot { background: #D4A84F; box-shadow: 0 0 0 2.5px rgba(212, 168, 79, 0.16); }
+
+/* ========== Showcase: force solid (the handoff set glass here) ========== */
+.bc[data-theme="showcase"] {
+  background: #ffffff;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border: 1px solid var(--line-light);
+  box-shadow:
+    0 24px 60px -24px rgba(22, 26, 43, 0.20),
+    0 6px 16px -6px rgba(22, 26, 43, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+.dark .bc[data-theme="showcase"] {
+  background: #111526;
+  border: 1px solid var(--line-dark);
+  box-shadow:
+    0 28px 70px -24px rgba(0, 0, 0, 0.65),
+    0 4px 14px -4px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* ========== Viticulture — follows site light/dark mode ==========
+   Identity kept via gold accent on sector badge + chip-dot + mascot image.
+   In dark mode the site is already dark navy, so viticulture looks naturally
+   nocturne without forcing a separate theme.
+   The handoff file's token overrides for viticulture are neutralized here.
+   ============================================================ */
+.bc[data-theme="viticulture"] {
+  /* Force light-mode neutral tokens even though the handoff tried to pin dark */
+  background: #ffffff;
+  border: 1px solid var(--line-light);
+  color: var(--ink);
+  box-shadow:
+    0 24px 60px -24px rgba(22, 26, 43, 0.20),
+    0 6px 16px -6px rgba(22, 26, 43, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+.bc[data-theme="viticulture"] .bc-header { border-bottom: 1px solid var(--line-light); }
+.bc[data-theme="viticulture"] .bc-name { color: var(--ink); }
+.bc[data-theme="viticulture"] .bc-intro h2 { color: var(--ink); }
+.bc[data-theme="viticulture"] .bc-intro p { color: rgba(22, 26, 43, 0.65); }
+.bc[data-theme="viticulture"] .bc-messages {
+  background: var(--cream);
+  border-top: 1px solid var(--line-light);
+  border-bottom: 1px solid var(--line-light);
+}
+.bc[data-theme="viticulture"] .bc-msg--bot {
+  background: #ffffff;
+  color: var(--ink);
+  border: 1px solid var(--line-light);
+  box-shadow: 0 1px 2px rgba(22, 26, 43, 0.04);
+}
+.bc[data-theme="viticulture"] .bc-msg-meta { color: rgba(22, 26, 43, 0.40); }
+.bc[data-theme="viticulture"] .bc-chip {
+  background: rgba(22, 26, 43, 0.025);
+  border-color: var(--line-light);
+  color: var(--ink);
+}
+.bc[data-theme="viticulture"] .bc-chip:hover {
+  border-color: rgba(212, 168, 79, 0.70);
+  background: rgba(212, 168, 79, 0.10);
+  color: #8a5f1a;
+}
+.bc[data-theme="viticulture"] .bc-field {
+  background: rgba(22, 26, 43, 0.03);
+  border-color: var(--line-light);
+  color: var(--ink);
+}
+.bc[data-theme="viticulture"] .bc-field:focus {
+  background: #ffffff;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.14);
+}
+.bc[data-theme="viticulture"] .bc-input { border-top: 1px solid var(--line-light); }
+.bc[data-theme="viticulture"] .bc-footer { color: rgba(22, 26, 43, 0.42); }
+.bc[data-theme="viticulture"] .bc-footer b { color: var(--ink); }
+
+/* DARK MODE viticulture: inherits the general dark look, with a subtle gold
+   hint (matches the site's dark navy, not bordeaux) */
+.dark .bc[data-theme="viticulture"] {
+  background: #111526;
+  border: 1px solid var(--line-dark);
+  color: #e8e6df;
+  box-shadow:
+    0 28px 70px -24px rgba(0, 0, 0, 0.65),
+    0 4px 14px -4px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(212, 168, 79, 0.06);
+}
+.dark .bc[data-theme="viticulture"] .bc-header { border-bottom: 1px solid var(--line-dark); }
+.dark .bc[data-theme="viticulture"] .bc-name { color: #f5f1e8; }
+.dark .bc[data-theme="viticulture"] .bc-intro h2 { color: #f5f1e8; }
+.dark .bc[data-theme="viticulture"] .bc-intro p { color: rgba(232, 230, 223, 0.70); }
+.dark .bc[data-theme="viticulture"] .bc-messages {
+  background: var(--ink-2);
+  border-top: 1px solid var(--line-dark);
+  border-bottom: 1px solid var(--line-dark);
+}
+.dark .bc[data-theme="viticulture"] .bc-msg--bot {
+  background: var(--ink-3);
+  color: #e8e6df;
+  border: 1px solid var(--line-dark);
+  box-shadow: none;
+}
+.dark .bc[data-theme="viticulture"] .bc-msg-meta { color: rgba(232, 230, 223, 0.40); }
+.dark .bc[data-theme="viticulture"] .bc-chip {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--line-dark);
+  color: #e8e6df;
+}
+.dark .bc[data-theme="viticulture"] .bc-chip:hover {
+  background: rgba(212, 168, 79, 0.14);
+  border-color: rgba(212, 168, 79, 0.55);
+  color: #D4A84F;
+}
+.dark .bc[data-theme="viticulture"] .bc-field {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--line-dark);
+  color: #e8e6df;
+}
+.dark .bc[data-theme="viticulture"] .bc-field:focus {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.18);
+}
+.dark .bc[data-theme="viticulture"] .bc-input { border-top: 1px solid var(--line-dark); }
+.dark .bc[data-theme="viticulture"] .bc-footer { color: rgba(232, 230, 223, 0.42); }
+.dark .bc[data-theme="viticulture"] .bc-footer b { color: #f5f1e8; }
+
+/* ========== Open animation: refined spring ========== */
+.bc {
+  animation: bc-open .26s cubic-bezier(.16, 1, .3, 1) both;
+}
+@keyframes bc-open {
+  from { opacity: 0; transform: translateY(8px) scale(.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ========== FAB launcher: premium gold button ========== */
+.bc-launcher {
+  width: 56px !important;
+  height: 56px !important;
+  /* grid + place-items center keeps the "B" centered, even when the close
+     handler programmatically flips display to grid (it does that to re-show
+     the launcher after closing the chat). */
+  display: grid !important;
+  place-items: center !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+  color: #0F172A !important;
+  font-family: var(--sans, 'Inter', sans-serif) !important;
+  font-weight: 700 !important;
+  font-size: 22px !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow:
+    0 10px 25px -6px rgba(245, 158, 11, 0.55),
+    0 4px 10px -2px rgba(22, 26, 43, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+  transition: transform .22s cubic-bezier(.2,.8,.2,1), box-shadow .28s !important;
+  animation: bc-fab-breathe 3.4s ease-in-out infinite !important;
+}
+.bc-launcher:hover {
+  transform: scale(1.06) translateY(-1px) !important;
+  box-shadow:
+    0 14px 36px -6px rgba(245, 158, 11, 0.7),
+    0 5px 14px -2px rgba(22, 26, 43, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+.bc-launcher:active { transform: scale(0.96) !important; }
+
+@keyframes bc-fab-breathe {
+  0%, 100% { box-shadow:
+    0 10px 25px -6px rgba(245, 158, 11, 0.55),
+    0 4px 10px -2px rgba(22, 26, 43, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30),
+    0 0 0 0 rgba(245, 158, 11, 0.3);
+  }
+  50% { box-shadow:
+    0 10px 25px -6px rgba(245, 158, 11, 0.55),
+    0 4px 10px -2px rgba(22, 26, 43, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30),
+    0 0 0 10px rgba(245, 158, 11, 0);
+  }
+}
+
+/* ============================================================
+   Teaser bubble (inline-styled in mountFloating, no class).
+   FIX: the handoff sets `right: 72px` on a wrapper that's only
+   60px wide → shrink-wrap collapses available width to 0 → text
+   wraps one word per line. We force an explicit width so the
+   bubble renders correctly and looks site-native.
+   The previous selector targeted `.bc-floating` which the handoff
+   never adds — so the override never applied. We now match the
+   actual inline-styled wrapper directly.
+   ============================================================ */
+body > div[style*="position:fixed"][style*="bottom:24px"] > div[style*="right:72px"] {
+  width: 240px !important;
+  max-width: calc(100vw - 110px) !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: anywhere !important;
+  font-family: var(--sans, 'Inter', system-ui, sans-serif) !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  padding: 12px 14px !important;
+  background: #ffffff !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--line-light) !important;
+  border-radius: 14px !important;
+  box-shadow:
+    0 12px 28px -10px rgba(22, 26, 43, 0.22),
+    0 2px 6px rgba(22, 26, 43, 0.06) !important;
+}
+.dark body > div[style*="position:fixed"][style*="bottom:24px"] > div[style*="right:72px"] {
+  background: #1a1f35 !important;
+  color: #e8e6df !important;
+  border: 1px solid var(--line-dark) !important;
+  box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.55) !important;
+}
+@media (max-width: 480px) {
+  body > div[style*="position:fixed"][style*="bottom:24px"] > div[style*="right:72px"] {
+    width: calc(100vw - 110px) !important;
+  }
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 1024px) and (min-width: 641px) {
+  .bc:not([data-mode="inline"]) {
+    width: 360px;
+    height: 540px;
+  }
+  .bc[data-mode="inline"] { max-width: 380px; height: 500px; }
+}
+
+/* ---------- Mobile: chat panel becomes fullscreen ----------
+   The handoff appends .bc inside the floating wrap (no class), with
+   inline `position:fixed` on the wrap. We escape to viewport on mobile
+   by overriding .bc itself, regardless of any wrapper. */
+@media (max-width: 640px) {
+  /* Pin the floating wrap to safe-area-aware bottom-right when CLOSED
+     (so the launcher doesn't cover Android nav / iOS home indicator). */
+  body > div[style*="position:fixed"][style*="bottom:24px"][style*="right:24px"] {
+    bottom: max(16px, env(safe-area-inset-bottom)) !important;
+    right: max(16px, env(safe-area-inset-right)) !important;
+  }
+
+  /* Chat panel: takes the full screen, escapes the wrap's positioning. */
+  .bc:not([data-mode="inline"]) {
+    width: 100vw !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    position: fixed !important;
+    inset: 0 !important;
+    margin: 0 !important;
+    /* Honour iOS notches / home indicator */
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Inline mode: shrink to viewport-width. */
+  .bc[data-mode="inline"] {
+    width: 100% !important;
+    max-width: 100vw !important;
+    height: 540px;
+  }
+
+  /* Launcher slightly smaller on mobile */
+  .bc-launcher {
+    width: 52px !important;
+    height: 52px !important;
+    font-size: 20px !important;
+  }
+
+  /* Make sure the close button is comfortably tappable */
+  .bc-close {
+    width: 36px !important;
+    height: 36px !important;
+  }
+}
+
+/* ============================================================
+   DS-NATIVE INTEGRATION (per senior UX audit)
+   The widget mirrors the site's actual design system tokens:
+     - .glass-card shell (gradient surface + blur + soft border)
+     - btn-gold pattern for primary actions (user bubble + send + FAB)
+     - rounded-3xl (24px) corners like hero cards
+     - Site's exact dark gradient (#0E1626 → #0A1020)
+     - Display headings (Fraunces) for hierarchy
+     - Site's shadow tokens (0 8px 32px rgba(0,0,0,.1) light)
+   Goal: the widget should feel native to the site, not embedded.
+   ============================================================ */
+
+/* ---------- Shell: matches site .glass-card pattern + rounded-3xl ---------- */
+.bc {
+  /* Site's glass-card light: gradient white + blur + soft border + shadow */
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.78) 100%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
+  backdrop-filter: blur(20px) saturate(160%) !important;
+  border: 1px solid rgba(22, 26, 43, 0.08) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 8px 32px rgba(22, 26, 43, 0.10) !important;
+}
+.dark .bc {
+  /* Site's exact dark gradient: navy → deeper navy */
+  background: linear-gradient(135deg, #0E1626 0%, #0A1020 100%) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* ---------- Header: transparent over shell, hairline divider ---------- */
+.bc-header {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(22, 26, 43, 0.08) !important;
+  padding: 18px 22px 16px !important;
+  gap: 14px !important;
+}
+.dark .bc-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+.bc-header::after { display: none !important; }
+
+/* ---------- Avatar: btn-gold gradient + site's amber shadow ---------- */
+.bc .bc-avatar {
+  width: 42px !important;
+  height: 42px !important;
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.30) !important;
+  color: #0F172A !important;
+}
+
+/* ---------- Status dot: one subtle pulse, smaller ---------- */
+.bc-dot {
+  width: 7px !important;
+  height: 7px !important;
+  background: #22c55e !important;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15) !important;
+  animation: none !important;
+}
+
+/* ---------- Name: site's display font (Fraunces) for hierarchy ---------- */
+.bc-name {
+  font-family: 'Fraunces', var(--sans) !important;
+  font-weight: 700 !important;
+  font-size: 16px !important;
+  letter-spacing: -0.02em !important;
+  color: #0E1A2B !important;
+  line-height: 1.25 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 3px !important;
+}
+.dark .bc-name { color: #F5F1E8 !important; }
+.bc-name sup {
+  background: none !important;
+  -webkit-text-fill-color: currentColor !important;
+  font-size: 9px !important;
+  font-weight: 500 !important;
+  opacity: 0.5 !important;
+  margin-left: 1px !important;
+  top: -0.5em !important;
+  position: relative !important;
+}
+
+/* ---------- Sector badge: minimal text label, no border, no bg ---------- */
+.bc-sector {
+  font-family: var(--sans) !important;
+  font-size: 10.5px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  padding: 0 !important;
+  background: transparent !important;
+  color: rgba(22, 26, 43, 0.45) !important;
+  border: none !important;
+  line-height: 1 !important;
+}
+.dark .bc-sector { color: rgba(232, 230, 223, 0.5) !important; }
+
+/* ---------- Status row: smaller, lighter ---------- */
+.bc-status {
+  font-size: 11.5px !important;
+  color: rgba(22, 26, 43, 0.5) !important;
+  margin-top: 2px !important;
+  gap: 6px !important;
+}
+.dark .bc-status { color: rgba(232, 230, 223, 0.5) !important; }
+
+/* ---------- Intro: display heading (matches site's H2 style) ---------- */
+.bc-intro {
+  padding: 18px 22px 10px !important;
+}
+.bc-intro h2 {
+  font-family: 'Fraunces', var(--sans) !important;
+  font-weight: 700 !important;
+  font-size: 22px !important;
+  letter-spacing: -0.025em !important;
+  line-height: 1.2 !important;
+  color: #0E1A2B !important;
+  background: none !important;
+  -webkit-text-fill-color: currentColor !important;
+  margin: 0 0 6px !important;
+}
+.dark .bc-intro h2 { color: #F5F1E8 !important; }
+.bc-intro p {
+  font-family: var(--sans) !important;
+  font-size: 13.5px !important;
+  line-height: 1.55 !important;
+  color: rgba(14, 26, 43, 0.62) !important;
+}
+.dark .bc-intro p { color: rgba(245, 241, 232, 0.65) !important; }
+
+/* ---------- Messages zone: warm tint matching site cream gradient ---------- */
+.bc-messages {
+  background: linear-gradient(180deg, rgba(245, 240, 230, 0.45) 0%, rgba(245, 240, 230, 0.25) 100%) !important;
+  border-top: 1px solid rgba(22, 26, 43, 0.06) !important;
+  border-bottom: 1px solid rgba(22, 26, 43, 0.06) !important;
+  padding: 16px 20px 10px !important;
+  gap: 10px !important;
+}
+.dark .bc-messages {
+  background: rgba(0, 0, 0, 0.20) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ---------- Bot bubble: matches site card style (white + soft shadow) ---------- */
+.bc-msg--bot {
+  background: #ffffff !important;
+  border: 1px solid rgba(22, 26, 43, 0.06) !important;
+  box-shadow: 0 1px 3px rgba(22, 26, 43, 0.04) !important;
+  color: #0E1A2B !important;
+  font-family: var(--sans) !important;
+  font-size: 14px !important;
+  line-height: 1.55 !important;
+  padding: 10px 14px !important;
+  border-radius: 16px !important;
+  border-bottom-left-radius: 6px !important;
+}
+.dark .bc-msg--bot {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: none !important;
+  color: #F5F1E8 !important;
+}
+
+/* ---------- User bubble: btn-gold gradient + amber shadow (site CTA pattern) ---------- */
+.bc .bc-msg--user,
+.bc[data-theme] .bc-msg--user {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+  color: #0F172A !important;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.30) !important;
+  font-family: var(--sans) !important;
+  font-size: 14px !important;
+  line-height: 1.55 !important;
+  font-weight: 500 !important;
+  padding: 10px 14px !important;
+  border-radius: 16px !important;
+  border-bottom-right-radius: 6px !important;
+}
+
+/* ---------- Meta (timestamps): tighter ---------- */
+.bc-msg-meta {
+  font-size: 10.5px !important;
+  color: rgba(22, 26, 43, 0.4) !important;
+}
+.dark .bc-msg-meta { color: rgba(232, 230, 223, 0.4) !important; }
+
+/* ---------- Quick replies: pill style (matches site badges) ---------- */
+.bc-quick {
+  padding: 10px 20px 6px !important;
+  gap: 6px !important;
+  background: transparent !important;
+}
+.bc-chip {
+  background: rgba(245, 158, 11, 0.06) !important;
+  border: 1px solid rgba(245, 158, 11, 0.25) !important;
+  color: #0E1A2B !important;
+  font-family: var(--sans) !important;
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
+  padding: 7px 13px !important;
+  border-radius: 999px !important;
+  transition: border-color .25s ease, color .25s ease, background .25s ease, box-shadow .25s ease !important;
+  position: static !important;
+  overflow: visible !important;
+}
+.bc-chip:hover {
+  border-color: #F59E0B !important;
+  color: #D97706 !important;
+  background: rgba(245, 158, 11, 0.10) !important;
+  transform: none !important;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15) !important;
+}
+.dark .bc-chip {
+  background: rgba(245, 158, 11, 0.08) !important;
+  border-color: rgba(245, 158, 11, 0.20) !important;
+  color: #F5F1E8 !important;
+}
+.dark .bc-chip:hover {
+  background: rgba(245, 158, 11, 0.14) !important;
+  color: #FBBF24 !important;
+}
+.bc-chip-dot { display: none !important; }
+
+/* ---------- Input: transparent over shell, calm focus ---------- */
+.bc-input {
+  background: transparent !important;
+  border-top: 1px solid rgba(22, 26, 43, 0.08) !important;
+  padding: 12px 16px !important;
+  gap: 10px !important;
+}
+.dark .bc-input {
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+.bc-field {
+  background: rgba(22, 26, 43, 0.03) !important;
+  border: 1px solid transparent !important;
+  color: var(--ink) !important;
+  font-family: var(--sans) !important;
+  font-size: 13.5px !important;
+  border-radius: 10px !important;
+  padding: 10px 14px !important;
+  box-shadow: none !important;
+  transition: border-color .15s ease, background .15s ease !important;
+}
+.bc-field:focus {
+  border-color: var(--gold) !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.10) !important;
+}
+.dark .bc-field {
+  background: rgba(255, 255, 255, 0.04) !important;
+  color: #e8e6df !important;
+}
+.dark .bc-field:focus {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: var(--gold) !important;
+}
+
+/* ---------- Send button: btn-gold pattern (gradient + amber shadow) ---------- */
+.bc-send {
+  width: 38px !important;
+  height: 38px !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+  color: #0F172A !important;
+  font-size: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.30) !important;
+  transition: background .25s ease, box-shadow .25s ease, transform .15s ease !important;
+  position: static !important;
+  overflow: visible !important;
+}
+.bc-send::before { display: none !important; }
+.bc-send svg,
+.bc-send .bc-send-arrow {
+  display: block !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+.bc-send:hover {
+  background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.40) !important;
+}
+.bc-send:active { transform: scale(0.96) !important; }
+
+/* ---------- Footer: transparent over shell, AA-contrast text ---------- */
+.bc-footer {
+  background: transparent !important;
+  color: rgba(14, 26, 43, 0.55) !important;
+  font-family: var(--sans) !important;
+  font-size: 11px !important;
+  padding: 8px 16px 12px !important;
+  letter-spacing: 0.02em !important;
+  position: static !important;
+}
+.bc-footer::before { display: none !important; }
+.bc-footer b {
+  font-family: var(--sans) !important;
+  font-weight: 700 !important;
+  background: none !important;
+  -webkit-text-fill-color: currentColor !important;
+  color: #0E1A2B !important;
+}
+.dark .bc-footer { color: rgba(245, 241, 232, 0.55) !important; }
+.dark .bc-footer b { color: #F5F1E8 !important; }
+
+/* ---------- FAB: btn-gold pattern (gradient + amber shadow) ---------- */
+.bc-launcher {
+  width: 60px !important;
+  height: 60px !important;
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+  color: #0F172A !important;
+  border: none !important;
+  display: grid !important;
+  place-items: center !important;
+  font-family: 'Fraunces', var(--sans) !important;
+  font-weight: 700 !important;
+  font-size: 22px !important;
+  letter-spacing: -0.02em !important;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.30) !important;
+  transition: background .3s ease, box-shadow .3s ease, transform .2s ease !important;
+  animation: none !important;
+  position: relative !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+}
+.bc-launcher::after {
+  display: none !important;
+}
+.bc-launcher:hover {
+  background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.40) !important;
+}
+.bc-launcher:active { transform: scale(0.96) translateY(-1px) !important; }
+
+/* ---------- Close button: smaller, calm ---------- */
+.bc-close {
+  width: 28px !important;
+  height: 28px !important;
+  background: transparent !important;
+  color: rgba(22, 26, 43, 0.4) !important;
+  border: none !important;
+  border-radius: 6px !important;
+  transition: background .15s ease, color .15s ease !important;
+}
+.bc-close:hover {
+  background: rgba(22, 26, 43, 0.05) !important;
+  color: var(--ink) !important;
+}
+.dark .bc-close { color: rgba(232, 230, 223, 0.5) !important; }
+.dark .bc-close:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #f5f1e8 !important;
+}
+
+/* ========== Reduced motion ========== */
+@media (prefers-reduced-motion: reduce) {
+  .bc, .bc-launcher, .bc-dot { animation: none !important; }
+  .bc-chip, .bc-send, .bc-close, .bc-field, .bc-msg { transition: none !important; }
+}
+
+/* ============================================================
+   MOBILE OVERRIDES (HIGH PRIORITY) — must come LAST so they win
+   over the DS-Native section's `.bc { border-radius: 24px !important }`
+   and the base sizing. Fixes:
+     - Chat opens as fullscreen modal on phones (was tiny bottom-right card)
+     - Input font-size = 16px so iOS Safari / Android Chrome do NOT
+       auto-zoom the page when the field is focused
+     - Launcher (FAB) and teaser sized for small viewports
+   ============================================================ */
+@media (max-width: 640px) {
+  /* The handoff JS appends a wrapper at fixed bottom:24px;right:24px;.
+     When the panel is open we escape the wrap entirely and pin to viewport. */
+  .bc:not([data-mode="inline"]) {
+    width: 100vw !important;
+    /* 100vh = fallback for browsers without dvh support (Safari < 15.4) */
+    height: 100vh !important;
+    height: 100dvh !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    position: fixed !important;
+    inset: 0 !important;
+    margin: 0 !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+    /* Reset any backdrop blur — it interacts badly with full-viewport fixed
+       elements on mobile Safari and can cause flicker / scroll issues. */
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  /* Launcher wrap sits above home indicator / nav bar */
+  body > div[style*="position:fixed"][style*="bottom:24px"][style*="right:24px"] {
+    bottom: max(16px, env(safe-area-inset-bottom, 0px)) !important;
+    right: max(16px, env(safe-area-inset-right, 0px)) !important;
+  }
+
+  /* Slightly smaller FAB on mobile for thumb comfort */
+  .bc-launcher {
+    width: 54px !important;
+    height: 54px !important;
+    font-size: 20px !important;
+  }
+
+  /* Larger close target — finger-friendly */
+  .bc-close {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  /* Teaser bubble: span available width minus the launcher */
+  body > div[style*="position:fixed"][style*="bottom:24px"] > div[style*="right:72px"] {
+    width: calc(100vw - 92px) !important;
+    max-width: calc(100vw - 92px) !important;
+    font-size: 13px !important;
+  }
+
+  /* CRITICAL: input >= 16px font-size prevents the browser from auto-zooming
+     the entire page when the field is focused (iOS Safari + most Android Chrome). */
+  .bc-field {
+    font-size: 16px !important;
+    padding: 12px 14px !important;
+  }
+
+  /* Tap-friendly chips & messages on small screens */
+  .bc-chip {
+    font-size: 13px !important;
+    padding: 8px 14px !important;
+  }
+  .bc-msg, .bc-msg--bot, .bc-msg--user {
+    font-size: 14.5px !important;
+    line-height: 1.5 !important;
+  }
+  .bc-intro h2 {
+    font-size: 20px !important;
+  }
+  .bc-intro p {
+    font-size: 14px !important;
+  }
+
+  /* Bigger send button for tap target (≥ 44px Apple HIG) */
+  .bc-send {
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .bc-send svg, .bc-send .bc-send-arrow {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  /* Bigger mic / voice button (added by enhanceWithVoice in ChatWidget.tsx) */
+  .bc-voice-btn, .bc-mic {
+    width: 44px !important;
+    height: 44px !important;
+    flex: none !important;
+  }
+
+  /* Inline mode (used inside cards on /demo) — keep contained but full width */
+  .bc[data-mode="inline"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 540px !important;
+    border-radius: 16px !important;
+  }
+
+  /* Hero centerpiece on the homepage — taller allowance than the /demo cards */
+  .bc[data-theme="hub"][data-mode="inline"] {
+    height: min(72vh, 640px) !important;
+  }
+}

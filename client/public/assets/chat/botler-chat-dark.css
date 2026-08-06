@@ -1,0 +1,51 @@
+/* ============================================================
+   Botler360 Chat — safety layer
+   Minimal overrides kept here so they load before botler-chat-align.css.
+   All visual theming (light + dark) now lives in botler-chat-align.css.
+   ============================================================ */
+
+/* Text overflow safety — long words, URLs, emails, etc. must break */
+.bc,
+.bc-msg,
+.bc-intro,
+.bc-intro p,
+.bc-bubble,
+.bc-pricecard,
+.bc-pricecard-list li,
+.bc-formstep,
+.bc-name,
+.bc-status,
+.bc-footer {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  min-width: 0;
+}
+
+/* Images inside bubbles shouldn't stretch past bubble */
+.bc-msg img,
+.bc-bubble img,
+.bc-pricecard img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Links: underline, accent color, wrap long URLs */
+.bc-msg a,
+.bc-pricecard a,
+.bc-intro a {
+  color: #D97706;
+  text-decoration: underline;
+  overflow-wrap: anywhere;
+}
+.dark .bc-msg a,
+.dark .bc-pricecard a,
+.dark .bc-intro a {
+  color: #FBBF24;
+}
+
+/* Teaser bubble must not exceed viewport on narrow screens */
+@media (max-width: 400px) {
+  .bc-floating > div[style*="max-width:260px"] {
+    max-width: calc(100vw - 96px) !important;
+  }
+}

@@ -81,7 +81,7 @@ export default function SectorPage({ sectorId, heroImage, videoSrc }: SectorPage
         <div className="absolute inset-0 bg-grid-pattern opacity-30 dark:opacity-20" />
 
         <div className="relative container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 items-center">
             <motion.div
               initial="hidden"
               animate="visible"
@@ -141,6 +141,8 @@ export default function SectorPage({ sectorId, heroImage, videoSrc }: SectorPage
                 src={heroImage}
                 alt={t(`sector.${sectorId}.title1`)}
                 className="w-full max-w-lg mx-auto rounded-2xl shadow-2xl"
+                loading="lazy"
+                decoding="async"
               />
             </motion.div>
           </div>
