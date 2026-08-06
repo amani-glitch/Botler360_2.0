@@ -250,13 +250,13 @@ export default function Solutions() {
             whileInView="visible"
             viewport={{ once: true }}
             variants={staggerContainer}
-            className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto"
           >
             {pricingPlans.map((plan, index) => (
               <motion.div
                 key={index}
                 variants={fadeInUp}
-                className={`relative glass-card rounded-2xl p-6 ${
+                className={`relative glass-card rounded-2xl p-4 sm:p-6 ${
                   plan.highlighted
                     ? "border-2 border-amber-500/50 shadow-lg shadow-amber-500/10"
                     : ""
@@ -333,7 +333,7 @@ export default function Solutions() {
             whileInView="visible"
             viewport={{ once: true }}
             variants={staggerContainer}
-            className="grid md:grid-cols-3 gap-6 mt-12 max-w-4xl mx-auto"
+            className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-12 max-w-4xl mx-auto"
           >
             {guarantees.map((guarantee, index) => (
               <motion.div
@@ -366,9 +366,9 @@ export default function Solutions() {
             whileInView="visible"
             viewport={{ once: true }}
             variants={staggerContainer}
-            className="glass-card rounded-3xl p-8 md:p-12 max-w-5xl mx-auto"
+            className="glass-card rounded-3xl p-4 sm:p-6 md:p-8 lg:p-12 max-w-5xl mx-auto"
           >
-            <div className="grid lg:grid-cols-2 gap-12">
+            <div className="grid lg:grid-cols-2 gap-6 lg:gap-12">
               {/* Left - Offer Details */}
               <motion.div variants={fadeInUp}>
                 <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/20 text-amber-500 text-sm font-medium mb-6">
@@ -390,7 +390,7 @@ export default function Solutions() {
                   {websiteOffer.description}
                 </p>
 
-                <div className="grid grid-cols-2 gap-4 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-8">
                   {websiteOffer.highlights.map((highlight, index) => (
                     <div
                       key={index}
@@ -468,7 +468,7 @@ export default function Solutions() {
             whileInView="visible"
             viewport={{ once: true }}
             variants={staggerContainer}
-            className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto"
           >
             {additionalServices.map((service, index) => (
               <Link key={index} href={service.link}>

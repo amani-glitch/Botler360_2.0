@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Botler Chat · Template de référence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="botler-chat.css">
+</head>
+<body>
+
+<!-- ======================================================
+     Option 1 — Auto-init via data-attributes (recommandé)
+     ====================================================== -->
+<div id="botler-chat"
+     data-theme="tourisme"
+     data-avatar="/mascots/tourisme.png"
+     data-teaser="Parlons de votre projet de voyage ✈️"
+     data-greeting-title="Bonjour 👋"
+     data-greeting-body="Quelle destination vous fait rêver ?"
+     data-quick-replies="✈️ Séjour sur-mesure|🏨 Réserver un hôtel|🗺️ Activités locales|🌍 Multilingue"
+     data-mode="floating"></div>
+
+<script src="botler-chat.js" defer></script>
+
+<!-- ======================================================
+     Option 2 — API programmatique
+     ======================================================
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    window.BotlerChat.init({
+      theme: 'tourisme',                         // signature | pricing | showcase | tourisme | viticulture | restaurants | boulangerie | immobilier | hebergements | sites-web-pro | contact
+      avatar: '/mascots/tourisme.png',           // URL image (optionnel — sinon glyph du preset)
+      teaser: 'Parlons de votre projet ✈️',      // bulle d'accroche avant ouverture
+      mode: 'floating',                          // 'floating' (défaut) | 'inline'
+      // container: '#chat-root',                // requis si mode: 'inline'
+      greeting: { title: 'Bonjour 👋', body: 'Quelle destination vous fait rêver ?' },
+      quickReplies: [
+        { label: 'Séjour sur-mesure', intent: 'sejour' },
+        { label: 'Réserver un hôtel', intent: 'hotel' },
+        { label: 'Activités locales', intent: 'activites' },
+      ],
+      onSend: async (text, intent) => {
+        // Appel backend / IA ici
+        const res = await fetch('/api/chat', { method:'POST', body: JSON.stringify({ text, intent }) });
+        const { reply } = await res.json();
+        return reply;
+      }
+    });
+  });
+</script>
+-->
+
+</body>
+</html>

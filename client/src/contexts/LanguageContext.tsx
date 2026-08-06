@@ -20,6 +20,10 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.contact": "Contact",
     "nav.sectors": "Secteurs",
     "nav.getStarted": "Démarrer maintenant",
+    "nav.hub.offer": "Ce qu'on fait",
+    "nav.hub.showcase": "Réalisations",
+    "nav.hub.talk": "Parler à Botler",
+    "nav.hub.book": "Rendez-vous",
     
     // Sectors
     "sector.tourism": "Tourisme",
@@ -209,90 +213,80 @@ const translations: Record<Language, Record<string, string>> = {
     "sector.hebergements.testimonial.author": "Hôtel du Phare",
     "sector.hebergements.testimonial.role": "Directeur",
 
-    // Home Hero Section
-    "home.hero.tagline": "La transition numérique, c'est pour tout le monde",
-    "home.hero.title1": "Des outils digitaux de pro.",
-    "home.hero.title2": "À des prix",
-    "home.hero.title3": "imbattables.",
-    "home.hero.description": "Sites web, chatbots, applications mobiles, vidéos 360°, podcasts et musiques personnalisées - créés avec l'IA, livrés en quelques jours, accessibles à tous.",
-    "home.hero.baseline": "Botler360, c'est la technologie sans complexité.",
-    "home.hero.badge1": "Installation en 5 minutes",
-    "home.hero.badge2": "Automatisation intelligente",
-    "home.hero.badge3": "Personnalisation complète",
-    "home.hero.badge4": "Équipe support 9h-18h",
-    "home.trust.compatible": "Compatible Shopify, WordPress, etc.",
-    "home.trust.secure": "100% sécurisé, hébergé en Europe",
-    "home.trust.pme": "Idéal PME",
+    // Home — Hero (relift 2026-08)
     "home.hero.cta1": "Voir les démos",
     "home.hero.cta2": "Récupérez mon chatbot",
-    "home.hero.stat": "15 heures",
-    "home.hero.statLabel": "économisées",
-    "home.hero.statSub": "par semaine",
+    "home.hero.h1Pre": "On construit vos sites, vos apps et les",
+    "home.hero.h1Highlight": "agents IA",
+    "home.hero.h1Post": "qui parlent à vos clients.",
+    "home.hero.subtitle": "Sites, boutiques en ligne, applications et agents IA — conçus avec l'IA, livrés en quelques jours.",
+    "home.hero.manifesto": "On montre ce qu'on sait faire. On ne le raconte pas.",
 
-    // Home Expertises Section (6 Products)
-    "home.expertises.title1": "Nos",
-    "home.expertises.highlight": "expertises",
-    "home.expertises.title2": "",
-    "home.expertises.description": "6 solutions digitales pour transformer votre activité",
-    "home.expertises.chatbot.title": "Chatbots intelligents",
-    "home.expertises.chatbot.desc": "Des assistants virtuels pour répondre 24h/24, automatiser et booster vos conversions.",
-    "home.expertises.chatbot.price": "À partir de 9€/mois",
-    "home.expertises.website.title": "Sites web professionnels",
-    "home.expertises.website.desc": "Sites vitrines, e-commerce, landing pages... créés avec l'IA, optimisés SEO & mobile.",
-    "home.expertises.website.price": "249€ tout inclus",
-    "home.expertises.mobile.title": "Applications mobiles",
-    "home.expertises.mobile.desc": "Apps iOS & Android pour gérer votre business et fidéliser vos clients.",
-    "home.expertises.mobile.price": "249€",
-    "home.expertises.video360.title": "Vidéos 360° immersives",
-    "home.expertises.video360.desc": "Visites virtuelles pour hôtels, restaurants, musées - une expérience immersive.",
-    "home.expertises.video360.price": "À partir de 125€",
-    "home.expertises.audio.title": "Musiques & podcasts",
-    "home.expertises.audio.desc": "Identité sonore sur-mesure : musiques d'ambiance, annonces, podcasts brandés.",
-    "home.expertises.audio.price": "À partir de 5€",
-    "home.expertises.custom.title": "Projets sur-mesure",
-    "home.expertises.custom.desc": "Dashboards, automatisations, outils métier : on concrétise votre idée avec l'IA.",
-    "home.expertises.custom.price": "Sur devis",
-    "home.expertises.cta": "En savoir plus",
+    // Home — Boutons partagés (cartes d'offre à deux états, hero, CTA finale)
+    "home.cta.talkToBotler": "Parler à Botler",
+    "home.cta.bookMeeting": "Prendre un rendez-vous",
+    "home.cta.viewPage": "Voir la page",
 
-    // Home Value Pillars Section
-    "home.pillars.title1": "Nos",
-    "home.pillars.highlight": "3 piliers",
-    "home.pillars.title2": "de valeur",
-    "home.pillars.speed.title": "Rapidité",
-    "home.pillars.speed.desc": "Nos outils sont prêts en quelques jours, pas en plusieurs semaines.",
-    "home.pillars.simplicity.title": "Simplicité",
-    "home.pillars.simplicity.desc": "On rend la tech simple, même pour ceux qui n'y connaissent rien.",
-    "home.pillars.accessibility.title": "Accessibilité",
-    "home.pillars.accessibility.desc": "Parce que tout le monde devrait accéder aux outils digitaux, peu importe le budget.",
+    // Home — Botler en direct (agent intégré au hero)
+    "home.botlerLive.eyebrow": "Botler en direct",
+    "home.botlerLive.title": "Parlez-lui, maintenant.",
+    "home.botlerLive.description": "Botler répond en direct à vos questions sur nos sites, nos apps et nos agents IA. Écrivez, ou activez le micro pour lui parler à voix haute.",
 
-    // Home Stats Section
-    "home.stats.title1": "Automatisez",
-    "home.stats.title2": "de vos réponses client",
-    "home.stats.description": "Libérez votre équipe des questions répétitives pour qu'elle se concentre sur les tâches à forte valeur ajoutée.",
-    "home.stats.card.title1": "Plus de",
-    "home.stats.card.title2": "des consommateurs préfèrent échanger avec un chatbot plutôt que par téléphone.",
-    "home.stats.card.description": "Avec Botler™, évitez que vos visiteurs quittent le site web faute d'obtenir rapidement une réponse à leurs questions.",
-    "home.stats.card.highlight": "Ne perdez plus 50% de clients potentiels",
-    
-    // Home Features Section
-    "home.features.title1": "Botler™, le chatbot pensé pour",
-    "home.features.highlight": "booster",
-    "home.features.title2": "votre relation client",
-    "home.features.description": "Déployez rapidement un assistant conversationnel sur votre site web et gagnez en efficacité.",
-    "home.features.install.title": "Installation en 5 minutes",
-    "home.features.install.desc": "Déployez rapidement un assistant conversationnel sur votre site web et gagnez en efficacité.",
-    "home.features.available.title": "Disponible 24h/24",
-    "home.features.available.desc": "Répondez instantanément aux questions de vos visiteurs 24h/24 et 7j/7.",
-    "home.features.qualify.title": "Qualification automatique",
-    "home.features.qualify.desc": "Qualifiez automatiquement vos prospects et augmentez vos conversions.",
-    
-    // Home Sectors Section
-    "home.sectors.title1": "Des solutions",
-    "home.sectors.highlight": "adaptées",
-    "home.sectors.title2": "à votre métier",
-    "home.sectors.description": "Chaque secteur d'activité a ses propres défis. Botler™ a développé des chatbots intelligents qui maîtrisent parfaitement les spécificités de votre domaine.",
-    "home.sectors.botlerSays": "Moi c'est Botler™ : vous voulez savoir de quoi je suis capable ?",
-    "home.sectors.viewDemos": "Voir les démos",
+    // Home — Ce qu'on sait faire (4 familles, §6)
+    "home.offer.eyebrow": "Ce qu'on sait faire",
+    "home.offer.title": "Quatre façons de vous faire gagner du temps.",
+    "home.offer.familyA.title": "Sites & commerce en ligne",
+    "home.offer.familyA.benefit": "Un site avec son agent IA intégré, prêt à vendre.",
+    "home.offer.familyB.title": "Agents IA cross-canal",
+    "home.offer.familyB.benefit": "Un seul agent, partout où vos clients vous cherchent.",
+    "home.offer.familyC.title": "Apps & plateformes",
+    "home.offer.familyC.benefit": "Applications, espaces client et tableaux de bord sur-mesure.",
+    "home.offer.familyD.title": "Studios & formats IA",
+    "home.offer.familyD.benefit": "Des formats IA pensés et produits de bout en bout.",
+    "home.offer.aio.text": "Botler travaille aussi votre visibilité dans les réponses des IA (Google AI Overview, Perplexity, ChatGPT, Claude).",
+
+    // Home — Comment on travaille
+    "home.howWeWork.eyebrow": "Comment on travaille",
+    "home.howWeWork.title": "Trois étapes, pas plus.",
+    "home.howWeWork.step1.title": "On cadre",
+    "home.howWeWork.step1.desc": "Un échange avec Botler ou l'équipe pour cerner votre besoin réel.",
+    "home.howWeWork.step2.title": "On construit",
+    "home.howWeWork.step2.desc": "Site, app ou agent, conçu avec l'IA et vérifié par l'équipe.",
+    "home.howWeWork.step3.title": "On livre",
+    "home.howWeWork.step3.desc": "En quelques jours, pas en plusieurs mois.",
+
+    // Home — Ce que nos agents ne font jamais
+    "home.boundaries.eyebrow": "Ce que nos agents ne font jamais",
+    "home.boundaries.title": "L'honnêteté avant tout.",
+    "home.boundaries.item1.title": "Zéro invention",
+    "home.boundaries.item1.desc": "Nos agents n'inventent jamais une fonctionnalité, un prix ou une disponibilité.",
+    "home.boundaries.item2.title": "Pas de fausse promesse",
+    "home.boundaries.item2.desc": "On décrit ce que l'outil fait, jamais un résultat business garanti.",
+    "home.boundaries.item3.title": "Transfert à un humain",
+    "home.boundaries.item3.desc": "Dès que ça dépasse ses compétences, l'agent passe la main à l'équipe.",
+
+    // Home — Rendez-vous
+    "home.booking.eyebrow": "Rendez-vous",
+    "home.booking.title": "Réservez un créneau.",
+    "home.booking.description": "Choisissez un horaire qui vous convient, on prend le temps de comprendre votre projet.",
+    "home.booking.fallback": "La prise de rendez-vous en ligne arrive bientôt. En attendant, écrivez-nous.",
+
+    // Home — Données & sécurité
+    "home.dataSecurity.eyebrow": "Données & sécurité",
+    "home.dataSecurity.title": "Vos données restent les vôtres.",
+
+    // Home — FAQ
+    "home.faq.eyebrow": "Questions fréquentes",
+    "home.faq.title": "Ce qu'on nous demande le plus.",
+
+    // Home — CTA finale
+    "home.finalCta.title": "Prêt à voir Botler chez vous ?",
+    "home.finalCta.subtitle": "Parlez-en à Botler ou réservez un créneau — sans engagement.",
+
+    // Home — Réalisations (§6bis section 5)
+    "home.showcase.eyebrow": "Réalisations",
+    "home.showcase.title": "Ce qu'on a déjà livré.",
+    "home.showcase.description": "Un aperçu de ce qu'on construit pour nos clients, secteur par secteur.",
     "home.sectors.tourism.desc": "Guide virtuel pour vos visiteurs",
     "home.sectors.tourism.stat": "+40% de satisfaction",
     "home.sectors.viticulture.desc": "Sommelier virtuel pour conseils œnologiques",
@@ -305,41 +299,23 @@ const translations: Record<Language, Record<string, string>> = {
     "home.sectors.realEstate.stat": "+45% de contacts",
     "home.sectors.accommodation.desc": "Concierge virtuel pour vos clients",
     "home.sectors.accommodation.stat": "+35% de réservations",
-    
-    // Home Testimonials Section
-    "home.testimonials.title1": "Ce que nos",
-    "home.testimonials.highlight": "clients",
-    "home.testimonials.title2": "disent",
-    "home.testimonials.description": "Découvrez comment Botler™ transforme leur relation client",
-    "home.testimonials.1.text": "Botler™ a révolutionné notre accueil visiteur. +40% de satisfaction client et une disponibilité 24h/24 qui fait la différence.",
-    "home.testimonials.1.author": "Hotel du Phare",
-    "home.testimonials.1.sector": "Hébergement",
-    "home.testimonials.1.stat": "+40% de satisfaction client",
-    "home.testimonials.2.text": "Nos réservations ont augmenté de 35% grâce à la disponibilité permanente de Botler™. Plus aucune perte d'opportunité !",
-    "home.testimonials.2.author": "Restaurant Le Gourmet",
-    "home.testimonials.2.sector": "Restauration",
-    "home.testimonials.2.stat": "+35% de réservations",
-    "home.testimonials.3.text": "Botler™ nous fait économiser 15 heures par semaine en répondant aux questions récurrentes de nos clients.",
-    "home.testimonials.3.author": "Domaine des Vignes",
-    "home.testimonials.3.sector": "Viticulture",
-    "home.testimonials.3.stat": "15h économisées/semaine",
-    
+
     // CTA Section
     "cta.title1": "Rejoignez les entreprises qui ont déjà",
     "cta.highlight": "révolutionné",
     "cta.title2": "leur relation client avec Botler™.",
     "cta.description": "Déployez votre chatbot en moins de 5 minutes et commencez à améliorer votre relation client dès aujourd'hui.",
     "cta.button": "Récupérez mon chatbot",
-    
+
     // Footer
-    "footer.description": "Des chatbots intelligents adaptés à votre secteur d'activité pour révolutionner votre relation client.",
+    "footer.description": "Des sites, des apps et des agents IA conçus et livrés par Botler360.",
     "footer.company": "Entreprise",
     "footer.location": "France & Royaume-Uni",
     "footer.legal": "Mentions légales",
     "footer.privacy": "Politique de confidentialité",
     "footer.cookies": "Politique de cookies",
     "footer.rights": "Tous droits réservés.",
-    "footer.tagline": "Créé avec passion pour révolutionner votre relation client.",
+    "footer.tagline": "Conçu par une équipe humaine, propulsé par l'IA.",
     "footer.trust.humanTeam": "Derrière nos outils IA, il y a une équipe humaine.",
     "footer.trust.support": "On vous accompagne à chaque étape.",
     "footer.trust.location": "Équipe basée en France & Royaume-Uni",
@@ -646,7 +622,11 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.contact": "Contact",
     "nav.sectors": "Sectors",
     "nav.getStarted": "Get Started",
-    
+    "nav.hub.offer": "What we do",
+    "nav.hub.showcase": "Showcase",
+    "nav.hub.talk": "Talk to Botler",
+    "nav.hub.book": "Book a call",
+
     // Sectors
     "sector.tourism": "Tourism",
     "sector.viticulture": "Viticulture",
@@ -835,90 +815,80 @@ const translations: Record<Language, Record<string, string>> = {
     "sector.hebergements.testimonial.author": "Hotel du Phare",
     "sector.hebergements.testimonial.role": "Director",
 
-    // Home Hero Section
-    "home.hero.tagline": "Digital transformation is for everyone",
-    "home.hero.title1": "Professional digital tools.",
-    "home.hero.title2": "At unbeatable",
-    "home.hero.title3": "prices.",
-    "home.hero.description": "Websites, chatbots, mobile apps, 360° videos, podcasts and custom music - created with AI, delivered in days, accessible to everyone.",
-    "home.hero.baseline": "Botler360 is technology without complexity.",
-    "home.hero.badge1": "5-minute setup",
-    "home.hero.badge2": "Smart automation",
-    "home.hero.badge3": "Full customization",
-    "home.hero.badge4": "Support team 9am-6pm",
-    "home.trust.compatible": "Compatible with Shopify, WordPress, etc.",
-    "home.trust.secure": "100% secure, hosted in Europe",
-    "home.trust.pme": "Ideal for SMEs",
+    // Home — Hero (relift 2026-08)
     "home.hero.cta1": "Watch demos",
     "home.hero.cta2": "Get my chatbot",
-    "home.hero.stat": "15 hours",
-    "home.hero.statLabel": "saved",
-    "home.hero.statSub": "per week",
+    "home.hero.h1Pre": "We build your sites, your apps, and the",
+    "home.hero.h1Highlight": "AI agents",
+    "home.hero.h1Post": "that talk to your customers.",
+    "home.hero.subtitle": "Sites, online shops, apps and AI agents — built with AI, delivered in days.",
+    "home.hero.manifesto": "We show what we can do. We don't just say it.",
 
-    // Home Expertises Section (6 Products)
-    "home.expertises.title1": "Our",
-    "home.expertises.highlight": "expertise",
-    "home.expertises.title2": "",
-    "home.expertises.description": "6 digital solutions to transform your business",
-    "home.expertises.chatbot.title": "Intelligent chatbots",
-    "home.expertises.chatbot.desc": "Virtual assistants to respond 24/7, automate and boost your conversions.",
-    "home.expertises.chatbot.price": "From €9/month",
-    "home.expertises.website.title": "Professional websites",
-    "home.expertises.website.desc": "Showcase sites, e-commerce, landing pages... AI-created, SEO & mobile optimized.",
-    "home.expertises.website.price": "€249 all included",
-    "home.expertises.mobile.title": "Mobile applications",
-    "home.expertises.mobile.desc": "iOS & Android apps to manage your business and retain your customers.",
-    "home.expertises.mobile.price": "€249",
-    "home.expertises.video360.title": "360° immersive videos",
-    "home.expertises.video360.desc": "Virtual tours for hotels, restaurants, museums - an immersive experience.",
-    "home.expertises.video360.price": "From €125",
-    "home.expertises.audio.title": "Music & podcasts",
-    "home.expertises.audio.desc": "Custom audio identity: ambient music, announcements, branded podcasts.",
-    "home.expertises.audio.price": "From €5",
-    "home.expertises.custom.title": "Custom projects",
-    "home.expertises.custom.desc": "Dashboards, automations, business tools: we bring your AI idea to life.",
-    "home.expertises.custom.price": "Quote",
-    "home.expertises.cta": "Learn more",
+    // Home — Shared CTA labels (two-state offer cards, hero, final CTA)
+    "home.cta.talkToBotler": "Talk to Botler",
+    "home.cta.bookMeeting": "Book a call",
+    "home.cta.viewPage": "View the page",
 
-    // Home Value Pillars Section
-    "home.pillars.title1": "Our",
-    "home.pillars.highlight": "3 pillars",
-    "home.pillars.title2": "of value",
-    "home.pillars.speed.title": "Speed",
-    "home.pillars.speed.desc": "Our tools are ready in days, not weeks.",
-    "home.pillars.simplicity.title": "Simplicity",
-    "home.pillars.simplicity.desc": "We make tech simple, even for those who know nothing about it.",
-    "home.pillars.accessibility.title": "Accessibility",
-    "home.pillars.accessibility.desc": "Because everyone should have access to digital tools, regardless of budget.",
+    // Home — Botler live (embedded hero agent)
+    "home.botlerLive.eyebrow": "Botler live",
+    "home.botlerLive.title": "Talk to it, right now.",
+    "home.botlerLive.description": "Botler answers live about our sites, apps and AI agents. Type, or turn on the mic to talk out loud.",
 
-    // Home Stats Section
-    "home.stats.title1": "Automate",
-    "home.stats.title2": "of your customer responses",
-    "home.stats.description": "Free your team from repetitive questions so they can focus on high-value tasks.",
-    "home.stats.card.title1": "More than",
-    "home.stats.card.title2": "of consumers prefer to interact with a chatbot rather than by phone.",
-    "home.stats.card.description": "With Botler™, prevent your visitors from leaving your website because they couldn't quickly get an answer to their questions.",
-    "home.stats.card.highlight": "Stop losing 50% of potential customers",
-    
-    // Home Features Section
-    "home.features.title1": "Botler™, the chatbot designed to",
-    "home.features.highlight": "boost",
-    "home.features.title2": "your customer relationships",
-    "home.features.description": "Quickly deploy a conversational assistant on your website and gain efficiency.",
-    "home.features.install.title": "5-minute setup",
-    "home.features.install.desc": "Quickly deploy a conversational assistant on your website and gain efficiency.",
-    "home.features.available.title": "Available 24/7",
-    "home.features.available.desc": "Instantly respond to your visitors' questions 24 hours a day, 7 days a week.",
-    "home.features.qualify.title": "Automatic qualification",
-    "home.features.qualify.desc": "Automatically qualify your prospects and increase your conversions.",
-    
-    // Home Sectors Section
-    "home.sectors.title1": "Solutions",
-    "home.sectors.highlight": "tailored",
-    "home.sectors.title2": "to your business",
-    "home.sectors.description": "Every industry has its own challenges. Botler™ has developed intelligent chatbots that perfectly master the specifics of your field.",
-    "home.sectors.botlerSays": "I'm Botler™: want to see what I can do?",
-    "home.sectors.viewDemos": "Watch demos",
+    // Home — What we know how to do (4 families, §6)
+    "home.offer.eyebrow": "What we know how to do",
+    "home.offer.title": "Four ways to save you time.",
+    "home.offer.familyA.title": "Sites & online commerce",
+    "home.offer.familyA.benefit": "A site with its own built-in AI agent, ready to sell.",
+    "home.offer.familyB.title": "Cross-channel AI agents",
+    "home.offer.familyB.benefit": "One agent, everywhere your customers look for you.",
+    "home.offer.familyC.title": "Apps & platforms",
+    "home.offer.familyC.benefit": "Custom apps, client portals and dashboards.",
+    "home.offer.familyD.title": "AI studios & formats",
+    "home.offer.familyD.benefit": "AI formats designed and produced end to end.",
+    "home.offer.aio.text": "Botler also works on your visibility in AI answers (Google AI Overview, Perplexity, ChatGPT, Claude).",
+
+    // Home — How we work
+    "home.howWeWork.eyebrow": "How we work",
+    "home.howWeWork.title": "Three steps, nothing more.",
+    "home.howWeWork.step1.title": "We scope",
+    "home.howWeWork.step1.desc": "A conversation with Botler or the team to pin down what you actually need.",
+    "home.howWeWork.step2.title": "We build",
+    "home.howWeWork.step2.desc": "Site, app or agent, built with AI and checked by the team.",
+    "home.howWeWork.step3.title": "We deliver",
+    "home.howWeWork.step3.desc": "In days, not months.",
+
+    // Home — What our agents never do
+    "home.boundaries.eyebrow": "What our agents never do",
+    "home.boundaries.title": "Honesty first.",
+    "home.boundaries.item1.title": "Never invents",
+    "home.boundaries.item1.desc": "Our agents never make up a feature, a price or an availability.",
+    "home.boundaries.item2.title": "No false promises",
+    "home.boundaries.item2.desc": "We describe what the tool does, never a guaranteed business outcome.",
+    "home.boundaries.item3.title": "Hands off to a human",
+    "home.boundaries.item3.desc": "The moment it's beyond scope, the agent hands over to the team.",
+
+    // Home — Booking
+    "home.booking.eyebrow": "Book a call",
+    "home.booking.title": "Reserve a slot.",
+    "home.booking.description": "Pick a time that works for you, we'll take the time to understand your project.",
+    "home.booking.fallback": "Online booking is coming soon. In the meantime, write to us.",
+
+    // Home — Data & security
+    "home.dataSecurity.eyebrow": "Data & security",
+    "home.dataSecurity.title": "Your data stays yours.",
+
+    // Home — FAQ
+    "home.faq.eyebrow": "Frequently asked questions",
+    "home.faq.title": "What we get asked the most.",
+
+    // Home — Final CTA
+    "home.finalCta.title": "Ready to see Botler at work?",
+    "home.finalCta.subtitle": "Talk to Botler or book a call — no commitment.",
+
+    // Home — Showcase (§6bis section 5)
+    "home.showcase.eyebrow": "Showcase",
+    "home.showcase.title": "What we've already delivered.",
+    "home.showcase.description": "A look at what we build for our clients, by industry.",
     "home.sectors.tourism.desc": "Virtual guide for your visitors",
     "home.sectors.tourism.stat": "+40% satisfaction",
     "home.sectors.viticulture.desc": "Virtual sommelier for wine advice",
@@ -931,41 +901,23 @@ const translations: Record<Language, Record<string, string>> = {
     "home.sectors.realEstate.stat": "+45% contacts",
     "home.sectors.accommodation.desc": "Virtual concierge for your guests",
     "home.sectors.accommodation.stat": "+35% bookings",
-    
-    // Home Testimonials Section
-    "home.testimonials.title1": "What our",
-    "home.testimonials.highlight": "clients",
-    "home.testimonials.title2": "say",
-    "home.testimonials.description": "Discover how Botler™ transforms their customer relationships",
-    "home.testimonials.1.text": "Botler™ has revolutionized our visitor reception. +40% customer satisfaction and 24/7 availability that makes the difference.",
-    "home.testimonials.1.author": "Hotel du Phare",
-    "home.testimonials.1.sector": "Accommodation",
-    "home.testimonials.1.stat": "+40% customer satisfaction",
-    "home.testimonials.2.text": "Our bookings increased by 35% thanks to Botler™'s permanent availability. No more lost opportunities!",
-    "home.testimonials.2.author": "Restaurant Le Gourmet",
-    "home.testimonials.2.sector": "Restaurant",
-    "home.testimonials.2.stat": "+35% bookings",
-    "home.testimonials.3.text": "Botler™ saves us 15 hours per week by answering our customers' recurring questions.",
-    "home.testimonials.3.author": "Domaine des Vignes",
-    "home.testimonials.3.sector": "Viticulture",
-    "home.testimonials.3.stat": "15h saved/week",
-    
+
     // CTA Section
     "cta.title1": "Join the companies that have already",
     "cta.highlight": "revolutionized",
     "cta.title2": "their customer relationships with Botler™.",
     "cta.description": "Deploy your chatbot in less than 5 minutes and start improving your customer relationships today.",
     "cta.button": "Get my chatbot",
-    
+
     // Footer
-    "footer.description": "Intelligent chatbots tailored to your industry to revolutionize your customer relationships.",
+    "footer.description": "Sites, apps and AI agents designed and delivered by Botler360.",
     "footer.company": "Company",
     "footer.location": "France & United Kingdom",
     "footer.legal": "Legal Notice",
     "footer.privacy": "Privacy Policy",
     "footer.cookies": "Cookie Policy",
     "footer.rights": "All rights reserved.",
-    "footer.tagline": "Created with passion to revolutionize your customer relationships.",
+    "footer.tagline": "Designed by a human team, powered by AI.",
     "footer.trust.humanTeam": "Behind our AI tools, there's a human team.",
     "footer.trust.support": "We support you at every step.",
     "footer.trust.location": "Team based in France & UK",
@@ -1277,6 +1229,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     localStorage.setItem("botler-language", language);
+    document.documentElement.lang = language;
   }, [language]);
 
   const setLanguage = (lang: Language) => {
@@ -1284,7 +1237,17 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   };
 
   const t = (key: string): string => {
-    return translations[language][key] || key;
+    // Use ?? (not ||) so an intentional empty string ("") is returned as-is
+    // instead of falling through to the raw key. Falls back to the key only
+    // when the translation is genuinely missing (undefined).
+    const value = translations[language][key];
+    if (value === undefined) {
+      if (typeof console !== "undefined") {
+        console.warn(`[i18n] missing key: ${key} (lang=${language})`);
+      }
+      return key;
+    }
+    return value;
   };
 
   return (

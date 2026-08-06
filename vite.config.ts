@@ -3,7 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import fs from "node:fs";
 import path from "node:path";
-import { defineConfig, type Plugin, type ViteDevServer } from "vite";
+import { defineConfig, loadEnv, type Plugin, type ViteDevServer } from "vite";
 import { vitePluginManusRuntime } from "vite-plugin-manus-runtime";
 
 // =============================================================================
@@ -150,7 +150,148 @@ function vitePluginManusDebugCollector(): Plugin {
   };
 }
 
-const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector()];
+/**
+ * Vite plugin: POST /api/chat → Gemini-powered chat replies.
+ * Loads GEMINI_API_KEY from .env.local into process.env, dispatches to
+ * server/chat.ts which resolves the proper system prompt by theme.
+ */
+function vitePluginBotlerChatAPI(): Plugin {
+  const projectRoot = import.meta.dirname;
+  const chatModuleAbs = path.resolve(projectRoot, "server/chat.ts");
+  const liveModuleAbs = path.resolve(projectRoot, "server/live.ts");
+
+  return {
+    name: "botler-chat-api",
+    config() {
+      // Load .env* into process.env so SSR-loaded modules can read it.
+      const env = loadEnv("", projectRoot, "");
+      for (const key of ["GEMINI_API_KEY", "GEMINI_MODEL", "GEMINI_LIVE_MODEL", "GEMINI_LIVE_VOICE"]) {
+        if (env[key] && !process.env[key]) process.env[key] = env[key];
+      }
+    },
+    configureServer(server: ViteDevServer) {
+      const readBody = (req: import("http").IncomingMessage) =>
+        new Promise<string>((resolve, reject) => {
+          let body = "";
+          req.on("data", (chunk) => (body += chunk.toString()));
+          req.on("end", () => resolve(body));
+          req.on("error", reject);
+        });
+
+      // Streaming endpoint (registered FIRST — more specific route)
+      // Newline-delimited JSON: {"chunk":"..."} | {"done":true} | {"error":"...","userHint":"..."}
+      server.middlewares.use("/api/chat/stream", async (req, res, next) => {
+        if (req.method !== "POST") return next();
+
+        try {
+          const raw = await readBody(req);
+          const payload = raw ? JSON.parse(raw) : {};
+          const mod = await server.ssrLoadModule(chatModuleAbs);
+          const handleChatStream = (mod as {
+            handleChatStream: (r: unknown) => AsyncGenerator<string>;
+          }).handleChatStream;
+
+          res.writeHead(200, {
+            "Content-Type": "application/x-ndjson",
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no",
+          });
+
+          try {
+            for await (const chunk of handleChatStream(payload)) {
+              res.write(JSON.stringify({ chunk }) + "\n");
+            }
+            res.write(JSON.stringify({ done: true }) + "\n");
+          } catch (err) {
+            const e = err as { status?: number; message?: string; userHint?: string };
+            res.write(JSON.stringify({
+              error: e.message || String(err),
+              userHint: e.userHint,
+              status: e.status || 500,
+            }) + "\n");
+          }
+          res.end();
+        } catch (err) {
+          const e = err as { message?: string };
+          server.config.logger.error(`[chat stream] ${e.message || err}`);
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: e.message || String(err) }));
+        }
+      });
+
+      // ---- WebSocket upgrade for /api/chat/live (Gemini Live realtime audio) ----
+      const httpServer = server.httpServer;
+      if (httpServer) {
+        let wssInstance: import("ws").WebSocketServer | null = null;
+        const setupLiveServer = async () => {
+          if (wssInstance) return wssInstance;
+          const { WebSocketServer } = await import("ws");
+          wssInstance = new WebSocketServer({ noServer: true });
+          return wssInstance;
+        };
+
+        httpServer.on("upgrade", async (req, socket, head) => {
+          if (!req.url || !req.url.startsWith("/api/chat/live")) return;
+          try {
+            // Load live module BEFORE handshake so the message listener is attached
+            // synchronously inside handleUpgrade — no race with early client frames.
+            const [wss, mod] = await Promise.all([
+              setupLiveServer(),
+              server.ssrLoadModule(liveModuleAbs),
+            ]);
+            const handleLiveConnection = (mod as {
+              handleLiveConnection: (ws: import("ws").WebSocket) => void;
+            }).handleLiveConnection;
+
+            wss.handleUpgrade(req, socket, head, (ws) => {
+              try {
+                handleLiveConnection(ws);
+              } catch (err) {
+                server.config.logger.error(`[live upgrade] ${(err as Error).message}`);
+                try {
+                  ws.send(JSON.stringify({ type: "error", message: (err as Error).message }));
+                  ws.close(1011);
+                } catch { /* ignore */ }
+              }
+            });
+          } catch (err) {
+            server.config.logger.error(`[live ws] ${(err as Error).message}`);
+            socket.destroy();
+          }
+        });
+      }
+
+      // Non-streaming endpoint (fallback, kept for simple use-cases)
+      server.middlewares.use("/api/chat", async (req, res, next) => {
+        if (req.method !== "POST") return next();
+        // The streaming handler above is mounted on /api/chat/stream;
+        // connect strips the matched prefix so req.url here would be "/stream"
+        // if the request was actually for the stream endpoint.
+        if (req.url && req.url.startsWith("/stream")) return next();
+
+        try {
+          const raw = await readBody(req);
+          const payload = raw ? JSON.parse(raw) : {};
+          const mod = await server.ssrLoadModule(chatModuleAbs);
+          const handleChat = (mod as { handleChat: (r: unknown) => Promise<{ reply: string }> }).handleChat;
+          const result = await handleChat(payload);
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify(result));
+        } catch (err) {
+          const e = err as { status?: number; message?: string; userHint?: string };
+          const message = e.message || String(err);
+          const code = e.status && Number.isFinite(e.status) ? e.status : 500;
+          const userHint = e.userHint;
+          server.config.logger.error(`[chat api ${code}] ${message}`);
+          res.writeHead(code, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: message, userHint }));
+        }
+      });
+    },
+  };
+}
+
+const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector(), vitePluginBotlerChatAPI()];
 
 export default defineConfig({
   plugins,

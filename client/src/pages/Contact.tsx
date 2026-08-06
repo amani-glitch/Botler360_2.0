@@ -143,7 +143,7 @@ export default function Contact() {
       {/* Contact Section */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-12">
+          <div className="grid lg:grid-cols-2 gap-6 lg:gap-12">
             {/* Contact Form */}
             <motion.div
               initial="hidden"
@@ -152,13 +152,13 @@ export default function Contact() {
             >
               <motion.div
                 variants={fadeInUp}
-                className="glass-card rounded-2xl p-8"
+                className="glass-card rounded-2xl p-4 sm:p-6 md:p-8"
               >
                 <h2 className="text-2xl font-bold text-foreground mb-6">
                   {t("contact.form.title")}
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
                         {t("contact.form.name")} *
@@ -189,7 +189,7 @@ export default function Contact() {
                     </div>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
                         {t("contact.form.company")}
@@ -225,7 +225,7 @@ export default function Contact() {
                     </div>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
                         {t("contact.form.projectType")}
@@ -372,12 +372,16 @@ export default function Contact() {
               {/* Mascot */}
               <motion.div
                 variants={fadeInUp}
-                className="glass-card rounded-2xl p-8 text-center"
+                className="glass-card rounded-2xl p-4 sm:p-6 md:p-8 text-center"
               >
                 <img
                   src="/images/ChatGPT_Image_Apr_11__2025__03_41_02_PM.png"
                   alt="Botler™"
-                  className="w-32 h-32 object-contain mx-auto mb-4"
+                  className="w-24 sm:w-32 h-24 sm:h-32 object-contain mx-auto mb-4"
+                  loading="lazy"
+                  decoding="async"
+                  width="128"
+                  height="128"
                 />
                 <p className="text-foreground/80">
                   {t("contact.mascot")}

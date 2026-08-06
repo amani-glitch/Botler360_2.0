@@ -154,7 +154,7 @@ export default function MobileApps() {
               variants={fadeInUp}
               className="inline-flex items-baseline gap-2 mb-8"
             >
-              <span className="text-6xl font-bold text-gradient-gold">249€</span>
+              <span className="text-5xl sm:text-6xl font-bold text-gradient-gold">249€</span>
               <span className="text-xl text-muted-foreground">{t("mobileapps.priceLabel")}</span>
             </motion.div>
 
@@ -215,7 +215,7 @@ export default function MobileApps() {
             whileInView="visible"
             viewport={{ once: true }}
             variants={staggerContainer}
-            className="grid md:grid-cols-2 lg:grid-cols-4 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
           >
             {sellingPoints.map((point, index) => (
               <motion.div
@@ -260,7 +260,7 @@ export default function MobileApps() {
             whileInView="visible"
             viewport={{ once: true }}
             variants={staggerContainer}
-            className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto"
+            className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 max-w-4xl mx-auto"
           >
             {process.map((step, index) => (
               <motion.div
@@ -303,7 +303,7 @@ export default function MobileApps() {
 
             <motion.div
               variants={fadeInUp}
-              className="grid md:grid-cols-2 gap-4"
+              className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4"
             >
               {features.map((feature, index) => (
                 <div key={index} className="flex items-center gap-3">

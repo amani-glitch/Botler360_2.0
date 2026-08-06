@@ -3,42 +3,87 @@
 
   <head>
 
-  <!-- Start of digital hawk chatbot -->
-  <link rel="stylesheet" href="http://72.61.194.168:5001/chatbot.css">
-  <script src="http://72.61.194.168:5001/chatbot.js"></script>
-  <script>
-      document.addEventListener('DOMContentLoaded', function() {
-          if (typeof DigitalHawkChatbot === 'function') {
-              window.DigitalHawkChatbot_id = '0O8liCQjo586NwYaMrfN';
-              window.DigitalHawkChatbot_baseUrl = 'http://72.61.194.168:5001/';
-              const digitalhawk_chatbot_container = document.createElement('div');
-              digitalhawk_chatbot_container.id = 'digitalhawk-chatbot-container';
-              document.body.appendChild(digitalhawk_chatbot_container);
-              DigitalHawkChatbot('#digitalhawk-chatbot-container');
-          }
-      });
-  </script>
-  <!-- End of digital hawk chatbot -->
-
     <meta charset="UTF-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>Botler360 - AI Chatbot Solutions</title>
-    <meta name="description" content="Botler™ : le chatbot pour tous, simple et rapide. Améliorez votre relation client en déployant un chatbot sur votre site web." />
+      content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+    <title>Botler360 — Sites, apps et agents IA qui parlent à vos clients</title>
+    <meta name="description" content="Botler360 crée des chatbots, sites web, applications mobiles et contenus immersifs pour les commerces et PME. Testez l'agent Botler directement sur la page d'accueil." />
     <link rel="icon" type="image/x-icon" href="/images/botler-logo-full.png" />
+    <link rel="canonical" href="https://botler360.com/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Botler360" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:url" content="https://botler360.com/" />
+    <meta property="og:title" content="Botler360 — Le chatbot IA qui répond à vos clients 24h/24" />
+    <meta property="og:description" content="Botler360 crée des chatbots, sites web et outils digitaux pour les commerces et PME. Testez l'agent Botler directement sur la page d'accueil." />
+    <meta property="og:image" content="https://botler360.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Botler, l'assistant IA de Botler360" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Botler360 — Le chatbot IA qui répond à vos clients 24h/24" />
+    <meta name="twitter:description" content="Botler360 crée des chatbots, sites web et outils digitaux pour les commerces et PME. Testez l'agent Botler directement sur la page d'accueil." />
+    <meta name="twitter:image" content="https://botler360.com/og-image.png" />
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Botler360",
+      "legalName": "Botler 360 Ltd",
+      "url": "https://botler360.com/",
+      "logo": "https://botler360.com/images/botler-logo-full.png",
+      "image": "https://botler360.com/og-image.png",
+      "description": "Botler360 crée des chatbots IA, sites web, applications mobiles et contenus immersifs pour les commerces et PME.",
+      "email": "contact@botler360.com",
+      "telephone": "+33186260390",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "10 Cousins Close, Yiewsley",
+        "addressLocality": "West Drayton",
+        "addressRegion": "England",
+        "postalCode": "UB7 8QG",
+        "addressCountry": "GB"
+      },
+      "identifier": {
+        "@type": "PropertyValue",
+        "name": "UK Company Number",
+        "value": "10644529"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "email": "contact@botler360.com",
+        "telephone": "+33186260390",
+        "areaServed": ["FR", "GB"],
+        "availableLanguage": ["fr", "en"]
+      }
+    }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   </head>
 
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Botler360 chat widget: CSS preloaded here; JS + init handled by React ChatWidget wrapper -->
+    <link rel="stylesheet" href="/assets/chat/botler-chat.css" />
+    <link rel="stylesheet" href="/assets/chat/botler-chat-dark.css" />
+    <link rel="stylesheet" href="/assets/chat/botler-chat-align.css" />
+
+    <!-- Umami analytics — uncomment & set VITE_ANALYTICS_ENDPOINT + VITE_ANALYTICS_WEBSITE_ID in .env to enable
     <script
       defer
       src="%VITE_ANALYTICS_ENDPOINT%/umami"
       data-website-id="%VITE_ANALYTICS_WEBSITE_ID%"></script>
+    -->
   </body>
 
 </html>

@@ -172,7 +172,7 @@ export default function Websites() {
               variants={fadeInUp}
               className="inline-flex items-baseline gap-2 mb-8"
             >
-              <span className="text-6xl font-bold text-gradient-gold">249€</span>
+              <span className="text-5xl sm:text-6xl font-bold text-gradient-gold">249€</span>
               <span className="text-xl text-muted-foreground">{t("websites.priceLabel")}</span>
             </motion.div>
 
@@ -217,7 +217,7 @@ export default function Websites() {
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeInUp}
-            className="glass-card rounded-2xl p-8 max-w-3xl mx-auto text-center border-2 border-amber-500/30"
+            className="glass-card rounded-2xl p-4 sm:p-6 md:p-8 max-w-3xl mx-auto text-center border-2 border-amber-500/30"
           >
             <div className="flex items-center justify-center gap-3 mb-4">
               <Gift className="w-8 h-8 text-amber-500" />
@@ -257,7 +257,7 @@ export default function Websites() {
             whileInView="visible"
             viewport={{ once: true }}
             variants={staggerContainer}
-            className="grid md:grid-cols-2 lg:grid-cols-4 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
           >
             {sellingPoints.map((point, index) => (
               <motion.div
@@ -334,65 +334,65 @@ export default function Websites() {
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeInUp}
-            className="overflow-x-auto"
+            className="overflow-x-auto -mx-4 px-4"
           >
-            <table className="w-full max-w-5xl mx-auto">
+            <table className="w-full max-w-5xl mx-auto text-xs sm:text-sm md:text-base">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="p-4 text-left text-foreground font-semibold"></th>
-                  <th className="p-4 text-center">
-                    <div className="glass-card rounded-xl p-3 bg-amber-500/10 border border-amber-500/30">
-                      <span className="text-amber-500 font-bold">Botler360</span>
+                  <th className="p-2 sm:p-4 text-left text-foreground font-semibold"></th>
+                  <th className="p-2 sm:p-4 text-center">
+                    <div className="glass-card rounded-xl p-2 sm:p-3 bg-amber-500/10 border border-amber-500/30">
+                      <span className="text-amber-500 font-bold text-xs sm:text-base">Botler360</span>
                     </div>
                   </th>
-                  <th className="p-4 text-center text-muted-foreground">Wix/Squarespace</th>
-                  <th className="p-4 text-center text-muted-foreground">Freelance</th>
-                  <th className="p-4 text-center text-muted-foreground">Agence</th>
+                  <th className="p-2 sm:p-4 text-center text-muted-foreground">Wix</th>
+                  <th className="p-2 sm:p-4 text-center text-muted-foreground hidden sm:table-cell">Freelance</th>
+                  <th className="p-2 sm:p-4 text-center text-muted-foreground hidden md:table-cell">Agence</th>
                 </tr>
               </thead>
               <tbody>
                 {comparison.map((row, index) => (
                   <tr key={index} className="border-b border-border/50">
-                    <td className="p-4 text-foreground font-medium">{row.feature}</td>
-                    <td className="p-4 text-center">
+                    <td className="p-2 sm:p-4 text-foreground font-medium">{row.feature}</td>
+                    <td className="p-2 sm:p-4 text-center">
                       {typeof row.botler === "boolean" ? (
                         row.botler ? (
-                          <Check className="w-5 h-5 text-teal-500 mx-auto" />
+                          <Check className="w-4 h-4 sm:w-5 sm:h-5 text-teal-500 mx-auto" />
                         ) : (
-                          <X className="w-5 h-5 text-red-500 mx-auto" />
+                          <X className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 mx-auto" />
                         )
                       ) : (
                         <span className="text-amber-500 font-semibold">{row.botler}</span>
                       )}
                     </td>
-                    <td className="p-4 text-center text-muted-foreground">
+                    <td className="p-2 sm:p-4 text-center text-muted-foreground">
                       {typeof row.wix === "boolean" ? (
                         row.wix ? (
-                          <Check className="w-5 h-5 text-teal-500 mx-auto" />
+                          <Check className="w-4 h-4 sm:w-5 sm:h-5 text-teal-500 mx-auto" />
                         ) : (
-                          <X className="w-5 h-5 text-red-500 mx-auto" />
+                          <X className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 mx-auto" />
                         )
                       ) : (
                         row.wix
                       )}
                     </td>
-                    <td className="p-4 text-center text-muted-foreground">
+                    <td className="p-2 sm:p-4 text-center text-muted-foreground hidden sm:table-cell">
                       {typeof row.freelance === "boolean" ? (
                         row.freelance ? (
-                          <Check className="w-5 h-5 text-teal-500 mx-auto" />
+                          <Check className="w-4 h-4 sm:w-5 sm:h-5 text-teal-500 mx-auto" />
                         ) : (
-                          <X className="w-5 h-5 text-red-500 mx-auto" />
+                          <X className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 mx-auto" />
                         )
                       ) : (
                         row.freelance
                       )}
                     </td>
-                    <td className="p-4 text-center text-muted-foreground">
+                    <td className="p-2 sm:p-4 text-center text-muted-foreground hidden md:table-cell">
                       {typeof row.agency === "boolean" ? (
                         row.agency ? (
-                          <Check className="w-5 h-5 text-teal-500 mx-auto" />
+                          <Check className="w-4 h-4 sm:w-5 sm:h-5 text-teal-500 mx-auto" />
                         ) : (
-                          <X className="w-5 h-5 text-red-500 mx-auto" />
+                          <X className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 mx-auto" />
                         )
                       ) : (
                         row.agency

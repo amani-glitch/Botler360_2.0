@@ -13,6 +13,7 @@ import { Play, ArrowRight, Users, Clock, Star } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
+import ChatWidget from "@/components/ChatWidget";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
@@ -201,7 +202,7 @@ export default function Demo() {
             initial="hidden"
             animate="visible"
             variants={staggerContainer}
-            className="grid grid-cols-3 gap-8 mt-16 max-w-3xl mx-auto"
+            className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8 mt-12 sm:mt-16 max-w-3xl mx-auto"
           >
             <motion.div variants={fadeInUp} className="text-center">
               <div className="flex items-center justify-center gap-2 mb-2">
@@ -241,7 +242,7 @@ export default function Demo() {
               <Link key={demo.id} href={`/demo/${demo.id}`}>
                 <motion.button
                   variants={fadeInUp}
-                  className={`px-6 py-3 rounded-xl font-medium transition-all ${
+                  className={`min-h-[44px] inline-flex items-center px-5 sm:px-6 py-3 rounded-xl font-medium text-sm sm:text-base transition-all ${
                     activeDemo.id === demo.id
                       ? "bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900"
                       : "glass-card text-foreground/80 hover:text-amber-500"
@@ -263,7 +264,7 @@ export default function Demo() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="grid lg:grid-cols-2 gap-12 items-center"
+            className="grid lg:grid-cols-2 gap-6 lg:gap-12 items-center"
           >
             {/* Video Player */}
             <div className="relative">
@@ -282,6 +283,8 @@ export default function Demo() {
                         src={activeDemo.image}
                         alt={activeDemo.name}
                         className="w-full h-full object-contain p-8"
+                        loading="lazy"
+                        decoding="async"
                       />
                       <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                         <motion.button
@@ -305,7 +308,11 @@ export default function Demo() {
                 <img
                   src={activeDemo.image}
                   alt={activeDemo.name}
-                  className="w-16 h-16 object-contain"
+                  className="w-12 sm:w-16 h-12 sm:h-16 object-contain"
+                  loading="lazy"
+                  decoding="async"
+                  width="64"
+                  height="64"
                 />
                 <div>
                   <h2 className="font-heading text-3xl font-bold text-foreground">
@@ -364,7 +371,7 @@ export default function Demo() {
               {t("demo.title1")} <span className="text-gradient-gold">{t("demo.highlight")}</span>
             </motion.h2>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {demos.map((demo) => (
                 <Link key={demo.id} href={`/demo/${demo.id}`}>
                   <motion.div
@@ -376,6 +383,8 @@ export default function Demo() {
                         src={demo.image}
                         alt={demo.name}
                         className="w-full h-full object-contain p-4"
+                        loading="lazy"
+                        decoding="async"
                       />
                       <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                         <div className="w-12 h-12 rounded-full bg-amber-500/90 flex items-center justify-center">
@@ -394,6 +403,58 @@ export default function Demo() {
                   </motion.div>
                 </Link>
               ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Live inline chatbots — V3 Glass Daylight */}
+      <section className="py-16 bg-botler-demo-inline">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+          >
+            <motion.h2
+              variants={fadeInUp}
+              className="font-heading text-2xl md:text-3xl font-bold text-foreground text-center mb-4"
+            >
+              Essayez nos <span className="text-gradient-gold">chatbots</span>
+            </motion.h2>
+            <motion.p
+              variants={fadeInUp}
+              className="text-muted-foreground text-center mb-12 max-w-2xl mx-auto"
+            >
+              Discutez en direct avec nos assistants sectoriels — Tourisme, Viticulture, Restaurants.
+            </motion.p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 justify-items-center">
+              <ChatWidget
+                mode="inline"
+                containerId="bc-inline-tourisme"
+                theme="tourisme"
+                avatar="/mascots/tourisme.png"
+                greeting={{ title: "Bonjour 👋", body: "Je suis votre concierge virtuel. Quelle destination vous fait rêver ?" }}
+                quickReplies={["✈️ Séjour sur-mesure", "🏨 Réserver un hôtel", "🗺️ Activités locales", "🌍 Multilingue"]}
+              />
+              <ChatWidget
+                mode="inline"
+                containerId="bc-inline-viticulture"
+                theme="viticulture"
+                avatar="/mascots/viticulture.png"
+                greeting={{ title: "Bonsoir.", body: "Votre sommelier virtuel est à votre service." }}
+                quickReplies={["🍇 Accords mets-vins", "🍾 Nos cuvées", "📅 Réserver une visite"]}
+              />
+              <ChatWidget
+                mode="inline"
+                containerId="bc-inline-restaurants"
+                theme="restaurants"
+                avatar="/mascots/restaurants.png"
+                greeting={{ title: "Bienvenue.", body: "Je vous présente notre carte et prends vos réservations." }}
+                quickReplies={["📖 Voir la carte", "🕐 Réserver une table", "🌱 Options végé", "⚠️ Allergènes"]}
+              />
             </div>
           </motion.div>
         </div>

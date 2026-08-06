@@ -30,9 +30,9 @@ export default function Footer() {
       { label: t("sector.accommodation"), href: "/demo/hebergements" },
     ],
     legal: [
-      { label: t("footer.legal"), href: "#" },
-      { label: t("footer.privacy"), href: "#" },
-      { label: t("footer.cookies"), href: "#" },
+      { label: t("footer.legal"), href: "/mentions-legales" },
+      { label: t("footer.privacy"), href: "/privacy-policy" },
+      { label: t("footer.cookies"), href: "/privacy-policy#cookies" },
     ],
   };
 
@@ -51,7 +51,7 @@ export default function Footer() {
       <div className="absolute inset-0 bg-grid-pattern opacity-30" />
 
       <div className="relative container mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
           {/* Brand Column */}
           <div className="space-y-6">
             <Link href="/">
@@ -59,7 +59,11 @@ export default function Footer() {
                 <img
                   src="/images/botler-logo-full.png"
                   alt="Botler Logo"
-                  className="h-16 w-auto object-contain"
+                  className="h-12 sm:h-16 w-auto object-contain"
+                  loading="lazy"
+                  decoding="async"
+                  width="200"
+                  height="64"
                 />
               </div>
             </Link>
@@ -180,17 +184,18 @@ export default function Footer() {
             </p>
             <div className="flex gap-6">
               {footerLinks.legal.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="text-sm text-muted-foreground hover:text-amber-500 transition-colors"
-                >
-                  {link.label}
-                </a>
+                <Link key={link.label} href={link.href}>
+                  <span className="text-sm text-muted-foreground hover:text-amber-500 transition-colors cursor-pointer">
+                    {link.label}
+                  </span>
+                </Link>
               ))}
             </div>
           </div>
-          <p className="text-center text-xs text-muted-foreground/60 mt-6">
+          <p className="text-center text-xs text-muted-foreground/60 mt-2">
+            Botler 360 Ltd — Company No. 10644529
+          </p>
+          <p className="text-center text-xs text-muted-foreground/60 mt-2">
             {t("footer.tagline")}
           </p>
         </div>
