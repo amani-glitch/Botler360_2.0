@@ -83,20 +83,29 @@ export default function Contact() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      if (!res.ok) throw new Error("contact submission failed");
 
-    toast.success(t("contact.form.success"));
-    setFormData({
-      name: "",
-      email: "",
-      company: "",
-      sector: "",
-      projectType: "",
-      phone: "",
-      message: "",
-    });
-    setIsSubmitting(false);
+      toast.success(t("contact.form.success"));
+      setFormData({
+        name: "",
+        email: "",
+        company: "",
+        sector: "",
+        projectType: "",
+        phone: "",
+        message: "",
+      });
+    } catch {
+      toast.error(t("contact.form.error"));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (

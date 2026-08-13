@@ -213,8 +213,8 @@ export default function Demo() {
             </motion.div>
             <motion.div variants={fadeInUp} className="text-center">
               <div className="flex items-center justify-center gap-2 mb-2">
-                <Clock className="w-6 h-6 text-teal-500" />
-                <span className="text-3xl font-bold text-gradient-teal">+10,000h</span>
+                <Clock className="w-6 h-6 text-amber-500" />
+                <span className="text-3xl font-bold text-gradient-gold">+10,000h</span>
               </div>
               <p className="text-sm text-muted-foreground">{t("demo.stats.hours")}</p>
             </motion.div>
