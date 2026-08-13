@@ -7,6 +7,7 @@
  *   POST  /api/chat          → JSON, single-shot Gemini reply
  *   POST  /api/chat/stream   → NDJSON, streamed Gemini reply
  *   WS    /api/chat/live     → Gemini Live (realtime audio bidi)
+ *   POST  /api/contact       → emails a Contact page form submission
  *   GET   /healthz           → simple liveness probe for Cloud Run
  *
  * Configuration (env vars):
@@ -14,6 +15,9 @@
  *   GEMINI_MODEL          (default gemini-2.5-flash)
  *   GEMINI_LIVE_MODEL     (default gemini-2.5-flash-native-audio-preview-12-2025)
  *   GEMINI_LIVE_VOICE     (optional override; otherwise per-persona)
+ *   SMTP_HOST/PORT/SECURE/USER/PASS  (required for /api/contact)
+ *   MAIL_FROM             (default: SMTP_USER)
+ *   MAIL_TO               (default: contact@botler360.com)
  *   PORT                  (Cloud Run injects 8080)
  *   FRONTEND_ORIGIN       (CORS allow-origin, default "*" — same-origin here anyway)
  */
@@ -24,6 +28,7 @@ import express from "express";
 import { WebSocketServer } from "ws";
 import { handleChat, handleChatStream } from "./chat.js";
 import { handleLiveConnection } from "./live.js";
+import { sendContactSubmission } from "./mail.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Built by the Dockerfile's client-builder stage into dist/public, copied
@@ -97,6 +102,21 @@ app.post("/api/chat/stream", async (req, res) => {
     );
   }
   res.end();
+});
+
+// ---- /api/contact → emails the Contact page's form submissions ----
+app.post("/api/contact", async (req, res) => {
+  try {
+    await sendContactSubmission(req.body);
+    res.json({ ok: true });
+  } catch (err) {
+    const e = err as { status?: number; message?: string; userHint?: string };
+    const status = Number.isFinite(e.status) ? (e.status as number) : 500;
+    res.status(status).json({
+      error: e.message || String(err),
+      userHint: e.userHint,
+    });
+  }
 });
 
 // ---- SPA fallback ----

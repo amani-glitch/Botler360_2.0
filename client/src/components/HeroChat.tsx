@@ -4,27 +4,16 @@ import ChatWidget, { type ChatWidgetHandle } from "@/components/ChatWidget";
 import { useLanguage } from "@/contexts/LanguageContext";
 import type { BotlerPrequalifyEvent } from "@/lib/botlerHandoff";
 
-const QUICK_REPLIES = [
-  { label: "Je tiens un commerce, qu'est-ce que vous faites pour moi ?", intent: "commerce" },
-  { label: "Montre-moi un site que vous avez fait", intent: "showcase" },
-  { label: "Combien ça coûte et en combien de temps ?", intent: "pricing" },
-];
-
-const GREETING = {
-  title: "Bonjour, je suis Botler.",
-  body: "Dites-moi ce qui vous amène, je vous oriente en quelques secondes.",
-};
-
 function DefaultFallback() {
+  const { t } = useLanguage();
   return (
     <div className="flex flex-col items-center justify-center gap-4 text-center p-10 rounded-3xl border border-dashed border-border bg-card min-h-[320px]">
       <MessageSquare className="w-8 h-8 text-muted-foreground/60" />
       <p className="text-foreground font-medium">
-        Botler ne répond pas pour le moment.
+        {t("home.botlerLive.fallback.title")}
       </p>
       <p className="text-sm text-muted-foreground max-w-sm">
-        Notre équipe reste joignable directement — écrivez-nous ou réservez un
-        créneau, nous revenons vers vous rapidement.
+        {t("home.botlerLive.fallback.body")}
       </p>
       <div className="flex flex-wrap items-center justify-center gap-3 mt-2">
         <a href="mailto:contact@botler360.com" className="btn-outline-gold inline-flex items-center gap-2 text-sm">
@@ -34,7 +23,7 @@ function DefaultFallback() {
           <Phone className="w-4 h-4" /> 01 86 26 03 90
         </a>
         <a href="/contact" className="btn-gold inline-flex items-center gap-2 text-sm">
-          Nous écrire
+          {t("home.botlerLive.fallback.writeToUs")}
         </a>
       </div>
     </div>
@@ -49,20 +38,31 @@ interface HeroChatProps {
 export default function HeroChat({ avatar = "/images/botler-logo.png", fallback }: HeroChatProps) {
   const chatRef = useRef<ChatWidgetHandle>(null);
   const [failed, setFailed] = useState(false);
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
 
   useEffect(() => {
     const handler = (e: Event) => {
       const { topic } = (e as BotlerPrequalifyEvent).detail;
-      chatRef.current?.send(`Je m'intéresse à : ${topic}`, "prequalify");
+      chatRef.current?.send(t("home.botlerLive.prequalifyMessage").replace("{topic}", topic), "prequalify");
     };
     window.addEventListener("botler:prequalify", handler);
     return () => window.removeEventListener("botler:prequalify", handler);
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language]);
 
   if (failed) {
     return <>{fallback ?? <DefaultFallback />}</>;
   }
+
+  const greeting = {
+    title: t("home.botlerLive.greeting.title"),
+    body: t("home.botlerLive.greeting.body"),
+  };
+  const quickReplies = [
+    { label: t("home.botlerLive.quickReply1"), intent: "commerce" },
+    { label: t("home.botlerLive.quickReply2"), intent: "showcase" },
+    { label: t("home.botlerLive.quickReply3"), intent: "pricing" },
+  ];
 
   return (
     <ChatWidget
@@ -71,8 +71,8 @@ export default function HeroChat({ avatar = "/images/botler-logo.png", fallback 
       containerId="botler-live-chat"
       theme="hub"
       avatar={avatar}
-      greeting={GREETING}
-      quickReplies={QUICK_REPLIES}
+      greeting={greeting}
+      quickReplies={quickReplies}
       onError={() => setFailed(true)}
       key={language}
     />
