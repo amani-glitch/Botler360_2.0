@@ -22,17 +22,17 @@ const SECTOR_DEMOS = [
   { id: "hebergements", nameKey: "sector.accommodation", descKey: "home.sectors.accommodation.desc", statKey: "home.sectors.accommodation.stat", image: "/mascots/hebergements.png" },
 ];
 
+// Families C & D have no visual asset in this repo yet (brief §12 — Maeva's
+// most concrete dependency) — named, honest placeholders rather than a gap.
+const PENDING_CAPTURES = [
+  "Noco Events 49 — e-commerce",
+  "Travel & Vous — carnet de voyage",
+  "Carpentras Notre Ville",
+  "Yousic",
+];
+
 export default function ShowcaseSection() {
   const { t } = useLanguage();
-
-  // Families C & D have no visual asset in this repo yet (brief §12 — Maeva's
-  // most concrete dependency) — named, honest placeholders rather than a gap.
-  const PENDING_CAPTURES = [
-    t("home.showcase.pending1"),
-    t("home.showcase.pending2"),
-    t("home.showcase.pending3"),
-    t("home.showcase.pending4"),
-  ];
 
   return (
     <section id="realisations" className="relative py-20 sm:py-28 bg-slate-50">

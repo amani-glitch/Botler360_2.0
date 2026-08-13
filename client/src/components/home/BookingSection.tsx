@@ -46,7 +46,7 @@ export default function BookingSection() {
             <div className="glass-card rounded-2xl overflow-hidden" style={{ height: 640 }}>
               <iframe
                 src={CAL_LINK}
-                title={t("home.booking.iframeTitle")}
+                title="Prendre rendez-vous"
                 className="w-full h-full border-0"
                 loading="lazy"
               />

@@ -98,40 +98,6 @@ gcloud secrets add-iam-policy-binding "$SECRET_NAME" \
   --role="roles/secretmanager.secretAccessor" \
   --quiet >/dev/null
 
-# ---------- SMTP (Contact form → email), optional ----------
-# Only wired up if .env.local has real (non-placeholder) values — otherwise
-# /api/contact just returns a clean "not configured" error, same as today.
-SMTP_SECRET_NAME="${SMTP_SECRET_NAME:-smtp-pass}"
-SMTP_HOST_VAL=$(grep -E '^SMTP_HOST=' .env.local | head -n1 | cut -d= -f2- | tr -d '\r')
-SMTP_USER_VAL=$(grep -E '^SMTP_USER=' .env.local | head -n1 | cut -d= -f2- | tr -d '\r')
-SMTP_PASS_VAL=$(grep -E '^SMTP_PASS=' .env.local | head -n1 | cut -d= -f2- | tr -d '\r')
-SMTP_PORT_VAL=$(grep -E '^SMTP_PORT=' .env.local | head -n1 | cut -d= -f2- | tr -d '\r')
-SMTP_SECURE_VAL=$(grep -E '^SMTP_SECURE=' .env.local | head -n1 | cut -d= -f2- | tr -d '\r')
-MAIL_FROM_VAL=$(grep -E '^MAIL_FROM=' .env.local | head -n1 | cut -d= -f2- | tr -d '\r')
-MAIL_TO_VAL=$(grep -E '^MAIL_TO=' .env.local | head -n1 | cut -d= -f2- | tr -d '\r')
-
-EXTRA_SECRETS=""
-EXTRA_ENV_VARS=""
-if [[ -n "$SMTP_HOST_VAL" && "$SMTP_HOST_VAL" != REPLACE_WITH_* \
-   && -n "$SMTP_USER_VAL" && "$SMTP_USER_VAL" != REPLACE_WITH_* \
-   && -n "$SMTP_PASS_VAL" && "$SMTP_PASS_VAL" != REPLACE_WITH_* ]]; then
-  echo "▸ SMTP configured — wiring up secret '$SMTP_SECRET_NAME' + env vars…"
-  if gcloud secrets describe "$SMTP_SECRET_NAME" --quiet >/dev/null 2>&1; then
-    printf "%s" "$SMTP_PASS_VAL" | gcloud secrets versions add "$SMTP_SECRET_NAME" --data-file=- --quiet
-  else
-    printf "%s" "$SMTP_PASS_VAL" | gcloud secrets create "$SMTP_SECRET_NAME" \
-      --replication-policy=automatic --data-file=- --quiet
-  fi
-  gcloud secrets add-iam-policy-binding "$SMTP_SECRET_NAME" \
-    --member="serviceAccount:$RUNTIME_SA" \
-    --role="roles/secretmanager.secretAccessor" \
-    --quiet >/dev/null
-  EXTRA_SECRETS=",SMTP_PASS=${SMTP_SECRET_NAME}:latest"
-  EXTRA_ENV_VARS=",SMTP_HOST=${SMTP_HOST_VAL},SMTP_PORT=${SMTP_PORT_VAL:-587},SMTP_SECURE=${SMTP_SECURE_VAL:-false},SMTP_USER=${SMTP_USER_VAL},MAIL_FROM=${MAIL_FROM_VAL:-$SMTP_USER_VAL},MAIL_TO=${MAIL_TO_VAL:-contact@botler360.com}"
-else
-  echo "▸ SMTP not configured in .env.local (still placeholder) — skipping, /api/contact will return a clean error in prod."
-fi
-
 # ---------- deploy ----------
 # FRONTEND_ORIGIN is set to "*" by default — override if you know your bucket URL.
 FRONTEND_ORIGIN="${FRONTEND_ORIGIN:-*}"
@@ -147,8 +113,8 @@ gcloud run deploy "$SERVICE" \
   --min-instances 0 \
   --max-instances 10 \
   --timeout 300 \
-  --set-secrets="GEMINI_API_KEY=${SECRET_NAME}:latest${EXTRA_SECRETS}" \
-  --set-env-vars="GEMINI_MODEL=gemini-2.5-flash,GEMINI_LIVE_MODEL=gemini-2.5-flash-native-audio-preview-12-2025,FRONTEND_ORIGIN=${FRONTEND_ORIGIN}${EXTRA_ENV_VARS}" \
+  --set-secrets="GEMINI_API_KEY=${SECRET_NAME}:latest" \
+  --set-env-vars="GEMINI_MODEL=gemini-2.5-flash,GEMINI_LIVE_MODEL=gemini-2.5-flash-native-audio-preview-12-2025,FRONTEND_ORIGIN=${FRONTEND_ORIGIN}" \
   --quiet
 
 # ---------- show URL ----------

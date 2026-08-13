@@ -6,23 +6,10 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { GoogleGenerativeAI, type GenerationConfig } from "@google/generative-ai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROMPTS_DIR = path.join(__dirname, "prompts");
-
-// gemini-2.5-flash spends part of maxOutputTokens on invisible "thinking" tokens
-// by default — with a 600-token budget that left as little as ~20 tokens for the
-// actual visible reply, cutting it off mid-sentence. The SDK's types predate this
-// field, so it's added via an intersection rather than the (untyped) GenerationConfig.
-type GenerationConfigWithThinking = GenerationConfig & {
-  thinkingConfig?: { thinkingBudget: number };
-};
-const CHAT_GENERATION_CONFIG: GenerationConfigWithThinking = {
-  temperature: 0.7,
-  maxOutputTokens: 1024,
-  thinkingConfig: { thinkingBudget: 0 },
-};
 
 // theme (from ChatWidget / ROUTE_MAP) → prompt file (without .md)
 const THEME_TO_PROMPT: Record<string, string> = {
@@ -96,7 +83,10 @@ export async function handleChat(req: ChatRequest): Promise<{ reply: string }> {
   const model = genAI.getGenerativeModel({
     model: modelName,
     systemInstruction: systemPrompt,
-    generationConfig: CHAT_GENERATION_CONFIG,
+    generationConfig: {
+      temperature: 0.7,
+      maxOutputTokens: 600,
+    },
   });
 
   const history = req.messages.slice(0, -1).map((m) => ({
@@ -139,7 +129,7 @@ export async function* handleChatStream(req: ChatRequest): AsyncGenerator<string
   const model = genAI.getGenerativeModel({
     model: modelName,
     systemInstruction: systemPrompt,
-    generationConfig: CHAT_GENERATION_CONFIG,
+    generationConfig: { temperature: 0.7, maxOutputTokens: 600 },
   });
 
   const history = req.messages.slice(0, -1).map((m) => ({

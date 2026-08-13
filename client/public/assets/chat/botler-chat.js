@@ -184,20 +184,15 @@
       role: 'dialog', 'aria-label': `Botler ${cfg.sector || ''}`
     });
 
-    // Header — no close button in inline mode: there's no launcher bubble to
-    // fall back to there (unlike floating mode), so closing would just leave
-    // an empty hole in the page with no way to reopen it.
-    const headerChildren = [
+    // Header
+    const header = h('header', { class: 'bc-header' }, [
       renderAvatar(cfg),
       h('div', { class: 'bc-info' }, [
         h('div', { class: 'bc-name', html: `Botler<sup>™</sup> <span class="bc-sector">${cfg.sector||''}</span>` }),
         h('div', { class: 'bc-status', html: `<span class="bc-dot"></span> En ligne · répond en < 1 min` }),
       ]),
-    ];
-    if (opts.mode !== 'inline') {
-      headerChildren.push(h('button', { class: 'bc-close', 'aria-label': 'Fermer', onclick: () => root.remove() }, '✕'));
-    }
-    const header = h('header', { class: 'bc-header' }, headerChildren);
+      h('button', { class: 'bc-close', 'aria-label': 'Fermer', onclick: () => root.remove() }, '✕'),
+    ]);
 
     // Intro
     const intro = h('div', { class: 'bc-intro' }, [
@@ -292,11 +287,6 @@
       if (open) {
         wrap.appendChild(root);
         root.style.marginTop = '12px';
-        // The site's fixed header is ~80px tall — without this, the panel's
-        // own CSS max-height (viewport-relative) lets it grow tall enough on
-        // shorter viewports to render underneath/over the header, covering
-        // the language/theme toggles. Reserve that space explicitly.
-        root.style.maxHeight = 'calc(100dvh - 120px)';
         if (teaserEl) teaserEl.style.display = 'none';
         launcher.style.display = 'none';
       }

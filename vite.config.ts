@@ -159,17 +159,13 @@ function vitePluginBotlerChatAPI(): Plugin {
   const projectRoot = import.meta.dirname;
   const chatModuleAbs = path.resolve(projectRoot, "server/chat.ts");
   const liveModuleAbs = path.resolve(projectRoot, "server/live.ts");
-  const mailModuleAbs = path.resolve(projectRoot, "server/mail.ts");
 
   return {
     name: "botler-chat-api",
     config() {
       // Load .env* into process.env so SSR-loaded modules can read it.
       const env = loadEnv("", projectRoot, "");
-      for (const key of [
-        "GEMINI_API_KEY", "GEMINI_MODEL", "GEMINI_LIVE_MODEL", "GEMINI_LIVE_VOICE",
-        "SMTP_HOST", "SMTP_PORT", "SMTP_SECURE", "SMTP_USER", "SMTP_PASS", "MAIL_FROM", "MAIL_TO",
-      ]) {
+      for (const key of ["GEMINI_API_KEY", "GEMINI_MODEL", "GEMINI_LIVE_MODEL", "GEMINI_LIVE_VOICE"]) {
         if (env[key] && !process.env[key]) process.env[key] = env[key];
       }
     },
@@ -289,29 +285,6 @@ function vitePluginBotlerChatAPI(): Plugin {
           server.config.logger.error(`[chat api ${code}] ${message}`);
           res.writeHead(code, { "Content-Type": "application/json" });
           res.end(JSON.stringify({ error: message, userHint }));
-        }
-      });
-
-      // ---- POST /api/contact → emails the Contact page's form submissions ----
-      server.middlewares.use("/api/contact", async (req, res, next) => {
-        if (req.method !== "POST") return next();
-
-        try {
-          const raw = await readBody(req);
-          const payload = raw ? JSON.parse(raw) : {};
-          const mod = await server.ssrLoadModule(mailModuleAbs);
-          const sendContactSubmission = (mod as {
-            sendContactSubmission: (r: unknown) => Promise<void>;
-          }).sendContactSubmission;
-          await sendContactSubmission(payload);
-          res.writeHead(200, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ ok: true }));
-        } catch (err) {
-          const e = err as { status?: number; message?: string; userHint?: string };
-          const code = e.status && Number.isFinite(e.status) ? e.status : 500;
-          server.config.logger.error(`[contact api ${code}] ${e.message || err}`);
-          res.writeHead(code, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ error: e.message || String(err), userHint: e.userHint }));
         }
       });
     },
